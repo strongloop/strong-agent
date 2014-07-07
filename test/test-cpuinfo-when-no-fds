@@ -1,0 +1,25 @@
+'use strict';
+
+process.env.SL_ENV = 'dev';
+
+var assert = require('assert');
+var cpuinfo = require('../lib/cpuinfo');
+var fs = require('fs');
+
+if (process.platform === 'win32') {
+  console.log('Skipping test, no RLIMIT_NOFILE on Windows.');
+  return;
+}
+
+for (;;) {
+  try {
+    fs.openSync(__filename, 'r');
+  } catch (e) {
+    assert(e.code === 'EMFILE' || e.code === 'ENFILE');
+    break;
+  }
+}
+
+// The callback may or may not get called but cpuutil() should not bring down
+// the process.
+cpuinfo.cpuutil(function() {});

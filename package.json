@@ -1,0 +1,52 @@
+{
+  "name": "strong-agent",
+  "version": "0.4.10",
+  "description": "StrongOps Application Performance Monitoring Agent",
+  "author": "StrongLoop <callback@strongloop.com>",
+  "homepage": "http://strongloop.com",
+  "license": {
+    "name": "StrongLoop",
+    "url": "http://strongloop.com/license/"
+  },
+  "contributors": [],
+  "main": "lib/main",
+  "directories": {
+    "lib": "./lib"
+  },
+  "dependencies": {
+    "debug": "~0.7.0",
+    "underscore": "1.x",
+    "semver": "~2.2.1"
+  },
+  "devDependencies": {
+    "tap": "strongloop/node-tap#production",
+    "async": "~0.1.22",
+    "express": "~3.3.5",
+    "loopback": "~1.8.0",
+    "sinon": "~1.7.3"
+  },
+  "scripts": {
+    "install": "node-gyp rebuild || exit 0",
+    "test": "SL_ENV=dev tap --tap --gc --stderr --timeout 10 ${TESTS:-test/test-*.js}",
+    "lint": "make -C src lint"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "keywords": [
+    "apm",
+    "monitoring",
+    "performance",
+    "profiling",
+    "heap",
+    "event loop",
+    "analytics",
+    "metrics",
+    "alerts",
+    "profiler",
+    "response",
+    "time",
+    "memory",
+    "slowest functions"
+  ]
+}

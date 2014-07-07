@@ -1,0 +1,7 @@
+{
+  "": [
+    "Dummy strongloop.json for testing purposes.  This file is require()'d by",
+    "some of the tests and then monkey-patched with the actual configuration.",
+    "See test-agent-https.js and test-agent-proxy.js for examples."
+  ]
+}

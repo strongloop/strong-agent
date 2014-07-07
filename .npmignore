@@ -1,0 +1,13 @@
+*.sublime-project
+*.sublime-workspace
+*.tgz
+.npmignore
+/build/
+/node_modules/
+bin/
+coverage.html
+docs.json
+src/Makefile
+src/check-imports.sh
+src/cpplint.py
+test/
