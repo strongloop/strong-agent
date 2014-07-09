@@ -1,5 +1,7 @@
 process.env.SL_ENV = 'dev';
-require('../').profile('deadbeef', 'deadbeef', { quiet: true });
+
+var agent = require('../');
+agent.profile('deadbeef', 'deadbeef', { quiet: true });
 
 var assert = require('assert');
 var profiler = require('../lib/profilers/memory');
@@ -11,7 +13,7 @@ var profiler = require('../lib/profilers/memory');
 // to `new HeapDiff` and _step().  Nothing interesting in other words but
 // it's still sent to the collector.
 var instance = null;
-profiler.init();
+profiler.init(agent);
 profiler.agent.internal.on('instances', function(o) { instance = o });
 profiler.start();
 profiler.stop();

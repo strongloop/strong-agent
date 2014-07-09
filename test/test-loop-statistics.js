@@ -1,10 +1,13 @@
 process.env.SL_ENV = 'dev';
 require('../lib/config').loopInterval = 25;
-require('../').profile('deadbeef', 'deadbeef', { quiet: true });
+
+var agent = require('../');
+agent.profile('deadbeef', 'deadbeef', { quiet: true });
+
 var assert = require('assert');
 
 var nevents = 0;
-STRONGAGENT.internal.on('loop', function(o) {
+agent.internal.on('loop', function(o) {
   assert.equal(typeof(o.loop), 'object');
   assert.equal(typeof(o.loop.count), 'number');
   assert.equal(typeof(o.loop.slowest_ms), 'number');

@@ -1,6 +1,8 @@
 process.env.SL_ENV = 'dev';
-require('../').profile('deadbeef', 'deadbeef', { quiet: true });
+
+var agent = require('../');
+agent.profile('deadbeef', 'deadbeef', { quiet: true });
 
 var profiler = require('../lib/profilers/memory');
-profiler.init();
+profiler.init(agent);
 profiler.start();

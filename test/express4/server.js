@@ -1,7 +1,8 @@
-require('../../').profile('deadbeef', 'deadbeef', { quiet: true });
+var agent = require('../../');
+agent.profile('deadbeef', 'deadbeef', { quiet: true });
 
 // Trap lib/proxy's call to agent.error() when the hook errors
-global.STRONGAGENT.error = function(err) {
+agent.error = function(err) {
   throw err;
 };
 

@@ -411,3 +411,56 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
                Object.getOwnPropertyDescriptor(o, 'y').get);
   assert.equal(p2.calls, 0);
 })();
+
+(function() {
+  function fun() {
+    assert.equal(this, obj);
+    assert.equal(after.calls, fun.calls + 0);
+    assert.equal(before.calls, fun.calls + 1);
+    fun.calls += 1;
+  }
+  fun.calls = 0;
+
+  function before(recv, args, extra_, graph_, currentNode_) {
+    // Receiver is undefined because lib/proxy.js is in strict mode.  If you
+    // removed the 'use strict' from that file, then recv === global.
+    assert.equal(recv, undefined);
+    assert.equal(args[0], i);
+    assert.equal(extra_, extra);
+    assert.equal(graph_, graph);
+    assert.equal(currentNode_, currentNode);
+    assert.equal(before.calls, fun.calls);
+    assert.equal(after.calls, fun.calls);
+    before.calls += 1;
+  }
+  before.calls = 0;
+
+  function after(recv, args, extra_, graph_, currentNode_) {
+    // Receiver is undefined because lib/proxy.js is in strict mode.  If you
+    // removed the 'use strict' from that file, then recv === global.
+    assert.equal(recv, undefined);
+    assert.equal(args[0], i);
+    assert.equal(extra_, extra);
+    assert.equal(graph_, graph);
+    assert.equal(currentNode_, currentNode);
+    assert.equal(before.calls, fun.calls);
+    assert.equal(after.calls, fun.calls - 1);
+    after.calls += 1;
+  }
+  after.calls = 0;
+
+  var currentNode = {};
+  var extra = {};
+  var graph = {};
+  proxy.init({ currentNode: currentNode, extra: extra, graph: graph });
+
+  var obj = {};
+  var args = [assert.fail, fun.bind(obj)];
+  proxy.callback(args, -1, before, after);
+  var f = args.slice(-1)[0];
+  assert.notEqual(f, fun);  // Sadly.
+
+  assert.equal(fun.calls, 0);
+  for (var i = 0, n = 42; i < n; i += 1) f(i);
+  assert.equal(fun.calls, n);
+})();

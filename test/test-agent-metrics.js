@@ -9,7 +9,9 @@ var logger = {
   info: messages.push.bind(messages),
   error: messages.push.bind(messages),
 };
-require('../').use({ logger: logger }, metrics.push.bind(metrics));
+
+var agent = require('../');
+agent.use({ logger: logger }, metrics.push.bind(metrics));
 
 var assert = require('assert');
 var counts = require('../lib/counts');
@@ -18,7 +20,7 @@ var http = require('http');
 assert.equal(typeof(gc), 'function', 'Run this test with --expose_gc');
 http.createServer(onrequest).listen(0, onlisten);
 
-counts.init(50);
+counts.init(agent, 50);
 for (var i = 0; i < 7; i += 1) counts.sample('strongmq_in');
 for (var i = 0; i < 13; i += 1) counts.sample('strongmq_out');
 

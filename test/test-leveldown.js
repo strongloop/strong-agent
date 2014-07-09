@@ -11,8 +11,8 @@ var tiers = require('../lib/tiers');
 var topFunctions = require('../lib/topFunctions');
 
 // Ouch.
-proxy.init();
-counts.init(config.countsInterval);
+proxy.init(agent);
+counts.init(agent, config.countsInterval);
 tiers.init();
 
 var leveldownWrapper = require('../lib/wrapping_probes/leveldown');

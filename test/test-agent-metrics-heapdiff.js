@@ -19,8 +19,6 @@ assert(metrics.length > 0);
 // may change over time.
 assert(0 < find('object.Array.count'));
 assert(0 < find('object.Array.size'));
-assert(0 < find('object.Object.count'));
-assert(0 < find('object.Object.size'));
 assert(0 < find('object.Timeout.count'));
 assert(0 < find('object.Timeout.size'));
 

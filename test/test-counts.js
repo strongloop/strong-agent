@@ -25,8 +25,8 @@ emit.one = 0;
 emit.two = 0;
 emit.three = 0;
 
-global.STRONGAGENT = { internal: { emit: emit } };
-counts.init(1e1);
+var agent = { internal: { emit: emit } };
+counts.init(agent, 1e1);
 
 function spam() {
   counts.sample('one');
