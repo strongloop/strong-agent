@@ -1,6 +1,6 @@
 {
   "name": "strong-agent",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "description": "StrongOps Application Performance Monitoring Agent",
   "author": "StrongLoop <callback@strongloop.com>",
   "homepage": "http://strongloop.com",
