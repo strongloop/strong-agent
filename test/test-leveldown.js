@@ -13,7 +13,7 @@ var topFunctions = require('../lib/topFunctions');
 // Ouch.
 proxy.init(agent);
 counts.init(agent, config.countsInterval);
-tiers.init();
+tiers.init(agent, config.tiersInterval);
 
 var leveldownWrapper = require('../lib/wrapping_probes/leveldown');
 

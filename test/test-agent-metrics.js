@@ -11,7 +11,8 @@ var logger = {
 };
 
 var agent = require('../');
-agent.use({ logger: logger }, metrics.push.bind(metrics));
+agent.profile(null, null, { logger: logger });
+agent.use(metrics.push.bind(metrics));
 
 var assert = require('assert');
 var counts = require('../lib/counts');
