@@ -4,6 +4,13 @@
   "description": "StrongOps Application Performance Monitoring Agent",
   "author": "StrongLoop <callback@strongloop.com>",
   "homepage": "http://strongloop.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/strongloop/strong-agent"
+  },
+  "bugs": {
+    "url": "https://github.com/strongloop/strong-agent/issues"
+  },
   "license": {
     "name": "StrongLoop",
     "url": "http://strongloop.com/license/"

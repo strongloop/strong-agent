@@ -2,6 +2,10 @@
 
 Profile and control Node.js processes and clusters using StrongOps.
 
+**NOTE: This project is not released under an open source license. We welcome
+bug reports as we continue development, but we are not accepting pull requests
+at this time.**
+
 ## Using strong-agent
 
 See [the full documentation](http://docs.strongloop.com/strong-agent).
