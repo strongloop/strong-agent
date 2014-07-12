@@ -302,15 +302,14 @@ void AddHeapGraphNodeToSet(const HeapGraphNode* node,
 }
 
 template <void (Score::*Method)(const HeapGraphNodeWrap&)>
-struct SummarizeHelper {
-  typedef ptrdiff_t difference_type;
-  typedef std::output_iterator_tag iterator_category;
-  typedef Score* pointer;
-  typedef Score& reference;
-  typedef Score value_type;
+struct SummarizeHelper : public std::iterator<std::output_iterator_tag, Score> {
   explicit SummarizeHelper(HeapGraphNodeMap* map) : map_(map) {
   }
-  void operator++() {
+  SummarizeHelper& operator++() {
+    return *this;
+  }
+  SummarizeHelper& operator++(int) {
+    return *this;
   }
   SummarizeHelper& operator*() {
     return *this;
@@ -339,8 +338,6 @@ Local<Object> Summarize(Isolate* isolate,
   AddHeapGraphNodeToSet(end_snapshot->GetRoot(), &end_objects);
 
   HeapGraphNodeMap summary;
-  HeapGraphNodeVector added_objects;
-  HeapGraphNodeVector removed_objects;
   std::set_difference(end_objects.begin(),
                       end_objects.end(),
                       start_objects.begin(),
