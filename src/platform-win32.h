@@ -28,10 +28,12 @@ inline double FileTimeToFractionalSeconds(const FILETIME* time) {
 void CpuTime(double* total_system, double* total_user) {
   FILETIME system_time;
   FILETIME user_time;
+  FILETIME unused0;
+  FILETIME unused1;
   HANDLE self;
 
   self = ::GetCurrentProcess();
-  if (::GetProcessTimes(self, NULL, NULL, &system_time, &user_time)) {
+  if (::GetProcessTimes(self, &unused0, &unused1, &system_time, &user_time)) {
     *total_system = internal::FileTimeToFractionalSeconds(&system_time);
     *total_user = internal::FileTimeToFractionalSeconds(&user_time);
   } else {

@@ -15,9 +15,9 @@ http.createServer(assert.fail).listen(0, '127.0.0.1', function() {
   var kContextPropertyName = '__STRONGOPS_HTTP_CONTEXT__';
   assert.equal(this, agent.httpServer);
   assert.equal(this.hasOwnProperty(kContextPropertyName), true);
-  assert.equal(this[kContextPropertyName].connectionCount, 0);
+  assert.equal(this[kContextPropertyName].connectionCounts[0], 0);
   this.on('upgrade', function(req, conn, head) {
-    assert.equal(this[kContextPropertyName].connectionCount, 1);
+    assert.equal(this[kContextPropertyName].connectionCounts[0], 1);
     seenUpgrade = true;
     conn.destroy();
     this.close();

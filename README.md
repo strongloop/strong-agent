@@ -147,9 +147,11 @@ All values are for the current process only.
   in the range -2,147,483,648 to 2,147,483,647.  (FIXME: exact range differs
   for ia32 and x64.)
 
-* `http.connections`
+* `http.connection.count`
 
-  Number of incoming HTTP connections across all servers in this process.
+  Number of new HTTP connections in the last interval.  (FIXME: Tracks only
+  one HTTP server per process and it's not very deterministic what server
+  that is.  Fortunately, most applications start only one server.)
 
 * `loop.count`
 

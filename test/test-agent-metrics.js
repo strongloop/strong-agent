@@ -57,14 +57,23 @@ process.on('exit', function() {
   function count(key) {
     return keys.filter(function(k) { return k == key }).length;
   }
+  function values(key) {
+    var elts = [];
+    for (var i = 0; i < metrics.length; i += 2) {
+      if (metrics[i] === key) elts.push(metrics[i + 1]);
+    }
+    return elts;
+  }
   assert(has('heap.used'));
   assert(has('heap.total'));
+  assert(has('http.connection.count'));
   assert(has('gc.heap.used'));
   assert(has('tiers.http.average'));
   assert(has('loop.count'));
   assert(has('loop.minimum'));
   assert(has('loop.maximum'));
   assert(has('loop.average'));
+  assert.notEqual(values('http.connection.count').length, 0);
   assert.equal(count('messages.in.count'), 1);
   assert.equal(count('messages.out.count'), 1);
   assert.equal(metrics[1 + 2 * keys.indexOf('messages.in.count')], 7);
