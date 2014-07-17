@@ -17,6 +17,7 @@ assertExists('host');
 assertExists('port');
 assertExists('proxy');
 assertExists('key');
+assertExists('hostname');
 
 // all other keys must exist in defaults, and in the config object (which has
 // had options and environment applied to configuration, based on defaults)

@@ -129,13 +129,13 @@ server.listen(0, '127.0.0.1', function() {
     };
   })();
 
-  agent.transport.on('pong', function(data) {
+  agent.internal.on('pong', function(data) {
     assert.equal(data, 42);
     agent.stop();
     pongs += 1;
     server.close();
   });
-  agent.transport.send('ping', 42);
+  agent.internal.send('ping', 42);
 
   var pongs = 0;
   process.on('exit', function() {

@@ -5,6 +5,7 @@ process.env.SL_ENV = 'dev';
 var assert = require('assert');
 var async = require('async');
 var agent = require('../');
+var debug = require('../lib/debug')('test');
 var net = require('net');
 var util = require('util');
 
@@ -20,19 +21,19 @@ function stop() {
 
 var hook;
 
-agent.transport.send = function(cmd) {
-  console.log('fake transport sending:',  util.format.apply(null,arguments));
+agent.transport.send = function(message) {
+  debug('fake transport is being sent: %j',  message);
 
   // redirect profile commands to our hook
-  if (cmd.indexOf('profile') >= 0) {
-    hook && hook.apply(null, arguments);
+  if (message.cmd.indexOf('profile') >= 0) {
+    hook && hook.apply(null, [message.cmd].concat(message.args));
   }
 };
 
 function expect(event, callback) {
   hook = callback;
-  console.log('fake transport recving:', event);
-  agent.transport.emit(event);
+  debug('fake transport pretends to receive:', event);
+  agent.transport.emit('message', {cmd: event, args:[]});
 }
 
 var tests = [
