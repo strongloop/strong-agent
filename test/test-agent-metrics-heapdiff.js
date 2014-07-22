@@ -1,6 +1,7 @@
 // Use 50 ms intervals for metrics collection.
 process.env.STRONGAGENT_INTERVAL_MULTIPLIER = 20;
 process.env.SL_ENV = 'test';
+process.env.SL_KEY = 'some key';
 
 var agent = require('../');
 var assert = require('assert');

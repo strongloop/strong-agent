@@ -11,7 +11,7 @@ var logger = {
 };
 
 var agent = require('../');
-agent.profile(null, null, { logger: logger });
+agent.profile('some key', null, { logger: logger });
 agent.use(metrics.push.bind(metrics));
 
 var assert = require('assert');
