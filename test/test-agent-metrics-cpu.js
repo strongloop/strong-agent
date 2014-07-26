@@ -12,14 +12,13 @@ if (addon.stopCpuProfilingAndSerialize == null) {
   return;
 }
 
-assert.equal(agent.metrics.startCpuProfiling(), true);
+assert.equal(agent.metrics.startCpuProfiling(), null);
 assert.deepEqual(Object.keys(JSON.parse(agent.metrics.stopCpuProfiling())),
                  ['head', 'startTime', 'endTime', 'samples']);
-assert.deepEqual(Object.keys(JSON.parse(agent.metrics.stopCpuProfiling())),
-                 ['error']);
+assert(/profiler not started/.test(agent.metrics.stopCpuProfiling().error));
 assert.equal(addon.stopCpuProfilingAndSerialize(), undefined);
 
-assert.equal(agent.metrics.startCpuProfiling(), true);
+assert.equal(agent.metrics.startCpuProfiling(), null);
 for (var buf = Buffer(1 << 20), i = 1; i < buf.length; i += 1) {
   buf[i] ^= buf[i - 1];
 }

@@ -223,21 +223,19 @@ The agent has a built-in CPU profiler that produces output in a format that can
 be imported into the [Chrome Developer Tools][].  The profiler is available with
 Node.js v0.11 and up.
 
-* `agent.metrics.startCpuProfiling()` - Start the CPU profiler.  Returns `true`
-  on success or `false` when the CPU profiler is unavailable.
+* `agent.metrics.startCpuProfiling()` - Start the CPU profiler.  Throws an
+  Error when the CPU profiler is unavailable.
 
   Calling this method multiple times is mostly harmless: the first call starts
   the profiler, successive calls are no-ops.
 
 * `agent.metrics.stopCpuProfiling()` - Stop the CPU profiler.  Returns the
   CPU profiler information as a JSON string that can be saved to disk for
-  further inspection.
+  further inspection.  Throws an Error when the CPU profile is unavailable, or
+  has not been started.
 
   The filename must have a `.cpuprofile` suffix in order for the
   [Chrome Developer Tools] importer to recognize it.
-
-  Calling this method multiple times is mostly harmless: successive calls
-  return a stringified error object.
 
 Example usage:
 
