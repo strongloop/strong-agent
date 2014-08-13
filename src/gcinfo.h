@@ -15,6 +15,7 @@ namespace gcinfo {
 
 namespace C = compat;
 
+using v8::Array;
 using v8::Function;
 using v8::GCCallbackFlags;
 using v8::GCType;
@@ -61,7 +62,6 @@ class Baton {
   HeapStatistics heap_statistics_;
 };
 
-C::Persistent<Function> on_gc_callback;
 uv_idle_t idle_handle;
 
 QUEUE Baton::baton_queue = { &Baton::baton_queue, &Baton::baton_queue };
@@ -141,15 +141,20 @@ void OnIdle(uv_idle_t*) {  // NOLINT(readability/function)
   Isolate* isolate = Isolate::GetCurrent();  // FIXME(bnoordhuis)
   C::HandleScope handle_scope(isolate);
   uv_idle_stop(&idle_handle);
+  Local<Array> samples = C::Array::New(isolate);
+  uint32_t index = 0;
   while (Baton* baton = Baton::Pop()) {
-    if (on_gc_callback.IsEmpty() == false) {
-      const size_t used_heap_size = baton->heap_statistics()->used_heap_size();
-      Local<Value> arg = C::Integer::NewFromUnsigned(isolate, used_heap_size);
-      Local<Function> fun = on_gc_callback.ToLocal(isolate);
-      fun->Call(fun, 1, &arg);
-    }
+    const size_t used_heap_size = baton->heap_statistics()->used_heap_size();
     baton->Dispose();
+    samples->Set(index, C::Integer::NewFromUnsigned(isolate, used_heap_size));
+    index += 1;
   }
+  Local<Object> binding_object = GetBindingObject(isolate);
+  Local<Value> property_value =
+      binding_object->Get(kGarbageCollectorStatisticsCallback);
+  if (property_value->IsFunction() == false) return;
+  Local<Value> args[] = { samples };
+  property_value.As<Function>()->Call(binding_object, ArraySize(args), args);
 }
 
 void AfterGC(GCType type, GCCallbackFlags flags) {
@@ -157,25 +162,29 @@ void AfterGC(GCType type, GCCallbackFlags flags) {
   uv_idle_start(&idle_handle, reinterpret_cast<uv_idle_cb>(OnIdle));
 }
 
-C::ReturnType OnGC(const C::ArgumentType& args) {
-  Isolate* isolate = args.GetIsolate();
+C::ReturnType StartGarbageCollectorStatistics(const C::ArgumentType& args) {
   C::ReturnableHandleScope handle_scope(args);
-  if (on_gc_callback.IsEmpty() == false) {
-    on_gc_callback.Reset();
-    V8::RemoveGCEpilogueCallback(AfterGC);
-  }
-  if (args[0]->IsFunction() == true) {
-    on_gc_callback.Reset(isolate, args[0].As<Function>());
-    V8::AddGCEpilogueCallback(AfterGC);
-  }
+  V8::AddGCEpilogueCallback(AfterGC);
+  return handle_scope.Return();
+}
+
+C::ReturnType StopGarbageCollectorStatistics(const C::ArgumentType& args) {
+  C::ReturnableHandleScope handle_scope(args);
+  V8::RemoveGCEpilogueCallback(AfterGC);
   return handle_scope.Return();
 }
 
 void Initialize(Isolate* isolate, Local<Object> binding) {
   uv_idle_init(uv_default_loop(), &idle_handle);
   uv_unref(reinterpret_cast<uv_handle_t*>(&idle_handle));
-  binding->Set(C::String::NewFromUtf8(isolate, "onGC"),
-               C::FunctionTemplate::New(isolate, OnGC)->GetFunction());
+  binding->Set(
+      C::String::NewFromUtf8(isolate, "startGarbageCollectorStatistics"),
+      C::FunctionTemplate::New(isolate,
+                               StartGarbageCollectorStatistics)->GetFunction());
+  binding->Set(
+      C::String::NewFromUtf8(isolate, "stopGarbageCollectorStatistics"),
+      C::FunctionTemplate::New(isolate,
+                               StopGarbageCollectorStatistics)->GetFunction());
 }
 
 }  // namespace gcinfo

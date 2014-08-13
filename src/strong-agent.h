@@ -89,6 +89,18 @@
 namespace strongloop {
 namespace agent {
 
+#define SL_CALLBACK_PROPERTIES_MAP(V)                                         \
+  V(kGarbageCollectorStatisticsCallback)
+
+enum CallbackProperties {
+#define V(name) name,
+  SL_CALLBACK_PROPERTIES_MAP(V)
+#undef V
+  kMaxCallbackProperties
+};
+
+inline v8::Local<v8::Object> GetBindingObject(v8::Isolate* isolate);
+
 namespace extras { void Initialize(v8::Isolate*, v8::Local<v8::Object>); }
 namespace gcinfo { void Initialize(v8::Isolate*, v8::Local<v8::Object>); }
 namespace heapdiff { void Initialize(v8::Isolate*, v8::Local<v8::Object>); }
