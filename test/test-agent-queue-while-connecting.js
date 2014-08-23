@@ -2,10 +2,10 @@
 
 process.env.SL_ENV = 'dev';
 var config = require('../lib/config');
-config.collectInterval = 25;
-config.metricsInterval = 25;
-config.tiersInterval = 25;
-config.loopInterval = 25;
+config.collectInterval = 100;
+config.metricsInterval = 100;
+config.tiersInterval = 100;
+config.loopInterval = 100;
 
 var agent = require('..');
 var assert = require('assert');
