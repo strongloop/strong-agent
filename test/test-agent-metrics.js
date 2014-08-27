@@ -1,5 +1,5 @@
-// Use 50 ms intervals for metrics collection.
-process.env.STRONGAGENT_INTERVAL_MULTIPLIER = 20;
+// Use 100 ms intervals for metrics collection.
+process.env.STRONGAGENT_INTERVAL_MULTIPLIER = 10;
 process.env.SL_ENV = 'test';
 
 var metrics = [];
@@ -34,7 +34,7 @@ function onlisten() {
   var server = this;
   var address = server.address().address;
   var port = server.address().port;
-  function done() { setTimeout(server.close.bind(server), 50) }
+  function done() { setTimeout(server.close.bind(server), 100) }
   function next() { pummel(address, port, --next.rounds > 0 ? next : done) }
   next.rounds = 32;
   next();

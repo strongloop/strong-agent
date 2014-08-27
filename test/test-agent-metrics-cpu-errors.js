@@ -1,4 +1,4 @@
-var metrics = require('strong-agent').metrics;
+var metrics = require('../').metrics;
 var tap = require('tap');
 
 var check = metrics._checkCpuProfSupported;

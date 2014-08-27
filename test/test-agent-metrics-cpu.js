@@ -15,7 +15,7 @@ if (addon.stopCpuProfilingAndSerialize == null) {
 assert.equal(agent.metrics.startCpuProfiling(), null);
 assert.deepEqual(Object.keys(JSON.parse(agent.metrics.stopCpuProfiling())),
                  ['head', 'startTime', 'endTime', 'samples']);
-assert(/profiler not started/.test(agent.metrics.stopCpuProfiling().error));
+assert.throws(agent.metrics.stopCpuProfiling, /profiler not started/);
 assert.equal(addon.stopCpuProfilingAndSerialize(), undefined);
 
 assert.equal(agent.metrics.startCpuProfiling(), null);

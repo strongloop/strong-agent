@@ -12,7 +12,7 @@ var ok;
 process.on('exit', function() { assert(ok); });
 
 // Do some cheating to speed up the test
-config.heapDiffInterval = 100;
+config.heapDiffInterval = 500;
 
 endpoint(function() {
   var collector = this;
@@ -42,6 +42,7 @@ endpoint(function() {
     // after the memory:start command is received via control/transport
     if ('loop.count' in metrics && 'object.Object.count' in metrics) {
       if (!ok) {
+        debug('PASS: loop count and object count seen, shutting down.')
         collector.close();
         agent.stop();
         ok = true;

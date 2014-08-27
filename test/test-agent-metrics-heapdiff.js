@@ -5,6 +5,7 @@ process.env.SL_KEY = 'some key';
 
 var agent = require('../');
 var assert = require('assert');
+var fmt = require('util').format;
 
 var metrics = [];
 agent.use(metrics.push.bind(metrics));
@@ -18,8 +19,15 @@ assert(metrics.length > 0);
 // These are almost guaranteed to exist in the output.  It's tricky of course
 // because garbage collection is fairly non-deterministic and the GC algorithm
 // may change over time.
-assert(0 < find('object.Array.count'));
-assert(0 < find('object.Array.size'));
+// XXX(rmg): node v0.11.x seems to favour object.Object over object.Array :-/
+if (/v0\.10/.test(process.version)) {
+  assert(0 < find('object.Array.count'));
+  assert(0 < find('object.Array.size'));
+} else {
+  assert(0 < find('object.Object.count'));
+  assert(0 < find('object.Object.size'));
+
+}
 assert(0 < find('object.Timeout.count'));
 assert(0 < find('object.Timeout.size'));
 
@@ -30,6 +38,7 @@ assert.equal(metrics.filter(/ /.test.bind(/^object\./)).length, 0);
 
 function find(key) {
   var index = metrics.indexOf(key);
-  if (index === -1) throw Error('Key not found: ' + key);
+  if (index === -1)
+    throw Error(fmt('Key %j not found in %j', key, metrics));
   return metrics[index + 1];
 }
