@@ -2,6 +2,9 @@
 
 process.env.SL_ENV = 'test';
 
+var helpers = require('./helpers');
+process.env.STRONG_AGENT_LICENSE = helpers.shortTestLicense();
+
 var agent = require('../');
 var assert = require('assert');
 var config = require('../lib/config');

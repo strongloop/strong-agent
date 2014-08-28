@@ -1,4 +1,5 @@
 var assert = require('assert');
+var helpers = require('./helpers');
 var util = require('util');
 
 var v = require('../package.json').version;
@@ -11,7 +12,7 @@ var logger = {
   error: noop,
 };
 
-process.env.SL_KEY = 'some key';
+process.env.STRONG_AGENT_LICENSE = helpers.shortTestLicense();
 var agent = require('../');
 agent.config.logger = logger;
 agent.use(function noop() {});

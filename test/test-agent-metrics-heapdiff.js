@@ -2,6 +2,8 @@
 process.env.STRONGAGENT_INTERVAL_MULTIPLIER = 20;
 process.env.SL_ENV = 'test';
 process.env.SL_KEY = 'some key';
+var helpers = require('./helpers');
+process.env.STRONG_AGENT_LICENSE = helpers.shortTestLicense();
 
 var agent = require('../');
 var assert = require('assert');
