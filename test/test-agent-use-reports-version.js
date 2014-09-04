@@ -12,7 +12,7 @@ var logger = {
   error: noop,
 };
 
-process.env.STRONG_AGENT_LICENSE = helpers.shortTestLicense();
+process.env.STRONGLOOP_LICENSE = helpers.shortTestLicense();
 var agent = require('../');
 agent.config.logger = logger;
 agent.use(function noop() {});

@@ -38,6 +38,16 @@ Can be defined in:
 - `STRONGLOOP_KEY`: in the environment
 - `userKey`: in strongloop.json (typically created with `slc strongops`)
 
+### Metrics License
+
+Can be defined in:
+
+- `STRONGLOOP_LICENSE`: in the environment
+- `agent_license`: in strongloop.json
+
+Using custom metrics (the `.use()` and dynamic object tracking start-stop APIs)
+requires a license, please contact support@strongloop.com.
+
 ### Application Name
 
 Can be defined in:
