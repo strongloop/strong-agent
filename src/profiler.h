@@ -14,7 +14,7 @@ namespace strongloop {
 namespace agent {
 namespace profiler {
 
-namespace C = compat;
+namespace C = ::compat;
 
 using v8::Array;
 using v8::CpuProfile;
@@ -138,16 +138,13 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       // performance reasons; writing out the string like this is a little
       // faster than using Equals() or String::AsciiValue.
       static const uint8_t anonymous_function[] = "(anonymous function)";
-      uint8_t write_buffer[sizeof(anonymous_function) - 1] = { 0 };
+      uint8_t write_buffer[sizeof(anonymous_function) - 1] = {0};
       const bool check = function_name_val->Length() == sizeof(write_buffer);
       if (check) {
-        function_name_val->WriteOneByte(write_buffer,
-                                        0,
-                                        sizeof(write_buffer),
+        function_name_val->WriteOneByte(write_buffer, 0, sizeof(write_buffer),
                                         String::NO_NULL_TERMINATION);
       }
-      if (check == false || Compare(anonymous_function,
-                                    write_buffer,
+      if (check == false || Compare(anonymous_function, write_buffer,
                                     sizeof(write_buffer)) != 0) {
         o->Set(function_name_sym_, function_name_val);
       }
@@ -167,8 +164,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       // TODO(bnoordhuis) There is only a limited number of bailout reasons.
       // Collect them in a tree-like structure that caches the String handles.
       const char* const bailout_reason = node->GetBailoutReason();
-      if (bailout_reason != NULL &&
-          bailout_reason[0] != '\0' &&
+      if (bailout_reason != NULL && bailout_reason[0] != '\0' &&
           ::strcmp(bailout_reason, "no reason") != 0) {
         const uint8_t* const bytes =
             reinterpret_cast<const uint8_t*>(bailout_reason);
@@ -365,10 +361,8 @@ C::ReturnType StopCpuProfilingAndSerialize(const C::ArgumentType& args) {
     const_cast<CpuProfile*>(profile)->Delete();
     string = string_stream.str();
   }
-  Local<String> result = C::String::NewFromUtf8(isolate,
-                                                string.c_str(),
-                                                C::String::kNormalString,
-                                                string.size());
+  Local<String> result = C::String::NewFromUtf8(
+      isolate, string.c_str(), C::String::kNormalString, string.size());
   return handle_scope.Return(result);
 }
 #endif
@@ -411,10 +405,9 @@ void Initialize(Isolate* isolate, Local<Object> binding) {
       C::String::NewFromUtf8(isolate, "stopCpuProfiling"),
       C::FunctionTemplate::New(isolate, StopCpuProfiling)->GetFunction());
 #if SL_NODE_VERSION == 12
-  binding->Set(
-      C::String::NewFromUtf8(isolate, "stopCpuProfilingAndSerialize"),
-      C::FunctionTemplate::New(isolate,
-                               StopCpuProfilingAndSerialize)->GetFunction());
+  binding->Set(C::String::NewFromUtf8(isolate, "stopCpuProfilingAndSerialize"),
+               C::FunctionTemplate::New(isolate, StopCpuProfilingAndSerialize)
+                   ->GetFunction());
 #endif
 }
 

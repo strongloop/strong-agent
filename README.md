@@ -46,7 +46,7 @@ Can be defined in:
 - `agent_license`: in strongloop.json
 
 Using custom metrics (the `.use()` and dynamic object tracking start-stop APIs)
-requires a license, please contact support@strongloop.com.
+requires a license, please contact sales@strongloop.com.
 
 ### Application Name
 

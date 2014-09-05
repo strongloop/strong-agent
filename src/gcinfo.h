@@ -13,7 +13,7 @@ namespace strongloop {
 namespace agent {
 namespace gcinfo {
 
-namespace C = compat;
+namespace C = ::compat;
 
 using v8::Array;
 using v8::Function;
@@ -48,6 +48,7 @@ class Baton {
   const char* flags_string() const;
   HeapStatistics* heap_statistics() const;
   void Dispose();
+
  private:
   Baton(Isolate* isolate, GCType type, GCCallbackFlags flags);
   // Only allow deletion through Baton::Dispose().
@@ -64,7 +65,7 @@ class Baton {
 
 uv_idle_t idle_handle;
 
-QUEUE Baton::baton_queue = { &Baton::baton_queue, &Baton::baton_queue };
+QUEUE Baton::baton_queue = {&Baton::baton_queue, &Baton::baton_queue};
 
 Baton* Baton::Pop() {
   if (QUEUE_EMPTY(&baton_queue)) {
@@ -92,16 +93,11 @@ Baton::Baton(Isolate* isolate, GCType type, GCCallbackFlags flags)
   QUEUE_INIT(&baton_queue_);
 }
 
-Baton::~Baton() {
-}
+Baton::~Baton() {}
 
-GCType Baton::type() const {
-  return type_;
-}
+GCType Baton::type() const { return type_; }
 
-GCCallbackFlags Baton::flags() const {
-  return flags_;
-}
+GCCallbackFlags Baton::flags() const { return flags_; }
 
 HeapStatistics* Baton::heap_statistics() const {
   // HeapStatistics is a getters-only class but its getters aren't marked const.
@@ -110,7 +106,9 @@ HeapStatistics* Baton::heap_statistics() const {
 
 const char* Baton::type_string() const {
   switch (type()) {
-#define V(name) case name: return #name
+#define V(name) \
+  case name:    \
+    return #name
     V(kGCTypeAll);
     V(kGCTypeScavenge);
     V(kGCTypeMarkSweepCompact);
@@ -121,7 +119,9 @@ const char* Baton::type_string() const {
 
 const char* Baton::flags_string() const {
   switch (flags()) {
-#define V(name) case name: return #name
+#define V(name) \
+  case name:    \
+    return #name
     V(kNoGCCallbackFlags);
     V(kGCCallbackFlagCompacted);
 #if SL_NODE_VERSION == 12
@@ -133,11 +133,9 @@ const char* Baton::flags_string() const {
   return "UnknownFlags";
 }
 
-void Baton::Dispose() {
-  delete this;
-}
+void Baton::Dispose() { delete this; }
 
-void OnIdle(uv_idle_t*) {  // NOLINT(readability/function)
+void OnIdle(uv_idle_t*) {                    // NOLINT(readability/function)
   Isolate* isolate = Isolate::GetCurrent();  // FIXME(bnoordhuis)
   C::HandleScope handle_scope(isolate);
   uv_idle_stop(&idle_handle);
@@ -153,7 +151,7 @@ void OnIdle(uv_idle_t*) {  // NOLINT(readability/function)
   Local<Value> property_value =
       binding_object->Get(kGarbageCollectorStatisticsCallback);
   if (property_value->IsFunction() == false) return;
-  Local<Value> args[] = { samples };
+  Local<Value> args[] = {samples};
   property_value.As<Function>()->Call(binding_object, ArraySize(args), args);
 }
 
@@ -179,12 +177,12 @@ void Initialize(Isolate* isolate, Local<Object> binding) {
   uv_unref(reinterpret_cast<uv_handle_t*>(&idle_handle));
   binding->Set(
       C::String::NewFromUtf8(isolate, "startGarbageCollectorStatistics"),
-      C::FunctionTemplate::New(isolate,
-                               StartGarbageCollectorStatistics)->GetFunction());
+      C::FunctionTemplate::New(isolate, StartGarbageCollectorStatistics)
+          ->GetFunction());
   binding->Set(
       C::String::NewFromUtf8(isolate, "stopGarbageCollectorStatistics"),
-      C::FunctionTemplate::New(isolate,
-                               StopGarbageCollectorStatistics)->GetFunction());
+      C::FunctionTemplate::New(isolate, StopGarbageCollectorStatistics)
+          ->GetFunction());
 }
 
 }  // namespace gcinfo

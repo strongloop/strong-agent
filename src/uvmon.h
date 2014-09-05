@@ -12,7 +12,7 @@ namespace strongloop {
 namespace agent {
 namespace uvmon {
 
-namespace C = compat;
+namespace C = ::compat;
 
 using v8::Isolate;
 using v8::Local;

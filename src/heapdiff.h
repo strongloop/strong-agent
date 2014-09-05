@@ -20,7 +20,7 @@ namespace strongloop {
 namespace agent {
 namespace heapdiff {
 
-namespace C = compat;
+namespace C = ::compat;
 
 using v8::Array;
 using v8::FunctionTemplate;
@@ -50,6 +50,7 @@ class HeapGraphNodeWrap {
   const HeapGraphNode* node() const;
   SnapshotObjectId id() const;
   bool operator<(const HeapGraphNodeWrap& that) const;
+
  private:
   const HeapGraphNode* node_;
   SnapshotObjectId id_;
@@ -66,6 +67,7 @@ class Key {
   const uint16_t* data() const;
   unsigned size() const;
   uint32_t hash() const;
+
  private:
   // Mirrors StringStorage::kMaxNameSize in $v8/src/profile-generator.h
   static const unsigned kMaxNameSize = 1024;
@@ -84,6 +86,7 @@ class Score {
   int size() const;
   void Plus(const HeapGraphNodeWrap& wrapper);
   void Minus(const HeapGraphNodeWrap& wrapper);
+
  private:
   int count_;
   int size_;
@@ -96,8 +99,7 @@ typedef std::vector<HeapGraphNodeWrap> HeapGraphNodeVector;
 // TODO(bnoordhuis) This should be in a util.h header.
 uint32_t JenkinsHash(const uint8_t* data, unsigned size);
 
-void AddHeapGraphNodeToSet(const HeapGraphNode* node,
-                           HeapGraphNodeSet* set);
+void AddHeapGraphNodeToSet(const HeapGraphNode* node, HeapGraphNodeSet* set);
 
 // Returns an object that looks something like this:
 //
@@ -113,32 +115,22 @@ void AddHeapGraphNodeToSet(const HeapGraphNode* node,
 // When |total| and |size| are negative, more instances have been reaped by
 // the garbage collector than were created by the application.  |total| and
 // |size| are always paired: if one is negative, then so is the other.
-Local<Object> Summarize(Isolate* isolate,
-                        const HeapSnapshot* start_snapshot,
+Local<Object> Summarize(Isolate* isolate, const HeapSnapshot* start_snapshot,
                         const HeapSnapshot* end_snapshot);
 
 HeapGraphNodeWrap::HeapGraphNodeWrap(const HeapGraphNode* node)
-  : node_(node),
-    id_(node->GetId()) {
-}
+    : node_(node), id_(node->GetId()) {}
 
-const HeapGraphNode* HeapGraphNodeWrap::node() const {
-  return node_;
-}
+const HeapGraphNode* HeapGraphNodeWrap::node() const { return node_; }
 
-SnapshotObjectId HeapGraphNodeWrap::id() const {
-  return id_;
-}
+SnapshotObjectId HeapGraphNodeWrap::id() const { return id_; }
 
 bool HeapGraphNodeWrap::operator<(const HeapGraphNodeWrap& that) const {
   return id() < that.id();
 }
 
 Key::Key(Handle<String> handle)
-  : handle_(handle),
-    data_(NULL),
-    size_(0),
-    hash_(0) {
+    : handle_(handle), data_(NULL), size_(0), hash_(0) {
   uint16_t* data = buffer_;
   unsigned maxsize = ArraySize(buffer_);
   unsigned size = 0;
@@ -181,10 +173,10 @@ Key::~Key() {
 }
 
 Key::Key(const Key& that)
-  : handle_(that.handle_),
-    data_(that.data_),
-    size_(that.size_),
-    hash_(that.hash_) {
+    : handle_(that.handle_),
+      data_(that.data_),
+      size_(that.size_),
+      hash_(that.hash_) {
   if (that.data_ == that.buffer_) {
     data_ = Copy(buffer_, that.buffer_, that.size_);
   }
@@ -209,32 +201,19 @@ bool Key::operator<(const Key& that) const {
   return Compare(data(), that.data(), size()) < 0;
 }
 
-Handle<String> Key::handle() const {
-  return handle_;
-}
+Handle<String> Key::handle() const { return handle_; }
 
-const uint16_t* Key::data() const {
-  return data_;
-}
+const uint16_t* Key::data() const { return data_; }
 
-unsigned Key::size() const {
-  return size_;
-}
+unsigned Key::size() const { return size_; }
 
-uint32_t Key::hash() const {
-  return hash_;
-}
+uint32_t Key::hash() const { return hash_; }
 
-Score::Score() : count_(0), size_(0) {
-}
+Score::Score() : count_(0), size_(0) {}
 
-int Score::count() const {
-  return count_;
-}
+int Score::count() const { return count_; }
 
-int Score::size() const {
-  return size_;
-}
+int Score::size() const { return size_; }
 
 void Score::Plus(const HeapGraphNodeWrap& wrap) {
   const HeapGraphNode* node = wrap.node();
@@ -259,8 +238,7 @@ uint32_t JenkinsHash(const uint8_t* data, unsigned size) {
   return hash;
 }
 
-void AddHeapGraphNodeToSet(const HeapGraphNode* node,
-                           HeapGraphNodeSet* set) {
+void AddHeapGraphNodeToSet(const HeapGraphNode* node, HeapGraphNodeSet* set) {
   // Heap numbers are numbers that don't fit in a SMI (a tagged pointer),
   // either because they're fractional or too large.  I'm not 100% sure
   // it's okay to filter them out because excessive heap number allocation
@@ -293,8 +271,7 @@ void AddHeapGraphNodeToSet(const HeapGraphNode* node,
     // It should be safe to skip them with V8 3.22 and newer but I'm reluctant
     // to introduce multiple code paths for something that has relatively
     // little overhead.  See also test/test-addon-heapdiff-eval.js.
-    if (type != HeapGraphEdge::kInternal &&
-        type != HeapGraphEdge::kShortcut &&
+    if (type != HeapGraphEdge::kInternal && type != HeapGraphEdge::kShortcut &&
         type != HeapGraphEdge::kWeak) {
       AddHeapGraphNodeToSet(edge->GetToNode(), set);
     }
@@ -303,17 +280,10 @@ void AddHeapGraphNodeToSet(const HeapGraphNode* node,
 
 template <void (Score::*Method)(const HeapGraphNodeWrap&)>
 struct SummarizeHelper : public std::iterator<std::output_iterator_tag, Score> {
-  explicit SummarizeHelper(HeapGraphNodeMap* map) : map_(map) {
-  }
-  SummarizeHelper& operator++() {
-    return *this;
-  }
-  SummarizeHelper& operator++(int) {
-    return *this;
-  }
-  SummarizeHelper& operator*() {
-    return *this;
-  }
+  explicit SummarizeHelper(HeapGraphNodeMap* map) : map_(map) {}
+  SummarizeHelper& operator++() { return *this; }
+  SummarizeHelper& operator++(int) { return *this; }
+  SummarizeHelper& operator*() { return *this; }
   void operator=(const HeapGraphNodeWrap& wrap) {
     const HeapGraphNode* node = wrap.node();
     if (node->GetType() != HeapGraphNode::kObject) {
@@ -329,24 +299,19 @@ struct SummarizeHelper : public std::iterator<std::output_iterator_tag, Score> {
   HeapGraphNodeMap* map_;
 };
 
-Local<Object> Summarize(Isolate* isolate,
-                                const HeapSnapshot* start_snapshot,
-                                const HeapSnapshot* end_snapshot) {
+Local<Object> Summarize(Isolate* isolate, const HeapSnapshot* start_snapshot,
+                        const HeapSnapshot* end_snapshot) {
   HeapGraphNodeSet start_objects;
   HeapGraphNodeSet end_objects;
   AddHeapGraphNodeToSet(start_snapshot->GetRoot(), &start_objects);
   AddHeapGraphNodeToSet(end_snapshot->GetRoot(), &end_objects);
 
   HeapGraphNodeMap summary;
-  std::set_difference(end_objects.begin(),
-                      end_objects.end(),
-                      start_objects.begin(),
-                      start_objects.end(),
+  std::set_difference(end_objects.begin(), end_objects.end(),
+                      start_objects.begin(), start_objects.end(),
                       SummarizeHelper<&Score::Plus>(&summary));
-  std::set_difference(start_objects.begin(),
-                      start_objects.end(),
-                      end_objects.begin(),
-                      end_objects.end(),
+  std::set_difference(start_objects.begin(), start_objects.end(),
+                      end_objects.begin(), end_objects.end(),
                       SummarizeHelper<&Score::Minus>(&summary));
 
   Local<String> type_string = C::String::NewFromUtf8(isolate, "type");
@@ -356,7 +321,8 @@ Local<Object> Summarize(Isolate* isolate,
   uint32_t index = 0;
   Local<Array> result = C::Array::New(isolate);
   for (HeapGraphNodeMap::const_iterator it = summary.begin(),
-       end = summary.end(); it != end; ++it) {
+                                        end = summary.end();
+       it != end; ++it) {
     const Key& key = it->first;
     const Score& score = it->second;
     Local<Object> object = C::Object::New(isolate);
@@ -370,30 +336,11 @@ Local<Object> Summarize(Isolate* isolate,
   return result;
 }
 
-#if SL_NODE_VERSION == 10
-const HeapSnapshot* TakeHeapSnapshot(Isolate* isolate, Local<String> title) {
-  Use(isolate);
-  return HeapProfiler::TakeSnapshot(title);
-}
-void DeleteAllSnapshots(Isolate* isolate) {
-  Use(isolate);
-  HeapProfiler::DeleteAllSnapshots();
-}
-#elif SL_NODE_VERSION == 12
-const HeapSnapshot* TakeHeapSnapshot(Isolate* isolate, Local<String> title) {
-  return isolate->GetHeapProfiler()->TakeHeapSnapshot(title);
-}
-void DeleteAllSnapshots(Isolate* isolate) {
-  return isolate->GetHeapProfiler()->DeleteAllHeapSnapshots();
-}
-#endif
-
 C::ReturnType StartHeapDiff(const C::ArgumentType& args) {
   Isolate* isolate = args.GetIsolate();
   C::ReturnableHandleScope handle_scope(args);
   if (start_snapshot == NULL) {
-    Local<String> title = String::Empty(isolate);
-    start_snapshot = TakeHeapSnapshot(isolate, title);
+    start_snapshot = C::HeapProfiler::TakeHeapSnapshot(isolate);
   }
   return handle_scope.Return();
 }
@@ -408,13 +355,13 @@ C::ReturnType StopHeapDiff(const C::ArgumentType& args) {
   }
 
   if (args[0]->IsTrue()) {
-    Local<String> title = String::Empty(isolate);
-    const HeapSnapshot* end_snapshot = TakeHeapSnapshot(isolate, title);
+    const HeapSnapshot* end_snapshot =
+        C::HeapProfiler::TakeHeapSnapshot(isolate);
     result = Summarize(isolate, start_snapshot, end_snapshot);
   }
 
   start_snapshot = NULL;
-  DeleteAllSnapshots(isolate);
+  C::HeapProfiler::DeleteAllHeapSnapshots(isolate);
 
   return handle_scope.Return(result);
 }

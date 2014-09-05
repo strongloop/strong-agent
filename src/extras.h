@@ -12,7 +12,7 @@ namespace strongloop {
 namespace agent {
 namespace extras {
 
-namespace C = compat;
+namespace C = ::compat;
 
 using v8::Array;
 using v8::Function;

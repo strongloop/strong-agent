@@ -13,7 +13,7 @@
 namespace strongloop {
 namespace agent {
 
-namespace C = compat;
+namespace C = ::compat;
 
 using v8::Isolate;
 using v8::Local;
@@ -33,8 +33,9 @@ void Initialize(Local<Object> binding) {
   heapdiff::Initialize(isolate, binding);
   profiler::Initialize(isolate, binding);
   uvmon::Initialize(isolate, binding);
-#define V(name) binding->Set(C::String::NewFromUtf8(isolate, #name),          \
-                             C::Integer::New(isolate, name));
+#define V(name)                                        \
+  binding->Set(C::String::NewFromUtf8(isolate, #name), \
+               C::Integer::New(isolate, name));
   SL_CALLBACK_PROPERTIES_MAP(V)
 #undef V
 }
@@ -44,7 +45,7 @@ void Initialize(Local<Object> binding) {
 // Doesn't apply to v0.11, it uses a constructor to register the module.
 #if defined(__GNUC__) && SL_NODE_VERSION == 10
 extern "C" __attribute__((visibility("default")))
-node::node_module_struct strong_agent_module;
+    node::node_module_struct strong_agent_module;
 #endif
 
 NODE_MODULE(strong_agent, Initialize)

@@ -19,7 +19,10 @@
 # THE SOFTWARE.
 
 PREFIX ?= $(dir $(lastword $(MAKEFILE_LIST)))
+
 PYTHON ?= python
+
+CLANG_FORMAT ?= clang-format
 
 # Exclude queue.h, it's borrowed from libuv and doesn't adhere to the coding
 # style.
@@ -48,10 +51,13 @@ SOURCES := $(SOURCES:%=$(PREFIX)%)
 # on system headers included in source files.
 FILTER = -build/include,-build/include_order
 
-.PHONY: check-imports lint
+.PHONY: check-imports lint clang-format
 
 lint: check-imports
 	$(PYTHON) $(PREFIX)cpplint.py --filter=$(FILTER) $(SOURCES)
 
 check-imports:
 	$(SHELL) $(PREFIX)check-imports.sh $(SOURCES)
+
+clang-format:
+	$(CLANG_FORMAT) -i $(SOURCES)

@@ -29,8 +29,7 @@ int Compare(const T* a, const T* b, size_t size) {
 }
 
 template <typename T>
-void Use(const T&) {
-}
+void Use(const T&) {}
 
 }  // namespace agent
 }  // namespace strongloop
