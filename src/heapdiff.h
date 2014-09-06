@@ -266,15 +266,20 @@ void AddHeapGraphNodeToSet(const HeapGraphNode* node, HeapGraphNodeSet* set) {
     //  - Weak references (almost?) always point to internal oddbals that
     //    cannot be inspected.
     //
-    // Hidden links need to be followed!  While they are usually backlinks for
-    // retained size calculations, in V8 3.14 they also interact with eval().
-    // It should be safe to skip them with V8 3.22 and newer but I'm reluctant
-    // to introduce multiple code paths for something that has relatively
-    // little overhead.  See also test/test-addon-heapdiff-eval.js.
-    if (type != HeapGraphEdge::kInternal && type != HeapGraphEdge::kShortcut &&
-        type != HeapGraphEdge::kWeak) {
-      AddHeapGraphNodeToSet(edge->GetToNode(), set);
-    }
+    // Hidden links need to be followed with V8 3.14; they are usually
+    // backlinks for retained size calculations but they also interact
+    // with eval().  It's safe to skip them with V8 3.26 and newer.
+    //
+    // Vice versa, internal links should be safe to skip with 3.14 but
+    // not with 3.26 because they interact with object allocations.
+    if (type == HeapGraphEdge::kShortcut) continue;
+    if (type == HeapGraphEdge::kWeak) continue;
+#if SL_NODE_VERSION == 10  // V8 3.14
+    if (type == HeapGraphEdge::kInternal) continue;
+#elif SL_NODE_VERSION == 12  // V8 3.26
+    if (type == HeapGraphEdge::kHidden) continue;
+#endif
+    AddHeapGraphNodeToSet(edge->GetToNode(), set);
   }
 }
 

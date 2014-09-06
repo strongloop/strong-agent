@@ -21,15 +21,8 @@ assert(metrics.length > 0);
 // These are almost guaranteed to exist in the output.  It's tricky of course
 // because garbage collection is fairly non-deterministic and the GC algorithm
 // may change over time.
-// XXX(rmg): node v0.11.x seems to favour object.Object over object.Array :-/
-if (/v0\.10/.test(process.version)) {
-  assert(0 < find('object.Array.count'));
-  assert(0 < find('object.Array.size'));
-} else {
-  assert(0 < find('object.Object.count'));
-  assert(0 < find('object.Object.size'));
-
-}
+assert(0 < find('object.Array.count'));
+assert(0 < find('object.Array.size'));
 assert(0 < find('object.Timeout.count'));
 assert(0 < find('object.Timeout.size'));
 
