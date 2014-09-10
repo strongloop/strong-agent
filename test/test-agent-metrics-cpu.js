@@ -33,10 +33,18 @@ profile.samples.forEach(function(sample) {
 });
 
 function verifyNode(node) {
-  assert.deepEqual(Object.keys(node),
-                   ['functionName', 'scriptId', 'url', 'lineNumber',
-                    'columnNumber', 'hitCount', 'callUID', 'children',
-                    'deoptReason', 'id']);
+  assert.deepEqual(Object.keys(node), [
+    'functionName',
+    'scriptId',
+    'url',
+    'lineNumber',
+    'columnNumber',
+    'hitCount',
+    'callUID',
+    'children',
+    'deoptReason',
+    'id'
+  ]);
   assert.equal(typeof(node.functionName), 'string');
   assert.equal(typeof(node.scriptId), 'string');  // Chrome quirk.
   assert.equal(typeof(node.url), 'string');

@@ -2,7 +2,7 @@ process.env.SL_ENV = 'dev';
 require('../lib/config').loopInterval = 25;
 
 var agent = require('../');
-agent.profile('deadbeef', 'deadbeef', { quiet: true });
+agent.profile('deadbeef', 'deadbeef', {quiet: true});
 
 var assert = require('assert');
 
@@ -23,6 +23,4 @@ agent.internal.on('loop', function(o) {
 
 setTimeout(function() {}, 200);
 
-process.on('exit', function() {
-  assert(nevents > 0);
-});
+process.on('exit', function() { assert(nevents > 0); });

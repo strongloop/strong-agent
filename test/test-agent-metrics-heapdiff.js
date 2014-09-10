@@ -33,7 +33,6 @@ assert.equal(metrics.filter(/ /.test.bind(/^object\./)).length, 0);
 
 function find(key) {
   var index = metrics.indexOf(key);
-  if (index === -1)
-    throw Error(fmt('Key %j not found in %j', key, metrics));
+  if (index === -1) throw Error(fmt('Key %j not found in %j', key, metrics));
   return metrics[index + 1];
 }

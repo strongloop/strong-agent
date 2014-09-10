@@ -12,8 +12,7 @@ assert.equal(f.name, s);
 addon.startHeapDiff();
 global.retain = new f;
 
-var changes = addon.stopHeapDiff(true).filter(function(e) {
-  return e.type.slice(0, 7) === 'AAAAAAA';
-});
+var changes = addon.stopHeapDiff(true).filter(
+    function(e) { return e.type.slice(0, 7) === 'AAAAAAA'; });
 assert.equal(changes.length, 1);
-assert.equal(changes[0].type, Array(1024+1).join('A'));
+assert.equal(changes[0].type, Array(1024 + 1).join('A'));

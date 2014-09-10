@@ -12,7 +12,7 @@ var proxy = http.createServer(function(req, res) {
   assert.equal(req.headers['proxy-authorization'],
                'Basic ' + Buffer('user:pass').toString('base64'));
   res.writeHead(statusCodes.shift(),
-                { 'Proxy-Authenticate': 'Basic realm="proxy"' });
+                {'Proxy-Authenticate': 'Basic realm="proxy"'});
   res.end('VERBOTEN');
 });
 

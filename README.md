@@ -218,6 +218,10 @@ When enabled, the following metrics are reported at 15 second intervals:
   If the count is less than zero, it means more objects have been reclaimed
   than created.
 
+  Due to a known bug in the version of V8 that is bundled with node.js v0.10,
+  it is possible that the reported number is slightly lower than the actual
+  instance count.  Node.js v0.11 and newer are not affected.
+
 * `object.<type>.size`
 
   The total size of the objects created and reclaimed of type `<type>` in

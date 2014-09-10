@@ -95,29 +95,34 @@ enum CallbackProperties {
 #define V(name) name,
   SL_CALLBACK_PROPERTIES_MAP(V)
 #undef V
-  kMaxCallbackProperties
+      kMaxCallbackProperties
 };
 
 inline v8::Local<v8::Object> GetBindingObject(v8::Isolate* isolate);
 
 namespace extras {
 void Initialize(v8::Isolate*, v8::Local<v8::Object>);
-}
+}  // namespace extras
+
 namespace gcinfo {
 void Initialize(v8::Isolate*, v8::Local<v8::Object>);
-}
+}  // namespace gcinfo
+
 namespace heapdiff {
 void Initialize(v8::Isolate*, v8::Local<v8::Object>);
-}
+}  // namespace heapdiff
+
 namespace profiler {
 void Initialize(v8::Isolate*, v8::Local<v8::Object>);
-}
+}  // namespace profiler
+
 namespace uvmon {
 void Initialize(v8::Isolate*, v8::Local<v8::Object>);
-}
+}  // namespace uvmon
+
 namespace platform {
 void CpuTime(double* total_system, double* total_user);
-}
+}  // namespace platform
 
 }  // namespace agent
 }  // namespace strongloop

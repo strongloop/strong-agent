@@ -1,5 +1,5 @@
 ---
-Language:        Cpp
+Language:        JavaScript
 # BasedOnStyle:  Google
 AccessModifierOffset: -1
 ConstructorInitializerIndentWidth: 4
@@ -49,7 +49,7 @@ SpacesInAngles:  false
 SpaceInEmptyParentheses: false
 SpacesInCStyleCastParentheses: false
 SpaceAfterCStyleCast: false
-SpacesInContainerLiterals: true
+SpacesInContainerLiterals: false
 SpaceBeforeAssignmentOperators: true
 ContinuationIndentWidth: 4
 CommentPragmas:  '^ IWYU pragma:'

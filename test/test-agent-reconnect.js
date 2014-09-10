@@ -14,12 +14,13 @@ if (process.argv[2] === 'collector') {
 function collector() {
   var http = require('http');
   var json = require('../lib/json');
-  http.createServer(function(req, res) {
-    assert.equal(req.url, '/agent/v1');
-    res.write('{"sessionId":"DEADBEEF"}\n', function() {
-      process.exit(42);  // Simulate abrupt collector shutdown.
-    });
-  }).listen(process.argv[3] | 0, function() {
+  http.createServer(
+           function(req, res) {
+             assert.equal(req.url, '/agent/v1');
+             res.write('{"sessionId":"DEADBEEF"}\n', function() {
+               process.exit(42);  // Simulate abrupt collector shutdown.
+             });
+           }).listen(process.argv[3] | 0, function() {
     process.stdout.write(url.format({
       protocol: 'http',
       hostname: this.address().address,

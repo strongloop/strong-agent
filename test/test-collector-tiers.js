@@ -25,54 +25,56 @@ config.tiersInterval = 100;
 var expressServer;
 
 // Black hole
-var collector = http.createServer(function(req, res) {
-  assert.equal(req.url, '/agent/v1');
-  req.pipe(json.JsonDecoder()).once('data', onhandshake);
-  return;
+var collector =
+    http.createServer(
+             function(req, res) {
+               assert.equal(req.url, '/agent/v1');
+               req.pipe(json.JsonDecoder()).once('data', onhandshake);
+               return;
 
-  function onhandshake(data) {
-    assert.equal(data.pid, process.pid);
-    assert.equal(data.key, 'some key');
-    var enc = json.JsonEncoder();
-    enc.pipe(res);
-    enc.write({ sessionId: 'deadbeef' });
-    this.on('data', ondata);
-  }
+               function onhandshake(data) {
+                 assert.equal(data.pid, process.pid);
+                 assert.equal(data.key, 'some key');
+                 var enc = json.JsonEncoder();
+                 enc.pipe(res);
+                 enc.write({sessionId: 'deadbeef'});
+                 this.on('data', ondata);
+               }
 
-  function ondata(data) {
-    if (data.cmd !== 'update' ||
-        !data.args[0].tiers ||
-        !data.args[0].tiers.http) {
-      return;
-    }
-    res.end();
-    agent.stop();
-    expressServer.close(function() {
-      collector.close(function() { verifyDataIntegrity(data.args[0]) });
+               function ondata(data) {
+                 if (data.cmd !== 'update' || !data.args[0].tiers ||
+                     !data.args[0].tiers.http) {
+                   return;
+                 }
+                 res.end();
+                 agent.stop();
+                 expressServer.close(function() {
+                   collector.close(
+                       function() { verifyDataIntegrity(data.args[0]) });
+                 });
+               }
+             }).listen(0, '127.0.0.1', function() {
+      // Start profiling
+      agent.profile('some key', 'some app', {
+        endpoint: {
+          host: this.address().address,
+          port: this.address().port,
+          secure: false,
+        },
+        quiet: true,
+      });
+
+      // Start an express server and make a request to it
+      var app = require('express')();
+      app.get('/', function(req, res) { res.end('bar'); });
+
+      // Wrap in http server so it can be closed properly
+      expressServer = http.createServer(app);
+      expressServer.listen(0, '127.0.0.1', function() {
+        http.get({
+          host: this.address().address,
+          port: this.address().port,
+          path: '/people',
+        });
+      });
     });
-  }
-}).listen(0, '127.0.0.1', function() {
-  // Start profiling
-  agent.profile('some key', 'some app', {
-    endpoint: {
-      host: this.address().address,
-      port: this.address().port,
-      secure: false,
-    },
-    quiet: true,
-  });
-
-  // Start an express server and make a request to it
-  var app = require('express')();
-  app.get('/', function(req, res) { res.end('bar'); });
-
-  // Wrap in http server so it can be closed properly
-  expressServer = http.createServer(app);
-  expressServer.listen(0, '127.0.0.1', function() {
-    http.get({
-      host: this.address().address,
-      port: this.address().port,
-      path: '/people',
-    });
-  });
-});

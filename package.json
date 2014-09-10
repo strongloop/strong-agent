@@ -35,6 +35,7 @@
     "sinon": "~1.7.3"
   },
   "scripts": {
+    "clang-format": "make clang-format",
     "install": "node-gyp rebuild || exit 0",
     "test": "SL_ENV=dev tap --tap --gc --stderr --timeout 10 ${TESTS:-test/test-*.js}",
     "lint": "make -C src lint"

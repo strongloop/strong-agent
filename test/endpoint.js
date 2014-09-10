@@ -27,7 +27,7 @@ function endpoint(callback) {
       var connection = new EventEmitter;
       var enc = json.JsonEncoder();
       enc.pipe(res);
-      enc.write({ sessionId: 'deadbeef' });
+      enc.write({sessionId: 'deadbeef'});
 
       this.on('data', function(data) {
         debug('ondata:', data);
@@ -36,7 +36,7 @@ function endpoint(callback) {
 
       connection.send = function(cmd) {
         var args = [].slice.call(arguments, 1);
-        enc.write({ cmd: cmd, args: args })
+        enc.write({cmd: cmd, args: args})
       };
 
       collector.emit('handshake', connection);

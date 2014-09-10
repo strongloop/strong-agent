@@ -2,7 +2,7 @@
 
 process.env.SL_ENV = 'dev';
 require('../lib/config').collectInterval = 50;
-require('../').profile('deadbeef', 'deadbeef', { quiet: true });
+require('../').profile('deadbeef', 'deadbeef', {quiet: true});
 
 var assert = require('assert');
 var http = require('http');
@@ -23,16 +23,15 @@ http.createServer(assert.fail).listen(0, '127.0.0.1', function() {
     this.close();
   });
   net.connect({
-    host: this.address().address,
-    port: this.address().port,
-  }, function() {
+                host: this.address().address,
+                port: this.address().port,
+              },
+              function() {
     this.write('GET / HTTP/1.1\r\n' +
                'Upgrade: Yes, please.\r\n' +
                '\r\n');
   });
 });
 
-process.on('exit', function() {
-  assert.equal(seenUpgrade, true);
-});
+process.on('exit', function() { assert.equal(seenUpgrade, true); });
 var seenUpgrade = false;

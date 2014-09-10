@@ -12,18 +12,17 @@ var logger = {
 };
 
 var agent = require('../');
-agent.profile('some key', 'some name', { logger: logger });
+agent.profile('some key', 'some name', {logger: logger});
 
 setTimeout(fail, 2000);
 
 function expectVersion(logmsg) {
   logmsg = util.format.apply(null, arguments);
   console.log(logmsg);
-  if (vMatch.test(logmsg))
-    success();
+  if (vMatch.test(logmsg)) success();
 }
 
-function noop() { }
+function noop() {}
 
 function success() {
   console.log('# version reported');

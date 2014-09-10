@@ -58,9 +58,8 @@ struct Boolean : public AllStatic {
 };
 
 struct FunctionTemplate : public AllStatic {
-  inline static v8::Local<v8::FunctionTemplate> New(v8::Isolate* isolate,
-                                                    FunctionCallback callback =
-                                                        0);
+  inline static v8::Local<v8::FunctionTemplate> New(
+      v8::Isolate* isolate, FunctionCallback callback = 0);
 };
 
 struct HeapProfiler : public AllStatic {
@@ -90,11 +89,9 @@ struct String : public AllStatic {
     kInternalizedString,
     kUndetectableString
   };
-  inline static v8::Local<v8::String> NewFromUtf8(v8::Isolate* isolate,
-                                                  const char* data,
-                                                  NewStringType type =
-                                                      kNormalString,
-                                                  int length = -1);
+  inline static v8::Local<v8::String> NewFromUtf8(
+      v8::Isolate* isolate, const char* data,
+      NewStringType type = kNormalString, int length = -1);
 };
 
 class HandleScope {

@@ -46,7 +46,7 @@ endpoint(function() {
     if ('loop.count' in metrics && 'object.Object.count' in metrics) {
       if (!ok) {
         debug('PASS: loop count and object count seen, shutting down.')
-        collector.close();
+            collector.close();
         agent.stop();
         ok = true;
       }

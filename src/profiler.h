@@ -144,8 +144,9 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
         function_name_val->WriteOneByte(write_buffer, 0, sizeof(write_buffer),
                                         String::NO_NULL_TERMINATION);
       }
-      if (check == false || Compare(anonymous_function, write_buffer,
-                                    sizeof(write_buffer)) != 0) {
+      if (check == false ||
+          Compare(anonymous_function, write_buffer, sizeof(write_buffer)) !=
+              0) {
         o->Set(function_name_sym_, function_name_val);
       }
 

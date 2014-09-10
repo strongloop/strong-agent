@@ -44,8 +44,8 @@ void Initialize(Local<Object> binding) {
 // definition externally visible when compiling with -fvisibility=hidden.
 // Doesn't apply to v0.11, it uses a constructor to register the module.
 #if defined(__GNUC__) && SL_NODE_VERSION == 10
-extern "C" __attribute__((visibility("default")))
-    node::node_module_struct strong_agent_module;
+extern "C" __attribute__((visibility("default"))) node::node_module_struct
+    strong_agent_module;
 #endif
 
 NODE_MODULE(strong_agent, Initialize)

@@ -1,7 +1,7 @@
 'use strict';
 
 process.env.SL_ENV = 'test';
-require('../').profile('deadbeef', 'deadbeef', { quiet: true });
+require('../').profile('deadbeef', 'deadbeef', {quiet: true});
 
 var assert = require('assert');
 var http = require('http');
@@ -11,9 +11,7 @@ var agent = require('../');
 assert.equal(typeof(gc), 'function', 'Run this test with --expose_gc');
 
 var callbacks = 0;
-process.on('exit', function() {
-  assert(callbacks >= 5);
-});
+process.on('exit', function() { assert(callbacks >= 5); });
 
 agent.internal.on('metric', function(metric) {
   callbacks += 1;

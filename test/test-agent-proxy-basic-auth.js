@@ -16,10 +16,10 @@ var server = http.createServer(function(req, res) {
   encoder.pipe(res);
   req.pipe(json.JsonDecoder()).once('data', function(data) {
     assert.equal(data.pid, process.pid);
-    encoder.write({ sessionId: 'deadbeef' });  // Handshake.
+    encoder.write({sessionId: 'deadbeef'});  // Handshake.
     this.on('data', function(data) {
       if (data.cmd === 'ping') {
-        encoder.end({ cmd: 'pong', args: data.args });
+        encoder.end({cmd: 'pong', args: data.args});
       }
     });
   });
@@ -38,15 +38,12 @@ var proxy = http.createServer(function(req_, res_) {
     method: req_.method,
     headers: req_.headers,
   });
-  req.once('response', function(res) {
-    res.pipe(res_);
-  });
+  req.once('response', function(res) { res.pipe(res_); });
   req_.pipe(req);
 });
 
-server.listen(0, '127.0.0.1', function() {
-  proxy.listen(0, '127.0.0.1', start);
-});
+server.listen(0, '127.0.0.1',
+              function() { proxy.listen(0, '127.0.0.1', start); });
 
 function start() {
   agent.profile('some app', 'some key', {
@@ -68,7 +65,5 @@ function start() {
   agent.internal.send('ping', 42);
 
   var pongs = 0;
-  process.on('exit', function() {
-    assert.equal(pongs, 1);
-  });
+  process.on('exit', function() { assert.equal(pongs, 1); });
 }

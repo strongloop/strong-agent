@@ -13,7 +13,7 @@ var logger = {
 };
 
 var agent = require('../');
-agent.profile('some key', null, { logger: logger });
+agent.profile('some key', null, {logger: logger});
 agent.use(metrics.push.bind(metrics));
 
 var assert = require('assert');
@@ -28,7 +28,7 @@ for (var i = 0; i < 7; i += 1) counts.sample('strongmq_in');
 for (var i = 0; i < 13; i += 1) counts.sample('strongmq_out');
 
 function onrequest(req, res) {
-  res.writeHead(200, { 'Content-Length': '32' });
+  res.writeHead(200, {'Content-Length': '32'});
   res.end(Buffer(32));
 }
 
@@ -43,7 +43,7 @@ function onlisten() {
 }
 
 function pummel(host, port, next) {
-  http.get({ host: host, port: port }, function(res) {
+  http.get({host: host, port: port}, function(res) {
     res.on('end', next);
     res.on('end', gc);
     res.resume();
@@ -53,9 +53,7 @@ function pummel(host, port, next) {
 process.on('exit', function() {
   assert.equal(metrics.length % 2, 0);
   var keys = metrics.filter(function(_, i) { return i % 2 === 0 });
-  function has(key) {
-    return keys.indexOf(key) !== -1;
-  }
+  function has(key) { return keys.indexOf(key) !== -1; }
   function count(key) {
     return keys.filter(function(k) { return k == key }).length;
   }

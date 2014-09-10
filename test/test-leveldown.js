@@ -3,19 +3,19 @@
 var assert = require('assert');
 var counts = require('../lib/counts');
 var config = require('../lib/config');
-var graphHelper = require('../lib/graphHelper');
+var graphHelper = require('../lib/graph-helper');
 var agent = require('../');
 var proxy = require('../lib/proxy');
 var sinon = require('sinon');
 var tiers = require('../lib/tiers');
-var topFunctions = require('../lib/topFunctions');
+var topFunctions = require('../lib/top-functions');
 
 // Ouch.
 proxy.init(agent);
 counts.init(agent, config.countsInterval);
 tiers.init(agent, config.tiersInterval);
 
-var leveldownWrapper = require('../lib/wrapping_probes/leveldown');
+var leveldownWrapper = require('../lib/wrapping-probes/leveldown');
 
 var mockIterator = {
   next: function(cb) { setImmediate(cb); },
@@ -30,12 +30,10 @@ var mockDB = {
   iterator: function() { return mockIterator; }
 };
 
-function mockLeveldown(location) {
-  return mockDB;
-}
+function mockLeveldown(location) { return mockDB; }
 
-mockLeveldown.destroy = function() { };
-mockLeveldown.repair = function() { };
+mockLeveldown.destroy = function() {};
+mockLeveldown.repair = function() {};
 
 var wrapped = leveldownWrapper(mockLeveldown);
 assert(wrapped.arity == mockLeveldown.arity);

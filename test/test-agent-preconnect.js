@@ -14,21 +14,22 @@ var json = require('../lib/json');
 
 var events = [];
 
-http.createServer(function(req, res) {
-  req.pipe(json.JsonDecoder()).once('data', function(data) {
-    console.log(data);
-    assert.equal(data.key, 'some key');
-    assert.equal(data.pid, process.pid);
-    this.on('data', events.push.bind(events));
-    // Delay sending back the handshake ack.
-    setTimeout(function() {
-      var encoder = json.JsonEncoder();
-      encoder.write({ sessionId: 'deadbeef' });
-      encoder.pipe(res);
-    }, 250);
-  });
-  this.close();
-}).listen(function() {
+http.createServer(
+         function(req, res) {
+           req.pipe(json.JsonDecoder()).once('data', function(data) {
+             console.log(data);
+             assert.equal(data.key, 'some key');
+             assert.equal(data.pid, process.pid);
+             this.on('data', events.push.bind(events));
+             // Delay sending back the handshake ack.
+             setTimeout(function() {
+               var encoder = json.JsonEncoder();
+               encoder.write({sessionId: 'deadbeef'});
+               encoder.pipe(res);
+             }, 250);
+           });
+           this.close();
+         }).listen(function() {
   agent.profile('some key', 'some app', {
     endpoint: {
       host: this.address().address,

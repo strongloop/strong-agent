@@ -51,13 +51,11 @@ var tests = [
       setTimeout(this.resume.bind(this));
     });
     decoder.on('end', function() {
-      assert.deepEqual(events, [{ aaaa: 1 }, { b: 2 }, { c: 3 }]);
+      assert.deepEqual(events, [{aaaa: 1}, {b: 2}, {c: 3}]);
       next();
     });
     var json = '{"aaaa":1}\n{"b":2}\n{"c":3}\n';
-    json.split('').forEach(function(ch) {
-      decoder.write(ch);
-    });
+    json.split('').forEach(function(ch) { decoder.write(ch); });
     decoder.end();
   },
 
@@ -70,7 +68,7 @@ var tests = [
       setTimeout(this.resume.bind(this));
     });
     decoder.on('end', function() {
-      assert.deepEqual(events, [{ aaaa: 1 }, { b: 2 }, { c: 3 }]);
+      assert.deepEqual(events, [{aaaa: 1}, {b: 2}, {c: 3}]);
       next();
     });
     decoder.write('{"aaaa":1}');
@@ -88,7 +86,7 @@ var tests = [
       setTimeout(this.resume.bind(this));
     });
     decoder.on('end', function() {
-      assert.deepEqual(events, [{ a: 1 }, { b: 2 }, { c: 3 }]);
+      assert.deepEqual(events, [{a: 1}, {b: 2}, {c: 3}]);
       next();
     });
     decoder.write('{"a":1}\n');
@@ -97,7 +95,7 @@ var tests = [
   },
 
   function(next) {
-    var bucket = new Bucket({ objectMode: true });
+    var bucket = new Bucket({objectMode: true});
     var decoder = new JsonDecoder;
     decoder.pipe(bucket);
     decoder.write('{"a":1}\n');
@@ -105,7 +103,7 @@ var tests = [
     decoder.end('{"c":3}\n');
     setImmediate(function() {
       assert.deepEqual(bucket.encodings, ['utf8', 'utf8', 'utf8']);
-      assert.deepEqual(bucket.chunks, [{ a: 1 }, { b: 2 }, { c: 3 }]);
+      assert.deepEqual(bucket.chunks, [{a: 1}, {b: 2}, {c: 3}]);
       next();
     });
   },
@@ -122,18 +120,18 @@ var tests = [
       assert.deepEqual(events, ['{"a":1}\n', '{"b":2}\n', '{"c":3}\n']);
       next();
     });
-    encoder.write({ a: 1 });
-    encoder.write({ b: 2 });
-    encoder.end({ c: 3 });
+    encoder.write({a: 1});
+    encoder.write({b: 2});
+    encoder.end({c: 3});
   },
 
   function(next) {
-    var bucket = new Bucket({ decodeStrings: false });
+    var bucket = new Bucket({decodeStrings: false});
     var encoder = new JsonEncoder;
     encoder.pipe(bucket);
-    encoder.write({ a: 1 });
-    encoder.write({ b: 2 });
-    encoder.write({ c: 3 });
+    encoder.write({a: 1});
+    encoder.write({b: 2});
+    encoder.write({c: 3});
     setImmediate(function() {
       assert.deepEqual(bucket.encodings, ['utf8', 'utf8', 'utf8']);
       assert.deepEqual(bucket.chunks, ['{"a":1}\n', '{"b":2}\n', '{"c":3}\n']);
@@ -146,7 +144,7 @@ var tests = [
     var encoder = new JsonEncoder;
     var events = [];
     decoder.on('end', function() {
-      assert.deepEqual(events, [{ a: 1 }, { b: 2 }, { c: 3 }]);
+      assert.deepEqual(events, [{a: 1}, {b: 2}, {c: 3}]);
       next();
     });
     encoder.pipe(decoder).on('data', function(data) {
@@ -154,9 +152,9 @@ var tests = [
       this.pause();
       setTimeout(this.resume.bind(this));
     });
-    encoder.write({ a: 1 });
-    encoder.write({ b: 2 });
-    encoder.end({ c: 3 });
+    encoder.write({a: 1});
+    encoder.write({b: 2});
+    encoder.end({c: 3});
   },
 
   function(next) {
@@ -173,7 +171,7 @@ var tests = [
   function(next) {
     var decoder = new JsonDecoder(2);
     decoder.on('data', function(data) {
-      assert.deepEqual(data, { x: 42 });
+      assert.deepEqual(data, {x: 42});
       next();
     });
     decoder.write('{');

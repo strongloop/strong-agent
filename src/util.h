@@ -13,7 +13,7 @@ namespace strongloop {
 namespace agent {
 
 template <typename T, size_t N>
-size_t ArraySize(const T (&a)[N]);
+size_t ArraySize(const T(&a)[N]);
 
 template <typename T>
 int Compare(const T* a, const T* b, size_t size);

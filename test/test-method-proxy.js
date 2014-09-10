@@ -6,7 +6,7 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
 
 // Assorted sanity checks.
 (function() {
-  var o = { f: fun, g: fun };
+  var o = {f: fun, g: fun};
 
   function fun() {
     assert.equal(this, o);
@@ -89,9 +89,7 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
 
 // Ensure that proxy function carries function metadata
 (function() {
-  var o = {
-    f: fun
-  };
+  var o = {f: fun};
 
   function fun() {
     assert.equal(this, o);
@@ -114,12 +112,12 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
 
   var desc = Object.getOwnPropertyDescriptor(o.f, 'funcPropA');
 
-  assert.equal(o.f, fun); // original function
+  assert.equal(o.f, fun);  // original function
   proxy.before(o, 'f', hook);
-  assert.notEqual(o.f, fun); // wrapped function
+  assert.notEqual(o.f, fun);  // wrapped function
 
   var newDesc = Object.getOwnPropertyDescriptor(o.f, 'funcPropA')
-  assert.equal(desc.value, newDesc.value);
+                    assert.equal(desc.value, newDesc.value);
   assert.equal(desc.writable, newDesc.writable);
   assert.equal(desc.enumerable, newDesc.enumerable);
   assert.equal(desc.configurable, newDesc.configurable);
@@ -127,7 +125,7 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
 
 // Recursive calls should all be counted.
 (function() {
-  var o = { f: fun };
+  var o = {f: fun};
 
   function fun(x) {
     assert.equal(this, o);
@@ -153,7 +151,7 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
 
 // Like the previous test but now with a monkey-patched method.
 (function() {
-  var o = { f: fun, g: fun };
+  var o = {f: fun, g: fun};
 
   function fun(x) {
     assert.equal(this, o);
@@ -184,7 +182,7 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
 
 // Called patched method with another receiver.
 (function() {
-  var o = { f: fun };
+  var o = {f: fun};
   var p = {};
 
   function fun() {
@@ -210,7 +208,7 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
 
 // Prototype chaining.
 (function() {
-  var o = { f: fun };
+  var o = {f: fun};
 
   function fun() { fun.calls += 1 }
   fun.calls = 0;
@@ -226,7 +224,7 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
   assert.equal(fun.calls, 1);
   assert.equal(hook.calls, 1);
 
-  var p = { __proto__: o };
+  var p = {__proto__: o};
   p.f();
   assert.equal(fun.calls, 2);
   assert.equal(hook.calls, 2);
@@ -234,7 +232,7 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
 
 // Null prototype.
 (function() {
-  var o = { __proto__: null, f: fun };
+  var o = {__proto__: null, f: fun};
 
   function fun() { fun.calls += 1 }
   fun.calls = 0;
@@ -267,26 +265,27 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
   }
   p2.calls = 0;
 
-  var o = {
-    get x() { this.calls += 1; return 42; },
+  var o = {get x(){this.calls += 1;
+  return 42; },
     calls: 0,
-  };
-  assert.equal(o.x, 42);
-  assert.equal(o.calls, 1);
+}
+;
+assert.equal(o.x, 42);
+assert.equal(o.calls, 1);
 
-  proxy.getter(o, 'x', p1);
-  assert.equal(o.x, 42);
-  assert.equal(o.calls, 2);
-  assert.equal(p1.calls, 1);
+proxy.getter(o, 'x', p1);
+assert.equal(o.x, 42);
+assert.equal(o.calls, 2);
+assert.equal(p1.calls, 1);
 
-  var before = Object.getOwnPropertyDescriptor(o, 'x');
-  proxy.getter(o, 'x', p2);
-  var after = Object.getOwnPropertyDescriptor(o, 'x');
-  assert.equal(before.get, after.get);
-  assert.equal(o.x, 42);
-  assert.equal(o.calls, 3);
-  assert.equal(p1.calls, 2);
-  assert.equal(p2.calls, 1);
+var before = Object.getOwnPropertyDescriptor(o, 'x');
+proxy.getter(o, 'x', p2);
+var after = Object.getOwnPropertyDescriptor(o, 'x');
+assert.equal(before.get, after.get);
+assert.equal(o.x, 42);
+assert.equal(o.calls, 3);
+assert.equal(p1.calls, 2);
+assert.equal(p2.calls, 1);
 })();
 
 // __defineGetter__, a.k.a. the old new thing.
@@ -305,8 +304,11 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
   }
   p2.calls = 0;
 
-  var o = { calls: 0 };
-  o.__defineGetter__('x', function() { this.calls += 1; return 42; });
+  var o = {calls: 0};
+  o.__defineGetter__('x', function() {
+    this.calls += 1;
+    return 42;
+  });
   assert.equal(o.x, 42);
   assert.equal(o.calls, 1);
 
@@ -341,11 +343,14 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
   }
   p2.calls = 0;
 
-  var o = { calls: 0 };
+  var o = {calls: 0};
   Object.defineProperty(o, 'x', {
     configurable: true,
     enumerable: false,
-    get: function() { this.calls += 1; return 42; },
+    get: function() {
+      this.calls += 1;
+      return 42;
+    },
   });
   assert.equal(o.x, 42);
   assert.equal(o.calls, 1);
@@ -392,7 +397,7 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
   getter.calls = 0;
 
   var o = {};
-  var des = { configurable: true, enumerable: false, get: getter };
+  var des = {configurable: true, enumerable: false, get: getter};
   Object.defineProperty(o, 'x', des);
   Object.defineProperty(o, 'y', des);
   assert.equal(o.x, 1);
@@ -452,7 +457,7 @@ var kContextPropertyName = '__STRONGOPS_CONTEXT__';
   var currentNode = {};
   var extra = {};
   var graph = {};
-  proxy.init({ currentNode: currentNode, extra: extra, graph: graph });
+  proxy.init({currentNode: currentNode, extra: extra, graph: graph});
 
   var obj = {};
   var args = [assert.fail, fun.bind(obj)];

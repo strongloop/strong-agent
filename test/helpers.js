@@ -16,13 +16,12 @@ function expectantLogger(positives, negatives, done) {
   return function(logmsg) {
     logmsg = fmt.apply(null, arguments);
     console.log(logmsg);
-    if (negatives.some(function(e) { return e.test(logmsg)})) {
+    if (negatives.some(function(e) { return e.test(logmsg) })) {
       return done(Error('negative test matched: ' + logmsg));
     }
-    positives = positives.filter(function(expected) {
-      return !expected.test(logmsg);
-    });
-    if (positives.length === 0){
+    positives =
+        positives.filter(function(expected) { return !expected.test(logmsg); });
+    if (positives.length === 0) {
       done();
     }
   }
@@ -30,18 +29,18 @@ function expectantLogger(positives, negatives, done) {
 
 function shortTestLicense(features) {
   return license({
-    product: 'agent',
-    features: features || ['*'],
-    activationDate: new Date(Date.now() - 1000),
-    expirationDate: new Date(Date.now() + 5*60*1000),
-  }).key;
+                   product: 'agent',
+                   features: features || ['*'],
+                   activationDate: new Date(Date.now() - 1000),
+                   expirationDate: new Date(Date.now() + 5 * 60 * 1000),
+                 }).key;
 }
 
 function longTestLicense(features) {
   return license({
-    product: 'agent',
-    features: features || ['*'],
-    activationDate: new Date(Date.now() - 1000),
-    expirationDate: new Date(Date.now() + 24*60*60*1000),
-  }).key;
+                   product: 'agent',
+                   features: features || ['*'],
+                   activationDate: new Date(Date.now() - 1000),
+                   expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                 }).key;
 }

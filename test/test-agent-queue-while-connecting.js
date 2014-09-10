@@ -28,7 +28,7 @@ agent.transport.request.once('error', function(err) {
     assert.equal(agent.transport.state, 'not-connected');
     setTimeout(function() {
       setTimeout(function() {
-        process.stdin.pause(); // Allow node to exit
+        process.stdin.pause();  // Allow node to exit
       }, 250);
     });
   });

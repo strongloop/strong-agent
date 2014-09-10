@@ -7,9 +7,8 @@ var assert = require('assert');
 var http = require('http');
 var output = [];
 
-var server = http.createServer(function(req, res) {
-  res.write('<blink>\n');
-}).listen(function() {
+var server = http.createServer(function(req, res) { res.write('<blink>\n'); })
+                 .listen(function() {
   agent.warn = output.push.bind(output);
   agent.profile('some key', 'some app', {
     endpoint: {

@@ -9,20 +9,18 @@ var debug = require('../lib/debug')('test');
 var net = require('net');
 var util = require('util');
 
-agent.profile('deadbeef', 'deadbeef', { endpoint: 'http://localhost:1' });
+agent.profile('deadbeef', 'deadbeef', {endpoint: 'http://localhost:1'});
 
 agent.stop();
 
 var keepAlive = net.createServer().listen(0);
 
-function stop() {
-  keepAlive.close();
-}
+function stop() { keepAlive.close(); }
 
 var hook;
 
 agent.transport.send = function(message) {
-  debug('fake transport is being sent: %j',  message);
+  debug('fake transport is being sent: %j', message);
 
   // redirect profile commands to our hook
   if (message.cmd.indexOf('profile') >= 0) {
@@ -33,7 +31,7 @@ agent.transport.send = function(message) {
 function expect(event, callback) {
   hook = callback;
   debug('fake transport pretends to receive:', event);
-  agent.transport.emit('message', {cmd: event, args:[]});
+  agent.transport.emit('message', {cmd: event, args: []});
 }
 
 var tests = [

@@ -1,7 +1,7 @@
 process.env.SL_ENV = 'dev';
 
 var agent = require('../');
-agent.profile('deadbeef', 'deadbeef', { quiet: true });
+agent.profile('deadbeef', 'deadbeef', {quiet: true});
 
 var assert = require('assert');
 var profiler = require('../lib/profilers/memory');
@@ -25,4 +25,3 @@ instance.state.forEach(function(elm) {
   assert.equal(typeof(elm.size), 'number');
   assert.equal(typeof(elm.total), 'number');
 });
-
