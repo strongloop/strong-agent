@@ -75,6 +75,11 @@ struct Integer : public AllStatic {
                                                        uint32_t value);
 };
 
+struct Isolate : public AllStatic {
+  inline static v8::Local<v8::Value> ThrowException(
+      v8::Isolate* isolate, v8::Local<v8::Value> exception);
+};
+
 struct Number : public AllStatic {
   inline static v8::Local<v8::Number> New(v8::Isolate* isolate, double value);
 };
@@ -124,6 +129,17 @@ class ReturnableHandleScope {
   inline ReturnType Return(double value);
   inline ReturnType Return(const char* value);
   inline ReturnType Return(v8::Local<v8::Value> value);
+  inline ReturnType Throw(v8::Local<v8::Value> exception);
+  inline ReturnType ThrowError(const char* exception);
+  inline ReturnType ThrowError(v8::Local<v8::String> exception);
+  inline ReturnType ThrowRangeError(const char* exception);
+  inline ReturnType ThrowRangeError(v8::Local<v8::String> exception);
+  inline ReturnType ThrowReferenceError(const char* exception);
+  inline ReturnType ThrowReferenceError(v8::Local<v8::String> exception);
+  inline ReturnType ThrowSyntaxError(const char* exception);
+  inline ReturnType ThrowSyntaxError(v8::Local<v8::String> exception);
+  inline ReturnType ThrowTypeError(const char* exception);
+  inline ReturnType ThrowTypeError(v8::Local<v8::String> exception);
 
  private:
   inline v8::Isolate* isolate() const;
