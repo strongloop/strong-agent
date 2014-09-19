@@ -25,6 +25,29 @@ T* Copy(T* to, const T* from, size_t size);
 template <typename T>
 void Use(const T&);
 
+template <typename T>
+class Lazy {
+ public:
+  inline Lazy();
+  inline ~Lazy();
+  inline void Dispose();
+  inline void Initialize();
+  template <typename A>
+  inline void Initialize(A);
+  template <typename A, typename B>
+  inline void Initialize(A, B);
+  template <typename A, typename B, typename C>
+  inline void Initialize(A, B, C);
+  inline T* operator->();
+  inline T& operator*();
+  inline T* address();
+  inline bool initialized() const;
+
+ private:
+  bool initialized_;
+  char storage_[sizeof(T)];
+};
+
 }  // namespace agent
 }  // namespace strongloop
 

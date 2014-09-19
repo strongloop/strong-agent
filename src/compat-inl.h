@@ -40,7 +40,7 @@ inline v8::Local<T> ToLocal(v8::Local<T> handle) {
 #if COMPAT_NODE_VERSION == 10
 template <typename T>
 inline v8::Local<T> ToLocal(v8::Handle<T> handle) {
-  return v8::Local<T>::New(handle);
+  return v8::Local<T>(*handle);
 }
 #endif
 
@@ -187,10 +187,16 @@ v8::Isolate* ReturnableHandleScope::isolate() const {
 
 #if COMPAT_NODE_VERSION == 10
 
+void Isolate::GetHeapStatistics(v8::Isolate* isolate,
+                                v8::HeapStatistics* stats) {
+  I::Use(isolate);
+  return v8::V8::GetHeapStatistics(stats);
+}
+
 v8::Local<v8::Value> Isolate::ThrowException(v8::Isolate* isolate,
                                              v8::Local<v8::Value> exception) {
   I::Use(isolate);
-  return v8::Local<v8::Value>::New(v8::ThrowException(exception));
+  return I::ToLocal<v8::Value>(v8::ThrowException(exception));
 }
 
 const v8::HeapSnapshot* HeapProfiler::TakeHeapSnapshot(
@@ -246,6 +252,11 @@ ReturnType ReturnableHandleScope::Return(v8::Local<v8::Value> value) {
 }
 
 #elif COMPAT_NODE_VERSION == 12
+
+void Isolate::GetHeapStatistics(v8::Isolate* isolate,
+                                v8::HeapStatistics* stats) {
+  return isolate->GetHeapStatistics(stats);
+}
 
 v8::Local<v8::Value> Isolate::ThrowException(v8::Isolate* isolate,
                                              v8::Local<v8::Value> exception) {

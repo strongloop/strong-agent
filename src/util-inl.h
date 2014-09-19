@@ -31,6 +31,68 @@ int Compare(const T* a, const T* b, size_t size) {
 template <typename T>
 void Use(const T&) {}
 
+template <typename T>
+Lazy<T>::Lazy()
+    : initialized_(false) {}
+
+template <typename T>
+Lazy<T>::~Lazy() {
+  if (initialized()) Dispose();
+}
+
+template <typename T>
+T* Lazy<T>::operator->() {
+  return address();
+}
+
+template <typename T>
+T& Lazy<T>::operator*() {
+  return *address();
+}
+
+template <typename T>
+void Lazy<T>::Dispose() {
+  (*this)->~T();
+  initialized_ = false;
+}
+
+template <typename T>
+void Lazy<T>::Initialize() {
+  new (storage_) T();
+  initialized_ = true;
+}
+
+template <typename T>
+template <typename A>
+void Lazy<T>::Initialize(A a) {
+  new (storage_) T(a);
+  initialized_ = true;
+}
+
+template <typename T>
+template <typename A, typename B>
+void Lazy<T>::Initialize(A a, B b) {
+  new (storage_) T(a, b);
+  initialized_ = true;
+}
+
+template <typename T>
+template <typename A, typename B, typename C>
+void Lazy<T>::Initialize(A a, B b, C c) {
+  new (storage_) T(a, b, c);
+  initialized_ = true;
+}
+
+template <typename T>
+T* Lazy<T>::address() {
+  return reinterpret_cast<T*>(storage_);
+}
+
+template <typename T>
+bool Lazy<T>::initialized() const {
+  return initialized_;
+}
+
 }  // namespace agent
 }  // namespace strongloop
 

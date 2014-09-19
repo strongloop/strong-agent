@@ -80,6 +80,7 @@
 #error "Unsupported node.js version."
 #endif
 
+#include "queue.h"
 #include "util.h"
 #include "util-inl.h"
 
@@ -96,6 +97,24 @@ enum CallbackProperties {
   SL_CALLBACK_PROPERTIES_MAP(V)
 #undef V
       kMaxCallbackProperties
+};
+
+class WakeUp {
+ public:
+  typedef void (*Callback)(WakeUp* w);
+  inline static void Initialize();
+  inline explicit WakeUp(Callback callback);
+  inline ~WakeUp();
+  inline bool Start();
+
+ private:
+  inline static void OnIdle(::uv_idle_t*);
+  WakeUp(const WakeUp&);
+  void operator=(const WakeUp&);
+  Callback const callback_;
+  ::QUEUE queue_;
+  static ::uv_idle_t idle_handle;
+  static ::QUEUE pending_queue;
 };
 
 inline v8::Local<v8::Object> GetBindingObject(v8::Isolate* isolate);

@@ -9,6 +9,7 @@ var messages = [];
 var logger = {
   log: messages.push.bind(messages),
   info: messages.push.bind(messages),
+  warn: messages.push.bind(messages),
   error: messages.push.bind(messages),
 };
 
