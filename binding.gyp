@@ -29,6 +29,7 @@
       'sources': [
         'src/compat-inl.h',
         'src/compat.h',
+        'src/dyninst.h',
         'src/extras.h',
         'src/gcinfo.h',
         'src/heapdiff.h',

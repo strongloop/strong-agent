@@ -12,8 +12,40 @@
 namespace strongloop {
 namespace agent {
 
+#define STRINGIFY_HELPER(s) #s
+
+#define STRINGIFY(s) STRINGIFY_HELPER(s)
+
+#define ASSERT(expression)              \
+  strongloop::agent::Assert(expression, \
+                            __FILE__ ":" STRINGIFY(__LINE__) ": " #expression)
+
+#define ASSERT_EQ(a, b) ASSERT((a) == (b))
+#define ASSERT_GE(a, b) ASSERT((a) >= (b))
+#define ASSERT_GT(a, b) ASSERT((a) > (b))
+#define ASSERT_LE(a, b) ASSERT((a) <= (b))
+#define ASSERT_LT(a, b) ASSERT((a) < (b))
+#define ASSERT_NE(a, b) ASSERT((a) != (b))
+
+#define CHECK(expression)              \
+  strongloop::agent::Check(expression, \
+                           __FILE__ ":" STRINGIFY(__LINE__) ": " #expression)
+
+#define CHECK_EQ(a, b) CHECK((a) == (b))
+#define CHECK_GE(a, b) CHECK((a) >= (b))
+#define CHECK_GT(a, b) CHECK((a) > (b))
+#define CHECK_LE(a, b) CHECK((a) <= (b))
+#define CHECK_LT(a, b) CHECK((a) < (b))
+#define CHECK_NE(a, b) CHECK((a) != (b))
+
+template <typename T>
+void Assert(const T& result, const char* expression);
+
 template <typename T, size_t N>
 size_t ArraySize(const T(&a)[N]);
+
+template <typename T>
+void Check(const T& result, const char* expression);
 
 template <typename T>
 int Compare(const T* a, const T* b, size_t size);

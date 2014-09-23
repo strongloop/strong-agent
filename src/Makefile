@@ -14,6 +14,7 @@ CLANG_FORMAT ?= clang-format
 SOURCES = \
 	compat-inl.h \
 	compat.h \
+	dyninst.h \
 	extras.h \
 	gcinfo.h \
 	heapdiff.h \

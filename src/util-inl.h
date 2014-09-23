@@ -7,14 +7,35 @@
 #define AGENT_SRC_UTIL_INL_H_
 
 #include "strong-agent.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 namespace strongloop {
 namespace agent {
 
+template <typename T>
+void Assert(const T& result, const char* expression) {
+#if defined(NDEBUG)
+  Use(result);
+  Use(expression);
+#else
+  Check(result, expression);
+#endif
+}
+
 template <typename T, size_t N>
 size_t ArraySize(const T(&)[N]) {
   return N;
+}
+
+template <typename T>
+void Check(const T& result, const char* expression) {
+  if (result == false) {
+    ::fprintf(stderr, "CHECK failed: %s\n", expression);
+    ::fflush(stderr);
+    ::abort();
+  }
 }
 
 template <typename T>

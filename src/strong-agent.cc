@@ -4,6 +4,7 @@
 // in the top-level directory or visit http://strongloop.com/license.
 
 #include "strong-agent.h"
+#include "dyninst.h"
 #include "extras.h"
 #include "gcinfo.h"
 #include "heapdiff.h"
@@ -71,6 +72,7 @@ void Initialize(Local<Object> binding) {
   Isolate* isolate = Isolate::GetCurrent();
   WakeUp::Initialize();
   binding_object.Reset(isolate, binding);
+  dyninst::Initialize(isolate, binding);
   extras::Initialize(isolate, binding);
   gcinfo::Initialize(isolate, binding);
   heapdiff::Initialize(isolate, binding);
