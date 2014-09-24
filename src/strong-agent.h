@@ -119,7 +119,7 @@ class WakeUp {
 
 inline v8::Local<v8::Object> GetBindingObject(v8::Isolate* isolate);
 
-namespace dyinst {
+namespace dyninst {
 void Initialize(v8::Isolate*, v8::Local<v8::Object>);
 }  // namespace dyninst
 
