@@ -4,6 +4,7 @@
 // in the top-level directory or visit http://strongloop.com/license.
 
 #include "strong-agent.h"
+#include "counters.h"
 #include "dyninst.h"
 #include "extras.h"
 #include "gcinfo.h"
@@ -48,6 +49,18 @@ bool WakeUp::Start() {
   return true;
 }
 
+bool WakeUp::Stop() {
+  if (QUEUE_EMPTY(&queue_) == true) {
+    return false;
+  }
+  QUEUE_REMOVE(&queue_);
+  QUEUE_INIT(&queue_);
+  if (QUEUE_EMPTY(&pending_queue) == true) {
+    ::uv_idle_stop(&idle_handle);
+  }
+  return true;
+}
+
 void WakeUp::OnIdle(::uv_idle_t*) {
   ::uv_idle_stop(&idle_handle);
   if (QUEUE_EMPTY(&pending_queue)) {
@@ -59,6 +72,7 @@ void WakeUp::OnIdle(::uv_idle_t*) {
   while (QUEUE_EMPTY(&queue) == false) {
     QUEUE* const q = QUEUE_HEAD(&queue);
     QUEUE_REMOVE(q);
+    QUEUE_INIT(q);
     WakeUp* const w = QUEUE_DATA(q, WakeUp, queue_);
     w->callback_(w);
   }
@@ -72,6 +86,7 @@ void Initialize(Local<Object> binding) {
   Isolate* isolate = Isolate::GetCurrent();
   WakeUp::Initialize();
   binding_object.Reset(isolate, binding);
+  counters::Initialize(isolate, binding);
   dyninst::Initialize(isolate, binding);
   extras::Initialize(isolate, binding);
   gcinfo::Initialize(isolate, binding);
@@ -81,7 +96,7 @@ void Initialize(Local<Object> binding) {
 #define V(name)                                        \
   binding->Set(C::String::NewFromUtf8(isolate, #name), \
                C::Integer::New(isolate, name));
-  SL_CALLBACK_PROPERTIES_MAP(V)
+  SL_INDEXED_PROPERTIES_MAP(V)
 #undef V
 }
 

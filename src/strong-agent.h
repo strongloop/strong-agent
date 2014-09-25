@@ -90,13 +90,15 @@
 namespace strongloop {
 namespace agent {
 
-#define SL_CALLBACK_PROPERTIES_MAP(V) V(kGarbageCollectorStatisticsCallback)
+#define SL_INDEXED_PROPERTIES_MAP(V) \
+  V(kCountersCallback)               \
+  V(kCountersObject)                 \
+  V(kGarbageCollectorStatisticsCallback)
 
-enum CallbackProperties {
+enum IndexedProperties {
 #define V(name) name,
-  SL_CALLBACK_PROPERTIES_MAP(V)
+  SL_INDEXED_PROPERTIES_MAP(V) kMaxIndexedProperties
 #undef V
-      kMaxCallbackProperties
 };
 
 class WakeUp {
@@ -106,6 +108,7 @@ class WakeUp {
   inline explicit WakeUp(Callback callback);
   inline ~WakeUp();
   inline bool Start();
+  inline bool Stop();
 
  private:
   inline static void OnIdle(::uv_idle_t*);
@@ -118,6 +121,10 @@ class WakeUp {
 };
 
 inline v8::Local<v8::Object> GetBindingObject(v8::Isolate* isolate);
+
+namespace counters {
+void Initialize(v8::Isolate*, v8::Local<v8::Object>);
+}  // namespace counters
 
 namespace dyninst {
 void Initialize(v8::Isolate*, v8::Local<v8::Object>);
