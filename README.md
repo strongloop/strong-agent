@@ -46,7 +46,8 @@ Can be defined in:
 - `agent_license`: in strongloop.json
 
 Using custom metrics (the `.use()` and dynamic object tracking start-stop APIs)
-requires a license, please contact sales@strongloop.com.
+requires a license, please contact
+[sales@strongloop.com](mailto:sales@strongloop.com).
 
 ### Application Name
 
@@ -275,6 +276,129 @@ agent.use(function(name, value) {
 });
 ```
 
+### Custom metrics
+
+Custom metrics can be injected dynamically into running node processes, and will
+be reported via the [Metrics API](metrics-api).
+
+Currently, custom metrics can only be injected by using the command line, `slc
+runctl patch ...`, see [strong-supervisor][] for information on how to call it.
+
+Supported metrics are counts and timers.
+
+Counts can be incremented and decremented, and require no context.
+
+Timers have a start, and a stop, and require a unique context capable of having
+a timer property created.
+
+Patch files are JSON descriptions of a patch set. A patchset is:
+
+```
+{
+  FILESPEC: [
+    PATCH,
+    ...
+  ],
+  ...
+}
+```
+
+The `FILESPEC` is a regex string long enough to uniquely match a script name.
+`index.js` is unlikely to be unique, `your-app/index.js` is probably unique.
+Note that the script names matched against are fully qualified when they were
+required (so lengthening the file path can always result in a unique spec), and
+short when builtin to node (`^util.js$`).
+
+A file may have multiple patches applied. A patch is:
+
+```
+{
+  type: TYPE,
+  line: LINE,
+  metric: METRIC,
+  [context: CONTEXT,]
+}
+```
+
+`TYPE` is one of:
+
+- increment: increment the metric count
+- decrement: decrement the metric count
+- timer-start: start a metric timer
+- timer-stop: stop a metric timer
+
+`LINE` is the line number (the first line is line number `1`) at which the
+metrics code will be inserted.
+
+`METRIC` is a dot-separated metric name. It will have `custom.` prepended to
+avoid conflict with built-in metric names, and will have either `.count` or
+`.timer` appended (as appropriate), to indicate the type.
+
+`CONTEXT` is a javascript expression that must result in an object that can
+have a timer property created on it.
+
+#### Example
+
+With the following code in file `path/to/your-app/index.js`:
+
+```
+// Example server, for dynamic instrumentation
+var http = require('http');
+
+http.createServer(request).listen(process.env.PORT || 3000);
+
+function request(req, res) {
+  setTimeout(function() { // line 7
+    res.end('OK\n'); // line 8
+  }, Math.random() * 100);
+}
+```
+
+The above can be patched to keep a count of concurrent requests and a timer for
+each request by passing the following `patch.json` to `slc runctl patch`:
+
+```
+{
+  "path/to/your-app/index": [
+    { "type": "increment", "line": 7, "metric": "get.delay" },
+    { "type": "decrement", "line": 8, "metric": "get.delay" },
+    { "type": "timer-start", "line": 7, "metric": "get.delay", "context": "res" },
+    { "type": "timer-stop", "line": 8, "metric": "get.delay", "context": "res" }
+  ]
+}
+```
+
+In order to design your patch set, consider what the effect of the patch
+insertion will be. Patches must be lexically valid at the insertion point,
+which is always the beginning of the line. The above patch set will,
+conceptually, result in the patched file looking like:
+
+```
+// Example server, for dynamic instrumentation
+var http = require('http');
+
+http.createServer(request).listen(process.env.PORT || 3000);
+
+function request(req, res) {
+res.___timer = start('get.delay');increment('get.delay');  setTimeout(function() { // line 7
+res.___timer.stop();decrement('get.delay');   res.end('OK\n'); // line 8
+  }, Math.random() * 100);
+}
+```
+
+Note from the above:
+
+- Patches must by valid when inserted at the beginning of the specified line.
+- Patches can be cumulative, and previous patches don't change the line
+  numbering of the file.
+- The context is used to store a timer on start, that can be accessed on stop.
+  The context expression does not have to be identical for start and stop, but
+  must evaluate to the same object.
+- Duplicate stops as well as non-existence of a timer are ignored.
+- Metrics can have the same name, since the type is appended.
+
+
 [axon]: https://github.com/visionmedia/axon
 [strong-mq]: https://github.com/strongloop/strong-mq
+[strong-supervisor]: https://github.com/strongloop/strong-supervisor
 [Chrome Developer Tools]: https://developer.chrome.com/devtools/docs/cpu-profiling

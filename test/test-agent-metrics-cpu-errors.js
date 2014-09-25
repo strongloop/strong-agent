@@ -30,11 +30,3 @@ tap.test('with support', function(t) {
                 }));
   t.end();
 });
-
-tap.test('only public methods are enumerable', function(t) {
-  t.equal(Object.keys(metrics).length, 4);
-  for (var p in metrics) {
-    t.notEqual(p, '_checkCpuProfSupported');
-  }
-  t.end();
-});

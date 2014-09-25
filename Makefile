@@ -7,7 +7,7 @@ PREFIX ?= $(dir $(lastword $(MAKEFILE_LIST)))
 
 CLANG_FORMAT ?= clang-format
 
-SOURCES := $(wildcard lib/*.js lib/*/*.js test/*.js test/*/*.js)
+SOURCES := $(wildcard lib/*.js lib/*/*.js test/test-*.js test/*/*.js)
 SOURCES := $(SOURCES:%=$(PREFIX)%)
 
 .PHONY: all clang-format
