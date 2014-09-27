@@ -19,7 +19,7 @@
 
 namespace compat {
 
-#if COMPAT_NODE_VERSION == 10
+#if COMPAT_NODE_VERSION(10)
 #define COMPAT_ISOLATE
 #define COMPAT_ISOLATE_
 #else
@@ -37,7 +37,7 @@ inline v8::Local<T> ToLocal(v8::Local<T> handle) {
   return handle;
 }
 
-#if COMPAT_NODE_VERSION == 10
+#if COMPAT_NODE_VERSION(10)
 template <typename T>
 inline v8::Local<T> ToLocal(v8::Handle<T> handle) {
   return v8::Local<T>(*handle);
@@ -185,7 +185,19 @@ v8::Isolate* ReturnableHandleScope::isolate() const {
   return args_.GetIsolate();
 }
 
-#if COMPAT_NODE_VERSION == 10
+#if COMPAT_NODE_VERSION(10)
+
+void CpuProfiler::StartCpuProfiling(v8::Isolate* isolate,
+                                    v8::Local<v8::String> title) {
+  if (title.IsEmpty()) title = v8::String::Empty(isolate);
+  return v8::CpuProfiler::StartProfiling(title);
+}
+
+const v8::CpuProfile* CpuProfiler::StopCpuProfiling(
+    v8::Isolate* isolate, v8::Local<v8::String> title) {
+  if (title.IsEmpty()) title = v8::String::Empty(isolate);
+  return v8::CpuProfiler::StopProfiling(title);
+}
 
 void Isolate::GetHeapStatistics(v8::Isolate* isolate,
                                 v8::HeapStatistics* stats) {
@@ -251,7 +263,20 @@ ReturnType ReturnableHandleScope::Return(v8::Local<v8::Value> value) {
   return handle_scope_.Close(value);
 }
 
-#elif COMPAT_NODE_VERSION == 12
+#elif COMPAT_NODE_VERSION(12)
+
+void CpuProfiler::StartCpuProfiling(v8::Isolate* isolate,
+                                    v8::Local<v8::String> title) {
+  const bool record_samples = true;
+  if (title.IsEmpty()) title = v8::String::Empty(isolate);
+  return isolate->GetCpuProfiler()->StartCpuProfiling(title, record_samples);
+}
+
+const v8::CpuProfile* CpuProfiler::StopCpuProfiling(
+    v8::Isolate* isolate, v8::Local<v8::String> title) {
+  if (title.IsEmpty()) title = v8::String::Empty(isolate);
+  return isolate->GetCpuProfiler()->StopCpuProfiling(title);
+}
 
 void Isolate::GetHeapStatistics(v8::Isolate* isolate,
                                 v8::HeapStatistics* stats) {

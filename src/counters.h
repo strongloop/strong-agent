@@ -11,13 +11,12 @@
 #include "util-inl.h"
 #include "uv.h"
 
-#include <string>
 #include <vector>
 
-#if SL_NODE_VERSION == 10
+#if COMPAT_NODE_VERSION(10)
 #define AT_LEAST_V8_3_26(exp)
 #define AT_MOST_V8_3_14(exp) exp
-#elif SL_NODE_VERSION == 12
+#elif COMPAT_NODE_VERSION(12)
 #define AT_LEAST_V8_3_26(exp) exp
 #define AT_MOST_V8_3_14(exp)
 #endif
@@ -180,14 +179,14 @@ inline void* CreateHistogramFunction(const char* name, int /* min */,
   static const char prefix[] = "V8.";
   static const size_t prefix_size = sizeof(prefix) - 1;
   const size_t size = ::strlen(name);
-  if (size <= prefix_size || 0 != ::memcmp(name, prefix, prefix_size)) {
+  if (size <= prefix_size || 0 != Compare(name, prefix, prefix_size)) {
     return NULL;  // Not interested.
   }
 // Mild ISO C++ violation: we return an enum cast to a void pointer.
 // The pointer is not dereferenced by us or V8, it's just an identifier.
 #define V(name_)                                                      \
   if (size == sizeof(#name_) + prefix_size - 1 &&                     \
-      0 == ::memcmp(name + prefix_size, #name_, size)) {              \
+      0 == Compare(name + prefix_size, #name_, size)) {               \
     return reinterpret_cast<void*>(static_cast<uintptr_t>(k##name_)); \
   }
   ALL_METRICS_LIST(V);
@@ -245,7 +244,7 @@ C::ReturnType StopCounters(const C::ArgumentType& args) {
 
 void Initialize(Isolate* isolate, Local<Object> binding) {
   wakeup.Initialize(OnWakeUp);
-  v8::V8::SetCreateHistogramFunction(CreateHistogramFunction);
+  V8::SetCreateHistogramFunction(CreateHistogramFunction);
   // Not really necessary to expose but makes for easier introspection.
   binding->Set(C::String::NewFromUtf8(isolate, "startCounters"),
                C::FunctionTemplate::New(isolate, StartCounters)->GetFunction());

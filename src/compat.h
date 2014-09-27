@@ -19,21 +19,24 @@
 #include "v8.h"
 #include "v8-profiler.h"
 
+#define COMPAT_NODE_VERSION(S) \
+  (defined(COMPAT_NODE_VERSION_##S) && COMPAT_NODE_VERSION_##S)
+
 #if NODE_MAJOR_VERSION == 0 && NODE_MINOR_VERSION >= 11
-#define COMPAT_NODE_VERSION 12  // v0.12
-#elif NODE_MAJOR_VERSION == 0 && NODE_MINOR_VERSION == 10
-#define COMPAT_NODE_VERSION 10  // v0.10
-#else
-#error "Unsupported node.js version."
+#define COMPAT_NODE_VERSION_12 1
+#endif
+
+#if NODE_MAJOR_VERSION == 0 && NODE_MINOR_VERSION == 10
+#define COMPAT_NODE_VERSION_10 1
 #endif
 
 namespace compat {
 
-#if COMPAT_NODE_VERSION == 10
+#if COMPAT_NODE_VERSION(10)
 typedef v8::Arguments ArgumentType;
 typedef v8::Handle<v8::Value> ReturnType;
 typedef v8::InvocationCallback FunctionCallback;
-#elif COMPAT_NODE_VERSION == 12
+#elif COMPAT_NODE_VERSION(12)
 typedef v8::FunctionCallbackInfo<v8::Value> ArgumentType;
 typedef void ReturnType;
 typedef v8::FunctionCallback FunctionCallback;
@@ -51,6 +54,15 @@ class AllStatic {
 
 struct Array : public AllStatic {
   inline static v8::Local<v8::Array> New(v8::Isolate* isolate, int length = 0);
+};
+
+struct CpuProfiler : public AllStatic {
+  static void StartCpuProfiling(
+      v8::Isolate* isolate,
+      v8::Local<v8::String> title = v8::Local<v8::String>());
+  static const v8::CpuProfile* StopCpuProfiling(
+      v8::Isolate* isolate,
+      v8::Local<v8::String> title = v8::Local<v8::String>());
 };
 
 struct Boolean : public AllStatic {

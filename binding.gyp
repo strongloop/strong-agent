@@ -32,6 +32,7 @@
         'src/counters.h',
         'src/dyninst.h',
         'src/extras.h',
+        'src/features.h',
         'src/gcinfo.h',
         'src/heapdiff.h',
         'src/platform-posix.h',

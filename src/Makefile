@@ -17,6 +17,7 @@ SOURCES = \
 	counters.h \
 	dyninst.h \
 	extras.h \
+	features.h \
 	gcinfo.h \
 	heapdiff.h \
 	platform-posix.h \
@@ -36,7 +37,9 @@ SOURCES := $(SOURCES:%=$(PREFIX)%)
 # Disable build/include_order, it wants system headers before project headers
 # but we want to catch bugs where project headers have implicit dependencies
 # on system headers included in source files.
-FILTER = -build/include,-build/include_order
+#
+# Disable whitespace/indent, it sometimes conflicts with clang-format.
+FILTER = -build/include,-build/include_order,-whitespace/indent
 
 .PHONY: check-imports lint clang-format
 

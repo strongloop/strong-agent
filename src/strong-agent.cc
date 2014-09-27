@@ -103,7 +103,7 @@ void Initialize(Local<Object> binding) {
 // See https://github.com/joyent/node/pull/7240.  Need to make the module
 // definition externally visible when compiling with -fvisibility=hidden.
 // Doesn't apply to v0.11, it uses a constructor to register the module.
-#if defined(__GNUC__) && SL_NODE_VERSION == 10
+#if COMPAT_NODE_VERSION(10) && (SL_COMPILER(CLANG) || SL_COMPILER(GCC))
 extern "C" __attribute__((visibility("default"))) node::node_module_struct
     strong_agent_module;
 #endif

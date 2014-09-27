@@ -39,7 +39,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       function_name_sym_ = C::String::NewFromUtf8(isolate, "functionName");
       line_number_sym_ = C::String::NewFromUtf8(isolate, "lineNumber");
       script_name_sym_ = C::String::NewFromUtf8(isolate, "scriptName");
-#if SL_NODE_VERSION == 10
+#if COMPAT_NODE_VERSION(10)
       call_uid_sym_ = C::String::NewFromUtf8(isolate, "callUid");
       children_count_sym_ = C::String::NewFromUtf8(isolate, "childrenCount");
       self_samples_count_sym_ =
@@ -48,7 +48,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       total_samples_count_sym_ =
           C::String::NewFromUtf8(isolate, "totalSamplesCount");
       total_time_sym_ = C::String::NewFromUtf8(isolate, "totalTime");
-#elif SL_NODE_VERSION == 12
+#elif COMPAT_NODE_VERSION(12)
       bailout_reason_sym_ = C::String::NewFromUtf8(isolate, "bailoutReason");
       column_number_sym_ = C::String::NewFromUtf8(isolate, "columnNumber");
       hit_count_sym_ = C::String::NewFromUtf8(isolate, "hitCount");
@@ -60,14 +60,14 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
              function_name_sym_.IsEmpty() == false &&
              line_number_sym_.IsEmpty() == false &&
              script_name_sym_.IsEmpty() == false &&
-#if SL_NODE_VERSION == 10
+#if COMPAT_NODE_VERSION(10)
              call_uid_sym_.IsEmpty() == false &&
              children_count_sym_.IsEmpty() == false &&
              self_samples_count_sym_.IsEmpty() == false &&
              self_time_sym_.IsEmpty() == false &&
              total_samples_count_sym_.IsEmpty() == false &&
              total_time_sym_.IsEmpty() == false;
-#elif SL_NODE_VERSION == 12
+#elif COMPAT_NODE_VERSION(12)
              bailout_reason_sym_.IsEmpty() == false &&
              column_number_sym_.IsEmpty() == false &&
              hit_count_sym_.IsEmpty() == false;
@@ -89,7 +89,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       Handle<String> function_name_val = node->GetFunctionName();
       if (function_name_val.IsEmpty()) return Local<Object>();
 
-#if SL_NODE_VERSION == 10
+#if COMPAT_NODE_VERSION(10)
       Local<Number> self_samples_count_val =
           C::Number::New(isolate_, node->GetSelfSamplesCount());
       if (self_samples_count_val.IsEmpty()) return Local<Object>();
@@ -128,7 +128,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       o->Set(line_number_sym_, line_number_val);
       o->Set(script_name_sym_, script_name_val);
       o->Set(function_name_sym_, function_name_val);
-#elif SL_NODE_VERSION == 12
+#elif COMPAT_NODE_VERSION(12)
       o->Set(script_name_sym_, script_name_val);
       o->Set(function_name_sym_, function_name_val);
 
@@ -217,14 +217,14 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
     Local<String> function_name_sym_;
     Local<String> line_number_sym_;
     Local<String> script_name_sym_;
-#if SL_NODE_VERSION == 10
+#if COMPAT_NODE_VERSION(10)
     Local<String> children_count_sym_;
     Local<String> call_uid_sym_;
     Local<String> self_samples_count_sym_;
     Local<String> self_time_sym_;
     Local<String> total_samples_count_sym_;
     Local<String> total_time_sym_;
-#elif SL_NODE_VERSION == 12
+#elif COMPAT_NODE_VERSION(12)
     Local<String> bailout_reason_sym_;
     Local<String> column_number_sym_;
     Local<String> hit_count_sym_;
@@ -238,16 +238,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
   return helper.ToObject(node);
 }
 
-const CpuProfile* StopProfiling(Isolate* isolate, Local<String> title) {
-#if SL_NODE_VERSION == 10
-  Use(isolate);
-  return CpuProfiler::StopProfiling(title);
-#elif SL_NODE_VERSION == 12
-  return isolate->GetCpuProfiler()->StopCpuProfiling(title);
-#endif
-}
-
-#if SL_NODE_VERSION == 12
+#if COMPAT_NODE_VERSION(12)
 // FIXME(bnoordhuis) Mangles UTF-8 sequences, it treats them as bytes.
 std::string EscapeJson(const char* string, size_t size, size_t start = 0) {
   std::string head(string, start);
@@ -347,7 +338,7 @@ void SerializeCpuProfile(const CpuProfile* profile, std::ostream* sink) {
 C::ReturnType StopCpuProfilingAndSerialize(const C::ArgumentType& args) {
   Isolate* isolate = args.GetIsolate();
   C::ReturnableHandleScope handle_scope(args);
-  const CpuProfile* profile = StopProfiling(isolate, String::Empty(isolate));
+  const CpuProfile* profile = C::CpuProfiler::StopCpuProfiling(isolate);
   if (profile == NULL) {
     // Not started or preempted by another profiler.
     return handle_scope.Return();
@@ -371,20 +362,14 @@ C::ReturnType StopCpuProfilingAndSerialize(const C::ArgumentType& args) {
 C::ReturnType StartCpuProfiling(const C::ArgumentType& args) {
   Isolate* isolate = args.GetIsolate();
   C::ReturnableHandleScope handle_scope(args);
-  Local<String> title = String::Empty(isolate);
-#if SL_NODE_VERSION == 10
-  CpuProfiler::StartProfiling(title);
-#elif SL_NODE_VERSION == 12
-  const bool record_samples = true;
-  isolate->GetCpuProfiler()->StartProfiling(title, record_samples);
-#endif
+  C::CpuProfiler::StartCpuProfiling(isolate);
   return handle_scope.Return();
 }
 
 C::ReturnType StopCpuProfiling(const C::ArgumentType& args) {
   Isolate* isolate = args.GetIsolate();
   C::ReturnableHandleScope handle_scope(args);
-  const CpuProfile* profile = StopProfiling(isolate, String::Empty(isolate));
+  const CpuProfile* profile = C::CpuProfiler::StopCpuProfiling(isolate);
   if (profile == NULL) {
     // Not started or preempted by another profiler.
     return handle_scope.Return();
@@ -405,7 +390,7 @@ void Initialize(Isolate* isolate, Local<Object> binding) {
   binding->Set(
       C::String::NewFromUtf8(isolate, "stopCpuProfiling"),
       C::FunctionTemplate::New(isolate, StopCpuProfiling)->GetFunction());
-#if SL_NODE_VERSION == 12
+#if COMPAT_NODE_VERSION(12)
   binding->Set(C::String::NewFromUtf8(isolate, "stopCpuProfilingAndSerialize"),
                C::FunctionTemplate::New(isolate, StopCpuProfilingAndSerialize)
                    ->GetFunction());
