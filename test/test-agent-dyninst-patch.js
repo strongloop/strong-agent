@@ -34,9 +34,12 @@ function checkTimer(t, value, real) {
   var extra = util.format('want %d ms, metric %d ms, self-timed %d ms',
                           target.Runner.interval, value, real);
   // Assert time is within a few ms... this might be too sensitive for CI.
-  t.assert(value > target.Runner.interval - 1, extra);
-  t.assert(value < target.Runner.interval + 3, extra);
+  t.assert(value > target.Runner.interval - 5, extra);
+  t.assert(value < target.Runner.interval + 10, extra);
 }
+
+target.Runner.setInterval(100);  // expect intervals of this, +/- tolerances
+                                 // above
 
 tap.test('concurrency 1', function(t) {
   var r = new target.Runner();

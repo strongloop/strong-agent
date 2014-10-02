@@ -1,0 +1,8 @@
+{
+  "Dyninst-metrics-example.js": [
+    { "type": "increment", "line": 7, "metric": "get.delay" },
+    { "type": "decrement", "line": 8, "metric": "get.delay" },
+    { "type": "timer-start", "line": 7, "metric": "get.delay", "context": "res" },
+    { "type": "timer-stop", "line": 8, "metric": "get.delay", "context": "res" }
+  ]
+}

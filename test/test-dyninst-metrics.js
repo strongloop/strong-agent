@@ -22,6 +22,11 @@ tap.test('find exactly http script', function(t) {
   t.end();
 });
 
+tap.test('fail to find non-existent script', function(t) {
+  t.equal(undefined, di.findScript('/no/such/file/.js/exists'));
+  t.end();
+});
+
 tap.test('patch a line', function(t) {
   t.equal('hello', target.hello());
   di.patchLine('dyninst-target', 2, 'return "patched!";');
@@ -39,5 +44,27 @@ tap.test('apply patches', {skip: false}, function(t) {
   });
   t.equal('xxx', target.hello());
   t.equal('yyy', target.bye());
+  t.end();
+});
+
+tap.test('apply erroring patches', {skip: false}, function(t) {
+  di.patch({
+    'dyninst-target': [
+      {type: 'timer-start', line: 2, metric: 'xxx', 'context': 'nosuch'},
+      {type: 'timer-stop', line: 6, metric: 'yyy', 'context': 'nosuch'},
+    ]
+  });
+  t.doesNotThrow(target.hello.bind(target));
+  t.doesNotThrow(target.bye.bind(target));
+  t.end();
+});
+
+tap.test('apply patches', {skip: false}, function(t) {
+  var er = di.patch({
+    '/no/such/.js/file/exists': [
+      {type: 'code', line: 2, code: 'return "xxx";'},
+    ]
+  });
+  t.equal(er.error, 'noscript');
   t.end();
 });

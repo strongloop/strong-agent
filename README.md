@@ -342,7 +342,7 @@ have a timer property created on it.
 With the following code in file `path/to/your-app/index.js`:
 
 ```
-// Example server, for dynamic instrumentation
+// save as `dyninst-metrics-example.js`
 var http = require('http');
 
 http.createServer(request).listen(process.env.PORT || 3000);
@@ -350,7 +350,7 @@ http.createServer(request).listen(process.env.PORT || 3000);
 function request(req, res) {
   setTimeout(function() { // line 7
     res.end('OK\n'); // line 8
-  }, Math.random() * 100);
+  }, Math.random() > 0.1 ? 10 : 100);
 }
 ```
 
@@ -359,7 +359,7 @@ each request by passing the following `patch.json` to `slc runctl patch`:
 
 ```
 {
-  "path/to/your-app/index": [
+  "dyninst-metrics-example.js": [
     { "type": "increment", "line": 7, "metric": "get.delay" },
     { "type": "decrement", "line": 8, "metric": "get.delay" },
     { "type": "timer-start", "line": 7, "metric": "get.delay", "context": "res" },
@@ -374,7 +374,7 @@ which is always the beginning of the line. The above patch set will,
 conceptually, result in the patched file looking like:
 
 ```
-// Example server, for dynamic instrumentation
+// save as `dyninst-metrics-example.js`
 var http = require('http');
 
 http.createServer(request).listen(process.env.PORT || 3000);
@@ -382,7 +382,7 @@ http.createServer(request).listen(process.env.PORT || 3000);
 function request(req, res) {
 res.___timer = start('get.delay');increment('get.delay');  setTimeout(function() { // line 7
 res.___timer.stop();decrement('get.delay');   res.end('OK\n'); // line 8
-  }, Math.random() * 100);
+  }, Math.random() > 0.1 ? 10 : 100);
 }
 ```
 
