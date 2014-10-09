@@ -9,7 +9,7 @@
 #include "features.h"
 
 // Can't use `#pragma GCC diagnostic push/pop`, not supported by gcc 4.2.
-#if SL_COMPILER(GCC)
+#if defined(SL_COMPILER_GCC)
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #if SL_GCC_AT_LEAST(4, 8, 0)
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
@@ -21,16 +21,16 @@
 #include "v8.h"
 #include "v8-profiler.h"
 
-#if SL_COMPILER(GCC)
+#if defined(SL_COMPILER_GCC)
 #if SL_GCC_AT_LEAST(4, 8, 0)
 #pragma GCC diagnostic warning "-Wunused-local-typedefs"
 #endif
 #pragma GCC diagnostic warning "-Wunused-parameter"
 #endif
 
-#if SL_OS(POSIX)
+#if defined(SL_OS_POSIX)
 #include "platform-posix.h"
-#elif SL_OS(WINDOWS)
+#elif defined(SL_OS_WINDOWS)
 #include "platform-win32.h"
 #endif
 

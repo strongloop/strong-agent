@@ -6,10 +6,6 @@
 #ifndef AGENT_SRC_FEATURES_H_
 #define AGENT_SRC_FEATURES_H_
 
-#define SL_COMPILER(S) (defined(SL_COMPILER_##S) && SL_COMPILER_##S)
-#define SL_CPU(S) (defined(SL_CPU_##S) && SL_CPU_##S)
-#define SL_OS(S) (defined(SL_OS_##S) && SL_OS_##S)
-
 #if defined(__clang__)
 #define SL_COMPILER_CLANG 1
 #endif
@@ -42,7 +38,7 @@
 #define SL_OS_SOLARIS 1
 #endif
 
-#if !SL_OS(WINDOWS)
+#if !defined(SL_OS_WINDOWS)
 #define SL_OS_POSIX 1
 #endif
 
@@ -62,19 +58,19 @@
 #define SL_CPU_X86_64 1
 #endif
 
-#if SL_CPU(ARM) && defined(__ARM_PCS_VFP)
+#if defined(SL_CPU_ARM) && defined(__ARM_PCS_VFP)
 #define SL_CPU_ARM_HARDFP 1
 #endif
 
-#if SL_CPU(ARM) && defined(__ARMEB__)
+#if defined(SL_CPU_ARM) && defined(__ARMEB__)
 #define SL_CPU_BIG_ENDIAN 1
 #endif
 
-#if SL_CPU(MIPS) && defined(__MIPSEB__)
+#if defined(SL_CPU_MIPS) && defined(__MIPSEB__)
 #define SL_CPU_BIG_ENDIAN 1
 #endif
 
-#if SL_COMPILER(CLANG)
+#if defined(SL_COMPILER_CLANG)
 #define SL_CLANG_AT_LEAST(major, minor, patch)             \
   (__clang_major__ > major ||                              \
    __clang_major__ == major && __clang_minor__ > minor ||  \
@@ -84,7 +80,7 @@
 #define SL_CLANG_AT_LEAST(major, minor, patch) 0
 #endif
 
-#if SL_COMPILER(GCC)
+#if defined(SL_COMPILER_GCC)
 #define SL_GCC_AT_LEAST(major, minor, patch)                          \
   (__GNUC__ > major || __GNUC__ == major && __GNUC_MINOR__ > minor || \
    __GNUC__ == major && __GNUC_MINOR__ == minor &&                    \

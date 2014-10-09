@@ -29,7 +29,8 @@ uint32_t& sum = statistics[3];
 void OnCheck(uv_check_t* handle) {
   const uv_loop_t* const loop = handle->loop;
   const uint64_t now = uv_hrtime() / static_cast<uint64_t>(1e6);
-  const uint32_t delta = now <= loop->time ? 0 : (now - loop->time);
+  const uint32_t delta =
+      static_cast<uint32_t>(now <= loop->time ? 0 : (now - loop->time));
   if (delta < min) {
     min = delta;
   }

@@ -19,7 +19,7 @@
 
 namespace compat {
 
-#if COMPAT_NODE_VERSION(10)
+#if defined(COMPAT_NODE_VERSION_10)
 #define COMPAT_ISOLATE
 #define COMPAT_ISOLATE_
 #else
@@ -37,7 +37,7 @@ inline v8::Local<T> ToLocal(v8::Local<T> handle) {
   return handle;
 }
 
-#if COMPAT_NODE_VERSION(10)
+#if defined(COMPAT_NODE_VERSION_10)
 template <typename T>
 inline v8::Local<T> ToLocal(v8::Handle<T> handle) {
   return v8::Local<T>(*handle);
@@ -185,7 +185,7 @@ v8::Isolate* ReturnableHandleScope::isolate() const {
   return args_.GetIsolate();
 }
 
-#if COMPAT_NODE_VERSION(10)
+#if defined(COMPAT_NODE_VERSION_10)
 
 void CpuProfiler::StartCpuProfiling(v8::Isolate* isolate,
                                     v8::Local<v8::String> title) {
@@ -263,7 +263,7 @@ ReturnType ReturnableHandleScope::Return(v8::Local<v8::Value> value) {
   return handle_scope_.Close(value);
 }
 
-#elif COMPAT_NODE_VERSION(12)
+#elif defined(COMPAT_NODE_VERSION_12)
 
 void CpuProfiler::StartCpuProfiling(v8::Isolate* isolate,
                                     v8::Local<v8::String> title) {

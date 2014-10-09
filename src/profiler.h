@@ -39,7 +39,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       function_name_sym_ = C::String::NewFromUtf8(isolate, "functionName");
       line_number_sym_ = C::String::NewFromUtf8(isolate, "lineNumber");
       script_name_sym_ = C::String::NewFromUtf8(isolate, "scriptName");
-#if COMPAT_NODE_VERSION(10)
+#if defined(COMPAT_NODE_VERSION_10)
       call_uid_sym_ = C::String::NewFromUtf8(isolate, "callUid");
       children_count_sym_ = C::String::NewFromUtf8(isolate, "childrenCount");
       self_samples_count_sym_ =
@@ -48,7 +48,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       total_samples_count_sym_ =
           C::String::NewFromUtf8(isolate, "totalSamplesCount");
       total_time_sym_ = C::String::NewFromUtf8(isolate, "totalTime");
-#elif COMPAT_NODE_VERSION(12)
+#elif defined(COMPAT_NODE_VERSION_12)
       bailout_reason_sym_ = C::String::NewFromUtf8(isolate, "bailoutReason");
       column_number_sym_ = C::String::NewFromUtf8(isolate, "columnNumber");
       hit_count_sym_ = C::String::NewFromUtf8(isolate, "hitCount");
@@ -60,14 +60,14 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
              function_name_sym_.IsEmpty() == false &&
              line_number_sym_.IsEmpty() == false &&
              script_name_sym_.IsEmpty() == false &&
-#if COMPAT_NODE_VERSION(10)
+#if defined(COMPAT_NODE_VERSION_10)
              call_uid_sym_.IsEmpty() == false &&
              children_count_sym_.IsEmpty() == false &&
              self_samples_count_sym_.IsEmpty() == false &&
              self_time_sym_.IsEmpty() == false &&
              total_samples_count_sym_.IsEmpty() == false &&
              total_time_sym_.IsEmpty() == false;
-#elif COMPAT_NODE_VERSION(12)
+#elif defined(COMPAT_NODE_VERSION_12)
              bailout_reason_sym_.IsEmpty() == false &&
              column_number_sym_.IsEmpty() == false &&
              hit_count_sym_.IsEmpty() == false;
@@ -89,7 +89,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       Handle<String> function_name_val = node->GetFunctionName();
       if (function_name_val.IsEmpty()) return Local<Object>();
 
-#if COMPAT_NODE_VERSION(10)
+#if defined(COMPAT_NODE_VERSION_10)
       Local<Number> self_samples_count_val =
           C::Number::New(isolate_, node->GetSelfSamplesCount());
       if (self_samples_count_val.IsEmpty()) return Local<Object>();
@@ -128,7 +128,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       o->Set(line_number_sym_, line_number_val);
       o->Set(script_name_sym_, script_name_val);
       o->Set(function_name_sym_, function_name_val);
-#elif COMPAT_NODE_VERSION(12)
+#elif defined(COMPAT_NODE_VERSION_12)
       o->Set(script_name_sym_, script_name_val);
       o->Set(function_name_sym_, function_name_val);
 
@@ -217,14 +217,14 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
     Local<String> function_name_sym_;
     Local<String> line_number_sym_;
     Local<String> script_name_sym_;
-#if COMPAT_NODE_VERSION(10)
+#if defined(COMPAT_NODE_VERSION_10)
     Local<String> children_count_sym_;
     Local<String> call_uid_sym_;
     Local<String> self_samples_count_sym_;
     Local<String> self_time_sym_;
     Local<String> total_samples_count_sym_;
     Local<String> total_time_sym_;
-#elif COMPAT_NODE_VERSION(12)
+#elif defined(COMPAT_NODE_VERSION_12)
     Local<String> bailout_reason_sym_;
     Local<String> column_number_sym_;
     Local<String> hit_count_sym_;
@@ -238,7 +238,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
   return helper.ToObject(node);
 }
 
-#if COMPAT_NODE_VERSION(12)
+#if defined(COMPAT_NODE_VERSION_12)
 // FIXME(bnoordhuis) Mangles UTF-8 sequences, it treats them as bytes.
 std::string EscapeJson(const char* string, size_t size, size_t start = 0) {
   std::string head(string, start);
@@ -390,7 +390,7 @@ void Initialize(Isolate* isolate, Local<Object> binding) {
   binding->Set(
       C::String::NewFromUtf8(isolate, "stopCpuProfiling"),
       C::FunctionTemplate::New(isolate, StopCpuProfiling)->GetFunction());
-#if COMPAT_NODE_VERSION(12)
+#if defined(COMPAT_NODE_VERSION_12)
   binding->Set(C::String::NewFromUtf8(isolate, "stopCpuProfilingAndSerialize"),
                C::FunctionTemplate::New(isolate, StopCpuProfilingAndSerialize)
                    ->GetFunction());
