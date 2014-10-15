@@ -247,6 +247,8 @@ std::string EscapeJson(const char* string, size_t size, size_t start = 0) {
     const uint8_t c = static_cast<uint8_t>(string[index]);
     if (c == '"') {
       stream << "\\\"";
+    } else if (c == '\\') {
+      stream << "\\\\";
     } else if (c < 0x20 || c > 0x7F) {
       // Easier to calculate the hex digits than set and restore std::ios::hex.
       static const char hex[] = "0123456789abcdef";
@@ -263,7 +265,7 @@ std::string MaybeEscapeJson(const char* string, size_t size) {
   // and this way we avoid an unnecessary copy into a std::string.
   for (size_t index = 0; index < size; index += 1) {
     const uint8_t c = static_cast<uint8_t>(string[index]);
-    if (c < 0x20 || c > 0x7F || c == '"') {
+    if (c < 0x20 || c > 0x7F || c == '"' || c == '\\') {
       return EscapeJson(string, size, index);
     }
   }

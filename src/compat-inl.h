@@ -104,14 +104,6 @@ v8::Local<v8::Object> Object::New(v8::Isolate* isolate) {
 }
 
 template <typename T>
-Persistent<T>::~Persistent() {
-  // Trying to dispose the handle when the VM has been destroyed
-  // (e.g. at program exit) will segfault.
-  if (v8::V8::IsDead()) return;
-  Reset();
-}
-
-template <typename T>
 bool Persistent<T>::IsEmpty() const {
   return handle_.IsEmpty();
 }

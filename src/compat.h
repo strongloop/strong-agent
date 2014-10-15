@@ -121,7 +121,6 @@ class HandleScope {
 template <typename T>
 class Persistent {
  public:
-  inline ~Persistent();
   inline v8::Local<T> ToLocal(v8::Isolate* isolate) const;
   inline void Reset();
   inline void Reset(v8::Isolate* isolate, v8::Local<T> value);
