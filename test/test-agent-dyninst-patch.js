@@ -33,9 +33,9 @@ function checkOutputTimer(t, at, real) {
 function checkTimer(t, value, real) {
   var extra = util.format('want %d ms, metric %d ms, self-timed %d ms',
                           target.Runner.interval, value, real);
-  // Assert time is within a few ms... this might be too sensitive for CI.
-  t.assert(value > target.Runner.interval - 5, extra);
-  t.assert(value < target.Runner.interval + 10, extra);
+  // Assert metrics time is within a few ms of time we measure.
+  t.assert(value > real - 5, extra);
+  t.assert(value < real + 5, extra);
 }
 
 target.Runner.setInterval(100);  // expect intervals of this, +/- tolerances
