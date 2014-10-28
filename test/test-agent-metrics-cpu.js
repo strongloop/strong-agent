@@ -58,7 +58,5 @@ function verifyNode(node) {
   assert.equal(node.lineNumber, node.lineNumber | 0);
   assert.equal(node.columnNumber, node.columnNumber | 0);
   assert.equal(node.hitCount, node.hitCount | 0);
-  // callUID is not necessarily in the range -2,147,483,648 to 2,147,483,647.
-  assert.equal(node.id, node.id | 0);
   node.children.forEach(verifyNode);
 }

@@ -238,7 +238,6 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
   return helper.ToObject(node);
 }
 
-#if defined(COMPAT_NODE_VERSION_12)
 // FIXME(bnoordhuis) Mangles UTF-8 sequences, it treats them as bytes.
 std::string EscapeJson(const char* string, size_t size, size_t start = 0) {
   std::string head(string, start);
@@ -286,11 +285,48 @@ std::ostream& operator<<(std::ostream& os, Handle<String> string) {
 // Produces a stringified JSON object that is consumable by Chrome 35's
 // Dev Tools.  Note that when stored as a file, the filename needs to
 // have ".cpuprofile" as its extension in order for Chrome to load it.
-//
-// Support is currently restricted to node.js v0.11 and v0.12.  The version
-// of V8 in node.js v0.10 is so old that we can't synthesize output that is
-// acceptable to versions of Chrome > 24.  Chrome 24 is so old that it isn't
-// available for download anymore so there is no point in supporting it.
+#if defined(COMPAT_NODE_VERSION_10)
+void SerializeCpuProfileNode(const CpuProfileNode* node, std::ostream* sink) {
+  (*sink) << "{\"functionName\":\"" << node->GetFunctionName();
+  // Script id is numerical but for some reason Chrome encodes it as a string
+  // so we do too.
+  // FIXME(bnoordhuis) V8 3.14 does not have CpuProfileNode::GetScriptId().
+  // We could manually map script names to IDs but DevTools does not seem
+  // to actually use the script ID.  Let's not worry about it for now.
+  (*sink) << "\",\"scriptId\":\"" << 42;
+  (*sink) << "\",\"url\":\"" << node->GetScriptResourceName();
+  (*sink) << "\",\"lineNumber\":" << node->GetLineNumber();
+  (*sink) << ",\"columnNumber\":" << v8::Message::kNoColumnInfo;
+  (*sink) << ",\"hitCount\":" << int64_t(node->GetSelfSamplesCount());
+  (*sink) << ",\"callUID\":" << node->GetCallUid();
+  (*sink) << ",\"children\":[";
+  const int children_count = node->GetChildrenCount();
+  if (children_count > 0) {
+    SerializeCpuProfileNode(node->GetChild(0), sink);
+  }
+  for (int index = 1; index < children_count; index += 1) {
+    (*sink) << ',';
+    SerializeCpuProfileNode(node->GetChild(index), sink);
+  }
+  const char* bailout_reason = "";
+  (*sink) << "],\"deoptReason\":\"" << bailout_reason;
+  // Use the address as an ersatz node ID, it's stable over the lifetime of
+  // the snapshot.
+  const int kShiftBits = sizeof(void*) == 8 ? 3 : 2;
+  const uintptr_t id = reinterpret_cast<uintptr_t>(node) >> kShiftBits;
+  (*sink) << "\",\"id\":" << id;
+  (*sink) << '}';
+}
+
+void SerializeCpuProfile(const CpuProfile* profile, std::ostream* sink) {
+  (*sink) << "{\"head\":";
+  const CpuProfileNode* root = profile->GetTopDownRoot();
+  SerializeCpuProfileNode(root, sink);
+  (*sink) << ",\"startTime\":" << 0;
+  (*sink) << ",\"endTime\":" << int64_t(root->GetTotalTime() / 1e3);
+  (*sink) << ",\"samples\":[]}";
+}
+#elif defined(COMPAT_NODE_VERSION_12)
 void SerializeCpuProfileNode(const CpuProfileNode* node, std::ostream* sink) {
   (*sink) << "{\"functionName\":\"" << node->GetFunctionName();
   // Script id is numerical but for some reason Chrome encodes it as a string
@@ -322,10 +358,8 @@ void SerializeCpuProfileNode(const CpuProfileNode* node, std::ostream* sink) {
 void SerializeCpuProfile(const CpuProfile* profile, std::ostream* sink) {
   (*sink) << "{\"head\":";
   SerializeCpuProfileNode(profile->GetTopDownRoot(), sink);
-  (*sink) << ",\"startTime\":";
-  (*sink) << profile->GetStartTime() / 1e6;
-  (*sink) << ",\"endTime\":";
-  (*sink) << profile->GetEndTime() / 1e6;
+  (*sink) << ",\"startTime\":" << int64_t(profile->GetStartTime() / 1e6);
+  (*sink) << ",\"endTime\":" << int64_t(profile->GetEndTime() / 1e6);
   (*sink) << ",\"samples\":[";
   const int samples_count = profile->GetSamplesCount();
   if (samples_count > 0) {
@@ -336,6 +370,7 @@ void SerializeCpuProfile(const CpuProfile* profile, std::ostream* sink) {
   }
   (*sink) << "]}";
 }
+#endif
 
 C::ReturnType StopCpuProfilingAndSerialize(const C::ArgumentType& args) {
   Isolate* isolate = args.GetIsolate();
@@ -359,7 +394,6 @@ C::ReturnType StopCpuProfilingAndSerialize(const C::ArgumentType& args) {
       isolate, string.c_str(), C::String::kNormalString, string.size());
   return handle_scope.Return(result);
 }
-#endif
 
 C::ReturnType StartCpuProfiling(const C::ArgumentType& args) {
   Isolate* isolate = args.GetIsolate();
@@ -392,11 +426,9 @@ void Initialize(Isolate* isolate, Local<Object> binding) {
   binding->Set(
       C::String::NewFromUtf8(isolate, "stopCpuProfiling"),
       C::FunctionTemplate::New(isolate, StopCpuProfiling)->GetFunction());
-#if defined(COMPAT_NODE_VERSION_12)
   binding->Set(C::String::NewFromUtf8(isolate, "stopCpuProfilingAndSerialize"),
                C::FunctionTemplate::New(isolate, StopCpuProfilingAndSerialize)
                    ->GetFunction());
-#endif
 }
 
 }  // namespace profiler
