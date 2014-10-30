@@ -236,7 +236,8 @@ When enabled, the following metrics are reported at 15 second intervals:
 
 The agent has a built-in CPU profiler that produces output in a format that can
 be imported into the [Chrome Developer Tools][].  The profiler is available with
-Node.js v0.11 and up.
+Node.js v0.11 and up.  Reduced functionality is available with Node.js v0.10;
+top-level and bottom-up views work, chart and timeline views don't.
 
 * `agent.metrics.startCpuProfiling()` - Start the CPU profiler.  Throws an
   Error when the CPU profiler is unavailable.
