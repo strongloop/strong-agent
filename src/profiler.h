@@ -19,7 +19,6 @@ namespace C = ::compat;
 using v8::Array;
 using v8::CpuProfile;
 using v8::CpuProfileNode;
-using v8::CpuProfiler;
 using v8::FunctionTemplate;
 using v8::Handle;
 using v8::HandleScope;
@@ -375,7 +374,7 @@ void SerializeCpuProfile(const CpuProfile* profile, std::ostream* sink) {
 C::ReturnType StopCpuProfilingAndSerialize(const C::ArgumentType& args) {
   Isolate* isolate = args.GetIsolate();
   C::ReturnableHandleScope handle_scope(args);
-  const CpuProfile* profile = C::CpuProfiler::StopCpuProfiling(isolate);
+  const CpuProfile* profile = watchdog::StopCpuProfiling(isolate);
   if (profile == NULL) {
     // Not started or preempted by another profiler.
     return handle_scope.Return();
@@ -396,16 +395,16 @@ C::ReturnType StopCpuProfilingAndSerialize(const C::ArgumentType& args) {
 }
 
 C::ReturnType StartCpuProfiling(const C::ArgumentType& args) {
-  Isolate* isolate = args.GetIsolate();
   C::ReturnableHandleScope handle_scope(args);
-  C::CpuProfiler::StartCpuProfiling(isolate);
+  const int64_t timeout_in_ms = args[0]->IntegerValue();
+  watchdog::StartCpuProfiling(args.GetIsolate(), timeout_in_ms);
   return handle_scope.Return();
 }
 
 C::ReturnType StopCpuProfiling(const C::ArgumentType& args) {
   Isolate* isolate = args.GetIsolate();
   C::ReturnableHandleScope handle_scope(args);
-  const CpuProfile* profile = C::CpuProfiler::StopCpuProfiling(isolate);
+  const CpuProfile* profile = watchdog::StopCpuProfiling(isolate);
   if (profile == NULL) {
     // Not started or preempted by another profiler.
     return handle_scope.Return();

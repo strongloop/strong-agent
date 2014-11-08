@@ -87,6 +87,10 @@ struct Integer : public AllStatic {
 struct Isolate : public AllStatic {
   inline static void GetHeapStatistics(v8::Isolate* isolate,
                                        v8::HeapStatistics* stats);
+  inline static void SetAddHistogramSampleFunction(
+      v8::Isolate* isolate, v8::AddHistogramSampleCallback callback);
+  inline static void SetCreateHistogramFunction(
+      v8::Isolate* isolate, v8::CreateHistogramCallback callback);
   inline static v8::Local<v8::Value> ThrowException(
       v8::Isolate* isolate, v8::Local<v8::Value> exception);
 };

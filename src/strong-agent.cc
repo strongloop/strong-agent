@@ -12,6 +12,7 @@
 #include "profiler.h"
 #include "queue.h"
 #include "uvmon.h"
+#include "watchdog.h"
 
 namespace strongloop {
 namespace agent {
@@ -93,6 +94,7 @@ void Initialize(Local<Object> binding) {
   heapdiff::Initialize(isolate, binding);
   profiler::Initialize(isolate, binding);
   uvmon::Initialize(isolate, binding);
+  watchdog::Initialize(isolate, binding);
 #define V(name)                                        \
   binding->Set(C::String::NewFromUtf8(isolate, #name), \
                C::Integer::New(isolate, name));

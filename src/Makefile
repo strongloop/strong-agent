@@ -28,6 +28,7 @@ SOURCES = \
 	util-inl.h \
 	util.h \
 	uvmon.h \
+	watchdog.h \
 
 SOURCES := $(SOURCES:%=$(PREFIX)%)
 
@@ -38,13 +39,19 @@ SOURCES := $(SOURCES:%=$(PREFIX)%)
 # but we want to catch bugs where project headers have implicit dependencies
 # on system headers included in source files.
 #
+# Disable readability/function, it conflicts with -Wunused-parameter.
+#
 # Disable whitespace/indent, it sometimes conflicts with clang-format.
-FILTER = -build/include,-build/include_order,-whitespace/indent
+FILTER = \
+	-build/include, \
+	-build/include_order, \
+	-readability/function, \
+	-whitespace/indent, \
 
 .PHONY: check-imports lint clang-format
 
 lint: check-imports
-	$(PYTHON) $(PREFIX)cpplint.py --filter=$(FILTER) $(SOURCES)
+	$(PYTHON) $(PREFIX)cpplint.py --filter="$(FILTER)" $(SOURCES)
 
 check-imports:
 	$(SHELL) $(PREFIX)check-imports.sh $(SOURCES)

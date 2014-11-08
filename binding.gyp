@@ -41,6 +41,7 @@
         'src/strong-agent.cc',
         'src/strong-agent.h',
         'src/uvmon.h',
+        'src/watchdog.h',
       ],
     }
   ]

@@ -104,6 +104,12 @@ namespace uvmon {
 void Initialize(v8::Isolate*, v8::Local<v8::Object>);
 }  // namespace uvmon
 
+namespace watchdog {
+void Initialize(v8::Isolate*, v8::Local<v8::Object>);
+void StartCpuProfiling(v8::Isolate* isolate, uint64_t timeout);
+const v8::CpuProfile* StopCpuProfiling(v8::Isolate* isolate);
+}  // namespace watchdog
+
 namespace platform {
 void CpuTime(double* total_system, double* total_user);
 }  // namespace platform

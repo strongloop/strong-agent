@@ -154,7 +154,6 @@ using v8::Function;
 using v8::Isolate;
 using v8::Local;
 using v8::Object;
-using v8::V8;
 using v8::Value;
 using v8::kExternalIntArray;
 
@@ -229,14 +228,15 @@ inline void OnWakeUp(WakeUp*) {  // NOLINT(readability/function)
 
 C::ReturnType StartCounters(const C::ArgumentType& args) {
   C::ReturnableHandleScope handle_scope(args);
-  V8::SetAddHistogramSampleFunction(AddHistogramSampleFunction);
+  C::Isolate::SetAddHistogramSampleFunction(args.GetIsolate(),
+                                            AddHistogramSampleFunction);
   ResetSamples();
   return handle_scope.Return();
 }
 
 C::ReturnType StopCounters(const C::ArgumentType& args) {
   C::ReturnableHandleScope handle_scope(args);
-  V8::SetAddHistogramSampleFunction(NULL);
+  C::Isolate::SetAddHistogramSampleFunction(args.GetIsolate(), NULL);
   ResetSamples();
   wakeup->Stop();
   return handle_scope.Return();
@@ -244,7 +244,7 @@ C::ReturnType StopCounters(const C::ArgumentType& args) {
 
 void Initialize(Isolate* isolate, Local<Object> binding) {
   wakeup.Initialize(OnWakeUp);
-  V8::SetCreateHistogramFunction(CreateHistogramFunction);
+  C::Isolate::SetCreateHistogramFunction(isolate, CreateHistogramFunction);
   // Not really necessary to expose but makes for easier introspection.
   binding->Set(C::String::NewFromUtf8(isolate, "startCounters"),
                C::FunctionTemplate::New(isolate, StartCounters)->GetFunction());

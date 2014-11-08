@@ -33,6 +33,51 @@ template <typename T>
 inline void Use(const T&) {}
 
 template <typename T>
+class HasGetConstructorMethod {
+  template <typename U>
+  static int16_t M(int (*)[sizeof(&U::GetConstructor)]);
+  template <typename U>
+  static int32_t M(...);
+
+ public:
+  static const bool value = (sizeof(M<T>(0)) == sizeof(int16_t));
+};
+
+// V8 doesn't export a version macro that we can #ifdef on so we apply some
+// SFINAE magic to figure out with what V8 version we are dealing.  In truth,
+// Object::GetConstructor() was removed sometime during the 3.28 development
+// cycle but we only have to discern between 3.26 and 3.29 because those are
+// the V8 versions that joyent/node and node-forward/node ship respectively.
+static const bool AT_LEAST_V8_3_29 =
+    (HasGetConstructorMethod<v8::Object>::value == false);
+
+template <bool AT_LEAST_V8_3_29, typename T, typename U>
+void SetAddHistogramSampleFunction(U*, v8::AddHistogramSampleCallback callback,
+                                   int (*)[AT_LEAST_V8_3_29 == false] = 0) {
+  T::SetAddHistogramSampleFunction(callback);
+}
+
+template <bool AT_LEAST_V8_3_29, typename T, typename U>
+void SetAddHistogramSampleFunction(U* isolate,
+                                   v8::AddHistogramSampleCallback callback,
+                                   int (*)[AT_LEAST_V8_3_29 == true] = 0) {
+  isolate->SetAddHistogramSampleFunction(callback);
+}
+
+template <bool AT_LEAST_V8_3_29, typename T, typename U>
+void SetCreateHistogramFunction(U*, v8::CreateHistogramCallback callback,
+                                int (*)[AT_LEAST_V8_3_29 == false] = 0) {
+  T::SetCreateHistogramFunction(callback);
+}
+
+template <bool AT_LEAST_V8_3_29, typename T, typename U>
+void SetCreateHistogramFunction(U* isolate,
+                                v8::CreateHistogramCallback callback,
+                                int (*)[AT_LEAST_V8_3_29 == true] = 0) {
+  isolate->SetCreateHistogramFunction(callback);
+}
+
+template <typename T>
 inline v8::Local<T> ToLocal(v8::Local<T> handle) {
   return handle;
 }
@@ -91,6 +136,17 @@ v8::Local<v8::Integer> Integer::NewFromUnsigned(v8::Isolate* isolate,
                                                 uint32_t value) {
   I::Use(isolate);
   return v8::Integer::NewFromUnsigned(COMPAT_ISOLATE_ value);
+}
+
+void Isolate::SetAddHistogramSampleFunction(
+    v8::Isolate* isolate, v8::AddHistogramSampleCallback callback) {
+  I::SetAddHistogramSampleFunction<I::AT_LEAST_V8_3_29, v8::V8>(isolate,
+                                                                callback);
+}
+
+void Isolate::SetCreateHistogramFunction(v8::Isolate* isolate,
+                                         v8::CreateHistogramCallback callback) {
+  I::SetCreateHistogramFunction<I::AT_LEAST_V8_3_29, v8::V8>(isolate, callback);
 }
 
 v8::Local<v8::Number> Number::New(v8::Isolate* isolate, double value) {
