@@ -271,10 +271,8 @@ namespace C = ::compat;
 
 void Initialize(v8::Isolate*, v8::Local<v8::Object>) {}
 
-const char* StartCpuProfiling(v8::Isolate* isolate, uint64_t timeout) {
-  if (timeout > 0) return "timeout > 0";
+void StartCpuProfiling(v8::Isolate* isolate, uint64_t) {
   C::CpuProfiler::StartCpuProfiling(isolate);
-  return NULL;
 }
 
 const v8::CpuProfile* StopCpuProfiling(v8::Isolate* isolate) {
