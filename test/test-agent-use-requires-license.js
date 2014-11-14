@@ -1,3 +1,5 @@
+process.env.SL_ENV = '';
+
 var assert = require('assert');
 var async = require('async');
 var util = require('util');
