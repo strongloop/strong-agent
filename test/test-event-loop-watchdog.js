@@ -6,9 +6,13 @@ if (process.platform !== 'linux' ||
   return;
 }
 
+process.env.SL_ENV = 'dev';
 var addon = require('../lib/addon');
+var agent = require('../');
 var assert = require('assert');
 var profiler = require('../lib/profilers/cpu');
+
+agent.profile('some app', 'some key');
 
 function hitCount(node) {
   if (typeof(node.totalSamplesCount) === 'number') {
@@ -50,3 +54,11 @@ delay(25);
 
 assert(hitCount(profiler.stop()) > 1);
 assert.equal(profiler.stop(), undefined);
+
+agent.metrics.startCpuProfiling(1000);
+delay(25);
+assert.equal(hitCount(JSON.parse(agent.metrics.stopCpuProfiling()).head), 1);
+
+agent.metrics.startCpuProfiling(1);
+delay(25);
+assert(hitCount(JSON.parse(agent.metrics.stopCpuProfiling()).head) > 1);
