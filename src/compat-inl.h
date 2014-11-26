@@ -176,7 +176,11 @@ ReturnType ReturnableHandleScope::Return(bool value) {
   return Return(Boolean::New(isolate(), value));
 }
 
-ReturnType ReturnableHandleScope::Return(intptr_t value) {
+ReturnType ReturnableHandleScope::Return(int32_t value) {
+  return Return(Integer::New(isolate(), value));
+}
+
+ReturnType ReturnableHandleScope::Return(uint32_t value) {
   return Return(Integer::New(isolate(), value));
 }
 

@@ -5,11 +5,18 @@ var async = require('async');
 var util = require('util');
 var helpers = require('./helpers');
 var agent = require('../');
+var path = require('path');
+
+// Patch package.json to stop strong-agent from fetching the app name from it.
+var filename = path.join(__dirname, '../package.json');
+require(filename);
+require.cache[filename].exports.name = '';
 
 var tests = [
   {
     env: {
       STRONGLOOP_LICENSE: helpers.invalidLicense(),
+      STRONGLOOP_APPNAME: 'valid app',
       STRONGLOOP_KEY: 'valid key'
     },
     expect: [
@@ -20,17 +27,29 @@ var tests = [
   {
     env: {
       STRONGLOOP_LICENSE: helpers.shortTestLicense(),
+      STRONGLOOP_APPNAME: 'valid app',
       STRONGLOOP_KEY: undefined
     },
     expect: [
       'API key not found, StrongOps dashboard reporting disabled',
       'started profiling agent',
     ],
-
+  },
+  {
+    env: {
+      STRONGLOOP_LICENSE: helpers.shortTestLicense(),
+      STRONGLOOP_APPNAME: undefined,
+      STRONGLOOP_KEY: 'valid key'
+    },
+    expect: [
+      'Application name not found, StrongOps dashboard reporting disabled',
+      'started profiling agent',
+    ],
   },
   {
     env: {
       STRONGLOOP_LICENSE: helpers.invalidLicense(),
+      STRONGLOOP_APPNAME: undefined,
       STRONGLOOP_KEY: undefined
     },
     expect: [
@@ -42,6 +61,7 @@ var tests = [
   {
     env: {
       STRONGLOOP_LICENSE: helpers.shortTestLicense(),
+      STRONGLOOP_APPNAME: 'valid app',
       STRONGLOOP_KEY: 'valid key'
     },
     expect: ['started profiling agent', ]
@@ -52,14 +72,16 @@ async.eachSeries(tests, runTest, done);
 
 function runTest(test, cb) {
   process.env.STRONGLOOP_LICENSE = test.env.STRONGLOOP_LICENSE;
-  if (test.env.STRONGLOOP_KEY)
-    process.env.STRONGLOOP_KEY = test.env.STRONGLOOP_KEY;
-  else
-    delete process.env.STRONGLOOP_KEY;
+  ['STRONGLOOP_APPNAME', 'STRONGLOOP_KEY'].forEach(function(key) {
+    if (test.env[key])
+      process.env[key] = test.env[key];
+    else
+      delete process.env[key];
+  });
 
   var log = helpers.expectantLogger(test.expect, test.notExpect, cb);
   agent.stop();
-  agent.profile(null, 'some name', {
+  agent.profile(null, null, {
     logger: {
       log: log,
       info: log,
