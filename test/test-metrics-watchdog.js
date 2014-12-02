@@ -1,4 +1,5 @@
 process.env.SL_ENV = '';
+process.env.STRONGLOOP_LICENSE = '';
 var agent = require('../');
 var assert = require('assert');
 
