@@ -69,7 +69,9 @@ process.on('exit', function() {
   assert(has('heap.total'));
   assert(has('http.connection.count'));
   assert(has('gc.heap.used'));
-  assert(has('tiers.http.average'));
+  assert(has('http.average'));
+  assert(has('http.maximum'));
+  assert(has('http.minimum'));
   assert(has('loop.count'));
   assert(has('loop.minimum'));
   assert(has('loop.maximum'));

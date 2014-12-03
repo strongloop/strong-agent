@@ -5,12 +5,18 @@ var assert = require('assert');
 
 var N = 1e3;
 var counts = {
-  'mysql.count': 0,
+  'mongodb.average': 0,
   'mongodb.count': 0,
+  'mongodb.maximum': 0,
+  'mongodb.minimum': 0,
+  'mysql.average': 0,
+  'mysql.count': 0,
+  'mysql.maximum': 0,
+  'mysql.minimum': 0,
+  'redis.average': 0,
   'redis.count': 0,
-  'tiers.mongodb_in.average': 0,
-  'tiers.mysql_in.average': 0,
-  'tiers.redis_in.average': 0,
+  'redis.maximum': 0,
+  'redis.minimum': 0,
 };
 process.once('exit', function() {
   Object.keys(counts).forEach(function(name) {
@@ -18,12 +24,13 @@ process.once('exit', function() {
       assert.equal(counts[name], N);
       return;
     }
-    if (/^tiers\.\w+_in\.average$/.test(name)) {
-      // Average query time should be on the order of microseconds in this
-      // test, certainly less than 5 milliseconds.
-      var avg = counts[name];
-      assert(avg > 0);
-      assert(avg < 5);
+    if (/^(mongodb|mysql|redis)\.(average|maximum|minimum)$/.test(name)) {
+      // Mean/min/max query time should certainly be no more than 10 ms in this
+      // test.  The value can be zero because query times are truncated to four
+      // digits after the dot.
+      var value = counts[name];
+      assert(value >= 0);
+      assert(value <= 10);
       return;
     }
     throw Error('unexpected key: ' + name);

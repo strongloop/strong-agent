@@ -3,22 +3,17 @@ var counts = require('../lib/counts');
 var config = require('../lib/config');
 
 function emit(name, data) {
-  if (data.callCounts) {
-    data = data.callCounts;
-  } else {
-    return;
-  }
   if (data.one) {
     emit.one += 1;
-    assert.equal(data.one.count, 1);
+    assert.equal(data.one, 1);
   }
   if (data.two) {
     emit.two += 1;
-    assert.equal(data.two.count, 2);
+    assert.equal(data.two, 2);
   }
   if (data.three) {
     emit.three += 1;
-    assert.equal(data.three.count, 3);
+    assert.equal(data.three, 3);
   }
 }
 emit.one = 0;

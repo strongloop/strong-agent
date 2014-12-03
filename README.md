@@ -188,6 +188,42 @@ All values are for the current process only.
 
   Number of sent [strong-mq][] or [axon][] messages.
 
+* `<probe>.count`
+  `<probe>.average`
+  `<probe>.maximum`
+  `<probe>.minimum`
+
+  The agent collects count, average, maximum and minimum metrics for several
+  popular third-party modules.  The list of supported modules and recorded
+  metrics are as follows:
+
+  | module            | metric                                                |
+  |-------------------|-------------------------------------------------------|
+  | [loopback-datasource-juggler][] | query time in ms (reported as `dao.<metric>`) |
+  | [leveldown][]     | query time in ms                                      |
+  | [memcache][]      | query time in ms (reported as `memcached.<metric>`)   |
+  | [memcached][]     | query time in ms                                      |
+  | [mongodb][]       | query time in ms                                      |
+  | [mysql][]         | query time in ms                                      |
+  | [postgres][]      | query time in ms                                      |
+  | [redis][]         | query time in ms                                      |
+  | [riak-js][]       | query time in ms (reported as `riak.<metric>`)        |
+  | [strong-oracle][] | query time in ms (reported as `oracle.<metric>`)      |
+
+  Metrics are reported once per time interval.  Modules that have more than one
+  command or query method have query times for their individual methods summed.
+
+  For example, the [strong-oracle][] module has `.execute()`, `.commit()` and
+  `.rollback()` methods.  The reponse times for those methods are summed and
+  reported as one metric, where:
+
+  - `oracle.count` is the number of calls in the last interval
+  - `oracle.average` the mean average query response time
+  - `oracle.maximum` the slowest query response time
+  - `oracle.minimum` the fastest query response time
+
+  Future agent releases will also report metrics for individual methods.
+
 ### Object tracking
 
 The agent can optionally track the creation and reclamation of JS objects over
@@ -400,6 +436,16 @@ Note from the above:
 
 
 [axon]: https://github.com/visionmedia/axon
+[leveldown]: https://github.com/rvagg/node-leveldown
+[loopback-datasource-juggler]: https://github.com/strongloop/loopback-datasource-juggler
+[memcache]: https://github.com/elbart/node-memcache
+[memcached]: https://github.com/3rd-Eden/node-memcached
+[mongodb]: https://github.com/mongodb/node-mongodb-native
+[mysql]: https://github.com/felixge/node-mysql
+[postgres]: https://github.com/brianc/node-postgres
+[riak-js]: https://github.com/mostlyserious/riak-js
+[redis]: https://github.com/mranney/node_redis
 [strong-mq]: https://github.com/strongloop/strong-mq
+[strong-oracle]: https://github.com/strongloop/strong-oracle
 [strong-supervisor]: https://github.com/strongloop/strong-supervisor
 [Chrome Developer Tools]: https://developer.chrome.com/devtools/docs/cpu-profiling
