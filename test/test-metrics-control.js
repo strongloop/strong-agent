@@ -15,7 +15,7 @@ var ok;
 process.on('exit', function() { assert(ok); });
 
 // Do some cheating to speed up the test
-config.heapDiffInterval = 500;
+config.baseInterval = 500;
 
 endpoint(function() {
   var collector = this;

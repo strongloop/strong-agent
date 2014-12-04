@@ -13,7 +13,7 @@ var profiler = require('../lib/profilers/memory');
 // to `new HeapDiff` and _step().  Nothing interesting in other words but
 // it's still sent to the collector.
 var instance = null;
-profiler.init(agent);
+profiler.init(agent, 100);
 profiler.agent.internal.on('instances', function(o) { instance = o });
 profiler.start();
 profiler.stop();

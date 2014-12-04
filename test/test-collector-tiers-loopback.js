@@ -20,7 +20,7 @@ function verifyDataIntegrity(data) {
 }
 
 // Do some cheating to speed up the test
-config.tiersInterval = 100;
+config.baseInterval = 100;
 
 var loopbackServer;
 

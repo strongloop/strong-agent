@@ -1,7 +1,7 @@
 'use strict';
 
 process.env.SL_ENV = 'dev';
-require('../lib/config').collectInterval = 50;
+require('../lib/config').baseInterval = 50;
 require('../').profile('deadbeef', 'deadbeef', {quiet: true});
 
 var assert = require('assert');

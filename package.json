@@ -22,17 +22,15 @@
   },
   "dependencies": {
     "debug": "~0.7.0",
-    "jwt-simple": "^0.2.0",
     "semver": "~2.2.1",
-    "strong-license": "~1.0.0",
-    "underscore": "1.x"
+    "strong-license": "~1.0.0"
   },
   "devDependencies": {
     "async": "~0.9.0",
-    "tap": "strongloop/node-tap#production",
     "express": "~3.3.5",
     "loopback": "~1.8.0",
-    "sinon": "~1.7.3"
+    "sinon": "~1.7.3",
+    "tap": "^0.4.13"
   },
   "scripts": {
     "clang-format": "make clang-format",

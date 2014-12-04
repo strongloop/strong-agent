@@ -1,6 +1,5 @@
 var assert = require('assert');
 var util = require('util');
-var _ = require('underscore');
 
 var logged = [];
 var log = function() {
@@ -25,11 +24,13 @@ levels.forEach(function(level) {
 
 process.on('exit', function() {
   // We should have seen each of our messages
-  var seen = _.chain(logged).map(function(line) {
+  var seen = logged.map(function(line) {
     var match = line.match('level is (.+)');
     if (match) {
       return match[1];
     }
-  }).compact().value();
+  }).filter(function(line) {
+    return !!line;
+  });
   assert.deepEqual(seen, levels);
 });

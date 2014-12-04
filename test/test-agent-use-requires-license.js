@@ -81,6 +81,8 @@ function runTest(test, cb) {
 
   var log = helpers.expectantLogger(test.expect, test.notExpect, cb);
   agent.stop();
+  // reset licenses, otherwise they accumulate
+  agent.licenses = [];
   agent.profile(null, null, {
     logger: {
       log: log,
