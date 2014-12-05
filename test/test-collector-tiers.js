@@ -19,9 +19,6 @@ function verifyDataIntegrity(data) {
   assert.equal(typeof(data.tiers.http.mean), 'number');
 }
 
-// Do some cheating to speed up the test
-config.baseInterval = 100;
-
 var expressServer;
 
 // Black hole
@@ -63,6 +60,8 @@ function onlisten() {
       secure: false,
     },
     quiet: true,
+    // Do some cheating to speed up the test
+    interval: 100,
   });
 
   // Start an express server and make a request to it
