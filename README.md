@@ -104,6 +104,8 @@ metrics at a currently fixed interval of 60 seconds.  The reported metrics
 are for the last interval only, i.e. they cover only the last 60 seconds.
 All values are for the current process only.
 
+#### CPU metrics
+
 * `cpu.system`
 
   System CPU time.  CPU time spent inside the kernel on behalf of the
@@ -133,6 +135,8 @@ All values are for the current process only.
   instructions on behalf of the process, i.e. where the process or its
   corresponding kernel thread is actually running.
 
+#### Heap metrics
+
 * `gc.heap.used`
 
   The part of the V8 heap that is still in use after a minor or major
@@ -158,11 +162,15 @@ All values are for the current process only.
   in the range -2,147,483,648 to 2,147,483,647.  (FIXME: exact range differs
   for ia32 and x64.)
 
+#### HTTP metrics
+
 * `http.connection.count`
 
   Number of new HTTP connections in the last interval.  (FIXME: Tracks only
   one HTTP server per process and it's not very deterministic what server
   that is.  Fortunately, most applications start only one server.)
+
+#### Event loop metrics
 
 * `loop.count`
 
@@ -180,6 +188,8 @@ All values are for the current process only.
 
   The mean average tick time in milliseconds.
 
+#### Message queue metrics
+
 * `messages.in.count`
 
   Number of received [strong-mq][] or [axon][] messages.
@@ -188,27 +198,32 @@ All values are for the current process only.
 
   Number of sent [strong-mq][] or [axon][] messages.
 
+#### Third-party module metrics
+
 * `<probe>.count`
-  `<probe>.average`
-  `<probe>.maximum`
-  `<probe>.minimum`
+
+* `<probe>.average`
+
+* `<probe>.maximum`
+
+* `<probe>.minimum`
 
   The agent collects count, average, maximum and minimum metrics for several
   popular third-party modules.  The list of supported modules and recorded
   metrics are as follows:
 
-  | module            | metric                                                |
-  |-------------------|-------------------------------------------------------|
-  | [loopback-datasource-juggler][] | query time in ms (reported as `dao.<metric>`) |
-  | [leveldown][]     | query time in ms                                      |
-  | [memcache][]      | query time in ms (reported as `memcached.<metric>`)   |
-  | [memcached][]     | query time in ms                                      |
-  | [mongodb][]       | query time in ms                                      |
-  | [mysql][]         | query time in ms                                      |
-  | [postgres][]      | query time in ms                                      |
-  | [redis][]         | query time in ms                                      |
-  | [riak-js][]       | query time in ms (reported as `riak.<metric>`)        |
-  | [strong-oracle][] | query time in ms (reported as `oracle.<metric>`)      |
+| module            | metric                                                |
+|-------------------|-------------------------------------------------------|
+| [loopback-datasource-juggler][] | query time in ms (reported as `dao.<metric>`) |
+| [leveldown][]     | query time in ms                                      |
+| [memcache][]      | query time in ms (reported as `memcached.<metric>`)   |
+| [memcached][]     | query time in ms                                      |
+| [mongodb][]       | query time in ms                                      |
+| [mysql][]         | query time in ms                                      |
+| [postgres][]      | query time in ms                                      |
+| [redis][]         | query time in ms                                      |
+| [riak-js][]       | query time in ms (reported as `riak.<metric>`)        |
+| [strong-oracle][] | query time in ms (reported as `oracle.<metric>`)      |
 
   Metrics are reported once per time interval.  Modules that have more than one
   command or query method have query times for their individual methods summed.

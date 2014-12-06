@@ -1,6 +1,6 @@
 {
   "name": "strong-agent",
-  "version": "1.0.3",
+  "version": "1.1.2",
   "description": "StrongOps Application Performance Monitoring Agent",
   "author": "StrongLoop <callback@strongloop.com>",
   "homepage": "http://strongloop.com",
@@ -21,7 +21,7 @@
     "lib": "./lib"
   },
   "dependencies": {
-    "debug": "~0.7.0",
+    "debug": "^2.0.0",
     "semver": "~2.2.1",
     "strong-license": "~1.0.0"
   },
