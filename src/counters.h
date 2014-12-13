@@ -185,7 +185,7 @@ inline void* CreateHistogramFunction(const char* name, int /* min */,
 // The pointer is not dereferenced by us or V8, it's just an identifier.
 #define V(name_)                                                      \
   if (size == sizeof(#name_) + prefix_size - 1 &&                     \
-      0 == Compare(name + prefix_size, #name_, size)) {               \
+      0 == Compare(name + prefix_size, #name_, size - prefix_size)) { \
     return reinterpret_cast<void*>(static_cast<uintptr_t>(k##name_)); \
   }
   ALL_METRICS_LIST(V);
