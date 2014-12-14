@@ -24,7 +24,6 @@ var http = require('http');
 assert.equal(typeof(gc), 'function', 'Run this test with --expose_gc');
 http.createServer(onrequest).listen(0, onlisten);
 
-counts.init(agent, 50);
 for (var i = 0; i < 7; i += 1) counts.sample('strongmq_in');
 for (var i = 0; i < 13; i += 1) counts.sample('strongmq_out');
 

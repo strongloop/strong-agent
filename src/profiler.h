@@ -397,7 +397,11 @@ C::ReturnType StopCpuProfilingAndSerialize(const C::ArgumentType& args) {
 C::ReturnType StartCpuProfiling(const C::ArgumentType& args) {
   C::ReturnableHandleScope handle_scope(args);
   const int64_t timeout_in_ms = args[0]->IntegerValue();
-  watchdog::StartCpuProfiling(args.GetIsolate(), timeout_in_ms);
+  const char* errmsg =
+      watchdog::StartCpuProfiling(args.GetIsolate(), timeout_in_ms);
+  if (errmsg != NULL) {
+    return handle_scope.Return(errmsg);
+  }
   return handle_scope.Return();
 }
 

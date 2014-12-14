@@ -106,7 +106,7 @@ void Initialize(v8::Isolate*, v8::Local<v8::Object>);
 
 namespace watchdog {
 void Initialize(v8::Isolate*, v8::Local<v8::Object>);
-void StartCpuProfiling(v8::Isolate* isolate, uint64_t timeout);
+const char* StartCpuProfiling(v8::Isolate* isolate, uint64_t timeout);
 const v8::CpuProfile* StopCpuProfiling(v8::Isolate* isolate);
 }  // namespace watchdog
 

@@ -1,20 +1,13 @@
 'use strict';
 
 var assert = require('assert');
-var counts = require('../lib/counts');
-var config = require('../lib/config');
 var graphHelper = require('../lib/graph-helper');
 var agent = require('../');
 var proxy = require('../lib/proxy');
 var sinon = require('sinon');
-var tiers = require('../lib/tiers');
 var topFunctions = require('../lib/top-functions');
 
-// Ouch.
 proxy.init(agent);
-counts.init(agent, config.baseInterval);
-tiers.init(agent, config.baseInterval);
-topFunctions.init(agent, config.baseInterval);
 
 var leveldownWrapper = require('../lib/wrapping-probes/leveldown');
 

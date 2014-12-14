@@ -1,8 +1,11 @@
+process.env.SL_ENV = 'dev';
+process.env.STRONGAGENT_INTERVAL_MULTIPLIER = 1e3;
+
+var agent = require('../');
 var assert = require('assert');
 var counts = require('../lib/counts');
-var config = require('../lib/config');
 
-function emit(name, data) {
+function emit(data) {
   if (data.one) {
     emit.one += 1;
     assert.equal(data.one, 1);
@@ -19,9 +22,6 @@ function emit(name, data) {
 emit.one = 0;
 emit.two = 0;
 emit.three = 0;
-
-var agent = {internal: {emit: emit}};
-counts.init(agent, 1e1);
 
 function spam() {
   counts.sample('one');
@@ -41,6 +41,9 @@ process.on('exit', function() {
   assert(emit.two > 1);
   assert(emit.three > 1);
 });
+
+agent.profile('deadbeef', 'deadbeef', {quiet: true});
+agent.internal.on('i::counts', emit);
 
 setTimeout(function() {}, 100);
 spam();

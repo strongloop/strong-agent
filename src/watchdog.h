@@ -197,12 +197,12 @@ inline void OnSignal(int signo) {
   errno = saved_errno;
 }
 
-void StartCpuProfiling(v8::Isolate* isolate, uint64_t timeout_in_ms) {
+const char* StartCpuProfiling(v8::Isolate* isolate, uint64_t timeout_in_ms) {
   // Also call StartCpuProfiling() when the profiler is already running,
   // it makes it collect another sample.
   if (timeout_in_ms == 0 || profiler_tid != 0) {
     C::CpuProfiler::StartCpuProfiling(isolate);  // Idempotent.
-    return;
+    return NULL;
   }
   sigset_t set;
   ::sigemptyset(&set);
@@ -226,6 +226,7 @@ void StartCpuProfiling(v8::Isolate* isolate, uint64_t timeout_in_ms) {
   timeout.it_value.tv_nsec = (timeout_in_ms % 1000) * 1000 * 1000;
   CHECK_EQ(0, ::timer_settime(timer_id, 0, &timeout, NULL));
   CHECK_EQ(0, ::pthread_sigmask(SIG_UNBLOCK, &set, NULL));
+  return NULL;
 }
 
 const v8::CpuProfile* StopCpuProfiling(v8::Isolate* isolate) {
@@ -271,8 +272,12 @@ namespace C = ::compat;
 
 void Initialize(v8::Isolate*, v8::Local<v8::Object>) {}
 
-void StartCpuProfiling(v8::Isolate* isolate, uint64_t) {
+const char* StartCpuProfiling(v8::Isolate* isolate, uint64_t timeout) {
+  if (timeout != 0) {
+    return "watchdog profiling not supported on this platform";
+  }
   C::CpuProfiler::StartCpuProfiling(isolate);
+  return NULL;
 }
 
 const v8::CpuProfile* StopCpuProfiling(v8::Isolate* isolate) {
