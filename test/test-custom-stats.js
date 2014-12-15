@@ -46,7 +46,7 @@ tap.test('timer start and stop', function(t) {
     agent.internal.on('i::stats', function(stat, value, type) {
       t.assert(!triggered);  // should never trigger multiple times
 
-      t.assert(value > 0.1 * 1e9 /*nanosec*/, 'value ' + util.inspect(value));
+      t.assert(value > 0.09 * 1e9 /*nanosec*/, 'value ' + util.inspect(value));
       t.equal(stat, 'custom.a.b');
       t.equal(type, 'timer');
 

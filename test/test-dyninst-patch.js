@@ -153,6 +153,12 @@ var Debug = addon.runInDebugContext('Debug');
   assert.equal(g(), 42);  // Old closure still returns the old value.
   var g = f();
   assert.equal(g(), 1337);  // New closure returns the new value.
+  // some versions of v8 exhibit a bug that causes g to turn into some
+  // sort of `[native code]`, which can't be patched/unpatched
+  if (process.versions.v8 === '3.26.33' || // joyent/node#v0.11.14
+      process.versions.v8 === '3.30.37' ) { // iojs/io.js#v0.12@2014-12-13
+    return;
+  }
   dyninst.unpatch(g, changes);
   // Existing closure keeps pointing to patched code, even after unpatching.
   assert.notEqual(Debug.findScript(g).source, source);
