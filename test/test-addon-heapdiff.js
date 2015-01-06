@@ -12,7 +12,7 @@ addon.startHeapDiff();
 assert(addon.stopHeapDiff(true) instanceof Array);
 
 // +1 because older V8 versions count the function as an object instance too.
-var maybeAddOne = Number(process.versions.v8 <= '3.28.');
+var maybeAddOne = Number(process.versions.v8 < '3.29.');
 
 addon.startHeapDiff();
 function Quux() {}

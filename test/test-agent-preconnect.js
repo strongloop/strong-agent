@@ -26,7 +26,7 @@ http.createServer(
              }, 250);
            });
            this.close();
-         }).listen(function() {
+         }).listen(0, '127.0.0.1', function() {
   agent.profile('some key', 'some app', {
     endpoint: {
       host: this.address().address,

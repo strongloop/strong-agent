@@ -31,9 +31,9 @@ tap.test('timer', function(t) {
 
   metric.once('use', function(name, value) {
     t.equal(name, 'custom.b.timer');
-    t.assert(value > 0.1 * 1e3 /*millisec*/, 'time elapsed');
+    t.assert(value >= 180 /*millisec*/, 'time elapsed');
     t.end();
   });
 
-  setTimeout(function() { timer.stop(); }, 0.1 * 1e3 /*millisec*/);
+  setTimeout(function() { timer.stop(); }, 200 /*millisec*/);
 });

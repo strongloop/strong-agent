@@ -19,7 +19,7 @@ var collector =
                  agent.stop();
                  res.end();
                });
-             }).listen(function() {
+             }).listen(0, '127.0.0.1', function() {
   var options = {
     endpoint: {
       host: collector.address().address,

@@ -20,7 +20,7 @@ function collector() {
              res.write('{"sessionId":"DEADBEEF"}\n', function() {
                process.exit(42);  // Simulate abrupt collector shutdown.
              });
-           }).listen(process.argv[3] | 0, function() {
+           }).listen(process.argv[3] | 0, '127.0.0.1', function() {
     process.stdout.write(url.format({
       protocol: 'http',
       hostname: this.address().address,

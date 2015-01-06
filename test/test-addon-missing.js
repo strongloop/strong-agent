@@ -3,7 +3,7 @@ require.cache[require.resolve('../lib/addon')].exports = null;
 
 var agent = require('../');
 agent.configure({
-  interval: 100,
+  interval: 250,
 });
 agent.start();
 

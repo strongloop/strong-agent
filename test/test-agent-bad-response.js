@@ -8,7 +8,7 @@ var http = require('http');
 var output = [];
 
 var server = http.createServer(function(req, res) { res.write('<blink>\n'); })
-                 .listen(function() {
+                 .listen(0, '127.0.0.1', function() {
   agent.warn = output.push.bind(output);
   agent.profile('some key', 'some app', {
     endpoint: {

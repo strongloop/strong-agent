@@ -156,6 +156,7 @@ var Debug = addon.runInDebugContext('Debug');
   // some versions of v8 exhibit a bug that causes g to turn into some
   // sort of `[native code]`, which can't be patched/unpatched
   if (process.versions.v8 === '3.26.33' || // joyent/node#v0.11.14
+      process.versions.v8 === '3.28.73' || // joyent/node#v0.12@2014-12-31
       process.versions.v8 === '3.30.37' ) { // iojs/io.js#v0.12@2014-12-13
     return;
   }

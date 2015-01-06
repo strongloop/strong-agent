@@ -2,7 +2,7 @@ var assert = require('assert');
 var util = require('util');
 
 var v = require('../package.json').version;
-var vMatch = new RegExp('v' + v.replace(/\./g, '\\.'));
+var vMatch = new RegExp('v' + v.replace(/([.+])/g, '\\$1'));
 
 var logger = {
   log: expectVersion,

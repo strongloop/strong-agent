@@ -22,7 +22,7 @@ var counts = require('../lib/counts');
 var http = require('http');
 
 assert.equal(typeof(gc), 'function', 'Run this test with --expose_gc');
-http.createServer(onrequest).listen(0, onlisten);
+http.createServer(onrequest).listen(0, '127.0.0.1', onlisten);
 
 for (var i = 0; i < 7; i += 1) counts.sample('strongmq_in');
 for (var i = 0; i < 13; i += 1) counts.sample('strongmq_out');

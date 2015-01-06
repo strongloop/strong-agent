@@ -15,7 +15,7 @@ var updates = [];
 
 topFunctions.on('update', function(update) { updates.push(update); });
 
-http.createServer(onrequest).listen(0, onlisten);
+http.createServer(onrequest).listen(0, '127.0.0.1', onlisten);
 
 function onrequest(req, res) {
   res.writeHead(200, {'Content-Length': '32'});

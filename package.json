@@ -34,7 +34,7 @@
   "scripts": {
     "clang-format": "make clang-format",
     "install": "node-gyp rebuild || exit 0",
-    "test": "STRONGLOOP_LICENSE=x SL_ENV=dev tap --tap --gc --stderr --timeout 10 ${TESTS:-test/test-*.js}",
+    "test": "tap --tap --gc --stderr --timeout 10 test/test-*.js",
     "lint": "make -C src lint"
   },
   "engines": {
