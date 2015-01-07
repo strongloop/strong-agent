@@ -43,7 +43,7 @@ process.on('exit', function() {
 });
 
 agent.profile('deadbeef', 'deadbeef', {quiet: true});
-agent.internal.on('i::counts', emit);
+agent.internal.on('counts', emit);
 
 setTimeout(function() {}, 100);
 spam();

@@ -40,6 +40,6 @@ function makeTest(tier, metric) {
 
     t.plan(1);
     uses.once('use', function(name, value) { t.equal(name, metric); });
-    agent.internal.emit('i::send', 'update', update);
+    agent.internal.emit('send', 'update', update);
   });
 }

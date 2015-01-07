@@ -5,7 +5,6 @@ var assert = require('assert');
 process.hrtime = Math.round = function() { throw 'BAM' };
 
 var timer = new Timer;
-assert(timer.micro() > 0);
 
 timer.start();
 setTimeout(function() {

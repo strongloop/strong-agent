@@ -6,7 +6,7 @@ var agent = {internal: new EE};
 var stats = customStats.init(agent);
 
 function checkStat(t, stat, value, type, test) {
-  agent.internal.once('i::stats', function() {
+  agent.internal.once('stats', function() {
     console.error(arguments);
     t.equal(arguments[0], stat, 'stat name');
     t.equal(arguments[1], value, 'stat value');
@@ -43,7 +43,7 @@ tap.test('timer start and stop', function(t) {
   var timer = stats.createTimer('a.b');
   setTimeout(function() {
     var triggered;
-    agent.internal.on('i::stats', function(stat, value, type) {
+    agent.internal.on('stats', function(stat, value, type) {
       t.assert(!triggered);  // should never trigger multiple times
 
       t.assert(value > 0.09 * 1e9 /*nanosec*/, 'value ' + util.inspect(value));

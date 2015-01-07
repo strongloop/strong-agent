@@ -13,7 +13,7 @@ var http = require('http');
 var topFunctions = require('../lib/top-functions');
 var updates = [];
 
-topFunctions.on('update', function(update) { updates.push(update); });
+agent.internal.on('topCalls', function(update) { updates.push(update); });
 
 http.createServer(onrequest).listen(0, '127.0.0.1', onlisten);
 
