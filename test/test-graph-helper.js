@@ -11,7 +11,7 @@ var EventEmitter = require('events').EventEmitter;
 var assert = require('assert');
 
 var updates = [];
-agent.internal.on('topCalls', updates.push.bind(updates));
+agent.on('topCalls', updates.push.bind(updates));
 
 function Connection() {}
 Connection.prototype.query = function(_, cb) { setImmediate(cb); };
