@@ -38,7 +38,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       function_name_sym_ = C::String::NewFromUtf8(isolate, "functionName");
       line_number_sym_ = C::String::NewFromUtf8(isolate, "lineNumber");
       script_name_sym_ = C::String::NewFromUtf8(isolate, "scriptName");
-#if defined(COMPAT_NODE_VERSION_10)
+#if !NODE_VERSION_AT_LEAST(0, 11, 0)
       call_uid_sym_ = C::String::NewFromUtf8(isolate, "callUid");
       children_count_sym_ = C::String::NewFromUtf8(isolate, "childrenCount");
       self_samples_count_sym_ =
@@ -47,11 +47,11 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       total_samples_count_sym_ =
           C::String::NewFromUtf8(isolate, "totalSamplesCount");
       total_time_sym_ = C::String::NewFromUtf8(isolate, "totalTime");
-#elif defined(COMPAT_NODE_VERSION_12)
+#else  // NODE_VERSION_AT_LEAST(0, 11, 0)
       bailout_reason_sym_ = C::String::NewFromUtf8(isolate, "bailoutReason");
       column_number_sym_ = C::String::NewFromUtf8(isolate, "columnNumber");
       hit_count_sym_ = C::String::NewFromUtf8(isolate, "hitCount");
-#endif
+#endif  // NODE_VERSION_AT_LEAST(0, 11, 0)
     }
 
     bool IsConstructed() const {
@@ -59,18 +59,18 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
              function_name_sym_.IsEmpty() == false &&
              line_number_sym_.IsEmpty() == false &&
              script_name_sym_.IsEmpty() == false &&
-#if defined(COMPAT_NODE_VERSION_10)
+#if !NODE_VERSION_AT_LEAST(0, 11, 0)
              call_uid_sym_.IsEmpty() == false &&
              children_count_sym_.IsEmpty() == false &&
              self_samples_count_sym_.IsEmpty() == false &&
              self_time_sym_.IsEmpty() == false &&
              total_samples_count_sym_.IsEmpty() == false &&
              total_time_sym_.IsEmpty() == false;
-#elif defined(COMPAT_NODE_VERSION_12)
+#else  // NODE_VERSION_AT_LEAST(0, 11, 0)
              bailout_reason_sym_.IsEmpty() == false &&
              column_number_sym_.IsEmpty() == false &&
              hit_count_sym_.IsEmpty() == false;
-#endif
+#endif  // NODE_VERSION_AT_LEAST(0, 11, 0)
     }
 
     Local<Object> ToObject(const CpuProfileNode* node) const {
@@ -88,7 +88,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       Handle<String> function_name_val = node->GetFunctionName();
       if (function_name_val.IsEmpty()) return Local<Object>();
 
-#if defined(COMPAT_NODE_VERSION_10)
+#if !NODE_VERSION_AT_LEAST(0, 11, 0)
       Local<Number> self_samples_count_val =
           C::Number::New(isolate_, node->GetSelfSamplesCount());
       if (self_samples_count_val.IsEmpty()) return Local<Object>();
@@ -127,7 +127,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       o->Set(line_number_sym_, line_number_val);
       o->Set(script_name_sym_, script_name_val);
       o->Set(function_name_sym_, function_name_val);
-#elif defined(COMPAT_NODE_VERSION_12)
+#else  // NODE_VERSION_AT_LEAST(0, 11, 0)
       o->Set(script_name_sym_, script_name_val);
       o->Set(function_name_sym_, function_name_val);
 
@@ -198,7 +198,7 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
       if (children_count == 0) {
         return o;
       }
-#endif
+#endif  // NODE_VERSION_AT_LEAST(0, 11, 0)
 
       Local<Array> children = C::Array::New(isolate_, children_count);
       if (children.IsEmpty()) return Local<Object>();
@@ -216,18 +216,18 @@ Local<Object> ToObject(Isolate* isolate, const CpuProfileNode* node) {
     Local<String> function_name_sym_;
     Local<String> line_number_sym_;
     Local<String> script_name_sym_;
-#if defined(COMPAT_NODE_VERSION_10)
+#if !NODE_VERSION_AT_LEAST(0, 11, 0)
     Local<String> children_count_sym_;
     Local<String> call_uid_sym_;
     Local<String> self_samples_count_sym_;
     Local<String> self_time_sym_;
     Local<String> total_samples_count_sym_;
     Local<String> total_time_sym_;
-#elif defined(COMPAT_NODE_VERSION_12)
+#else  // NODE_VERSION_AT_LEAST(0, 11, 0)
     Local<String> bailout_reason_sym_;
     Local<String> column_number_sym_;
     Local<String> hit_count_sym_;
-#endif
+#endif  // NODE_VERSION_AT_LEAST(0, 11, 0)
   };
 
   ToObjectHelper helper(isolate);
@@ -284,7 +284,7 @@ std::ostream& operator<<(std::ostream& os, Handle<String> string) {
 // Produces a stringified JSON object that is consumable by Chrome 35's
 // Dev Tools.  Note that when stored as a file, the filename needs to
 // have ".cpuprofile" as its extension in order for Chrome to load it.
-#if defined(COMPAT_NODE_VERSION_10)
+#if !NODE_VERSION_AT_LEAST(0, 11, 0)
 void SerializeCpuProfileNode(const CpuProfileNode* node, std::ostream* sink) {
   (*sink) << "{\"functionName\":\"" << node->GetFunctionName();
   // Script id is numerical but for some reason Chrome encodes it as a string
@@ -325,7 +325,7 @@ void SerializeCpuProfile(const CpuProfile* profile, std::ostream* sink) {
   (*sink) << ",\"endTime\":" << int64_t(root->GetTotalTime() / 1e3);
   (*sink) << ",\"samples\":[]}";
 }
-#elif defined(COMPAT_NODE_VERSION_12)
+#else  // NODE_VERSION_AT_LEAST(0, 11, 0)
 void SerializeCpuProfileNode(const CpuProfileNode* node, std::ostream* sink) {
   (*sink) << "{\"functionName\":\"" << node->GetFunctionName();
   // Script id is numerical but for some reason Chrome encodes it as a string
@@ -369,7 +369,7 @@ void SerializeCpuProfile(const CpuProfile* profile, std::ostream* sink) {
   }
   (*sink) << "]}";
 }
-#endif
+#endif  // NODE_VERSION_AT_LEAST(0, 11, 0)
 
 C::ReturnType StopCpuProfilingAndSerialize(const C::ArgumentType& args) {
   Isolate* isolate = args.GetIsolate();

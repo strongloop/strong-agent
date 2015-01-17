@@ -68,9 +68,9 @@ inline pid_t FindProfilerTid() {
       nread = ::read(fd, buf, sizeof(buf));
     } while (nread == -1 && errno == EINTR);
     ::close(fd);
-#if defined(COMPAT_NODE_VERSION_10)
+#if !NODE_VERSION_AT_LEAST(0, 11, 0)
     static const char name[] = "SignalSender\n";
-#elif defined(COMPAT_NODE_VERSION_12)
+#else
     static const char name[] = "v8:ProfEvntProc\n";
 #endif
     const size_t size = sizeof(name) - 1;

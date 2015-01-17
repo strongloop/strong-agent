@@ -274,10 +274,10 @@ void AddHeapGraphNodeToSet(const HeapGraphNode* node, HeapGraphNodeSet* set) {
     // not with 3.26 because they interact with object allocations.
     if (type == HeapGraphEdge::kShortcut) continue;
     if (type == HeapGraphEdge::kWeak) continue;
-#if defined(COMPAT_NODE_VERSION_10)  // V8 3.14
-    if (type == HeapGraphEdge::kInternal) continue;
-#elif defined(COMPAT_NODE_VERSION_12)  // V8 3.26
-    if (type == HeapGraphEdge::kHidden) continue;
+#if !NODE_VERSION_AT_LEAST(0, 11, 0)
+    if (type == HeapGraphEdge::kInternal) continue;  // V8 3.14
+#else
+    if (type == HeapGraphEdge::kHidden) continue; // V8 3.26
 #endif
     AddHeapGraphNodeToSet(edge->GetToNode(), set);
   }

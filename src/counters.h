@@ -13,10 +13,10 @@
 
 #include <vector>
 
-#if defined(COMPAT_NODE_VERSION_10)
+#if !NODE_VERSION_AT_LEAST(0, 11, 0)
 #define AT_LEAST_V8_3_26(exp)
 #define AT_MOST_V8_3_14(exp) exp
-#elif defined(COMPAT_NODE_VERSION_12)
+#else
 #define AT_LEAST_V8_3_26(exp) exp
 #define AT_MOST_V8_3_14(exp)
 #endif
