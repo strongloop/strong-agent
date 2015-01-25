@@ -10,4 +10,5 @@ docs.json
 src/Makefile
 src/check-imports.sh
 src/cpplint.py
+tags
 test/

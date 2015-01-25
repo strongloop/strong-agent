@@ -155,9 +155,14 @@ var Debug = addon.runInDebugContext('Debug');
   assert.equal(g(), 1337);  // New closure returns the new value.
   // some versions of v8 exhibit a bug that causes g to turn into some
   // sort of `[native code]`, which can't be patched/unpatched
-  if (process.versions.v8 === '3.26.33' || // joyent/node#v0.11.14
-      process.versions.v8 === '3.28.73' || // joyent/node#v0.12@2014-12-31
-      process.versions.v8 === '3.30.37' ) { // iojs/io.js#v0.12@2014-12-13
+  var unsupportedV8 = [
+    '3.26.33', // joyent/node#v0.11.14
+    '3.28.73', // joyent/node#v0.12@2014-12-31
+    '3.30.37', // iojs/io.js#v0.12@2014-12-13
+    '3.31.74.1', // iojs-v1.0.1, iojs-v1.0.2
+    '4.1.0.7', // iojs-v1.0.3
+  ];
+  if (unsupportedV8.indexOf(process.versions.v8) !== -1) {
     return;
   }
   dyninst.unpatch(g, changes);
