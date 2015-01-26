@@ -161,6 +161,7 @@ var Debug = addon.runInDebugContext('Debug');
     '3.30.37', // iojs/io.js#v0.12@2014-12-13
     '3.31.74.1', // iojs-v1.0.1, iojs-v1.0.2
     '4.1.0.7', // iojs-v1.0.3
+    '4.1.0.12', // iojs-v1.0.4
   ];
   if (unsupportedV8.indexOf(process.versions.v8) !== -1) {
     return;
