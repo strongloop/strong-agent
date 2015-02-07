@@ -1,12 +1,16 @@
-if (process.platform !== 'linux' ||
-    process.versions.v8 > '3.14' &&
-    process.versions.v8 < '3.29') {
-  // Only implemented on Linux so far and incompatible
-  // with the V8 that ships with joyent/node v0.11.
+if (process.platform !== 'linux') {
+  console.log('ok # SKIP watchdog is Linux-only for now');
+  return;
+}
+
+if (process.versions.v8 > '3.14' && process.versions.v8 < '3.29') {
+  console.log('ok # SKIP watchdog is incompatible with this node version');
   return;
 }
 
 process.env.SL_ENV = 'dev';
+process.env.STRONGLOOP_LICENSE = require('./helpers').longTestLicense();
+
 var addon = require('../lib/addon');
 var agent = require('../');
 var assert = require('assert');

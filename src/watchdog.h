@@ -49,17 +49,15 @@ static itimerspec timeout;
 static timer_t timer_id;
 
 inline pid_t FindProfilerTid() {
-  char path[1024];
-  const pid_t pid = ::getpid();
-  ::snprintf(path, sizeof(path), "/proc/%d/task", pid);
-  DIR* dir = ::opendir(path);
+  DIR* dir = ::opendir("/proc/self/task");
   if (dir == NULL) {
     ::perror("opendir");
     return 0;
   }
   pid_t tid = 0;
+  char path[1024];
   while (const dirent* const ent = ::readdir(dir)) {
-    ::snprintf(path, sizeof(path), "/proc/%d/task/%s/comm", pid, ent->d_name);
+    ::snprintf(path, sizeof(path), "/proc/self/task/%s/comm", ent->d_name);
     int fd = ::open(path, O_RDONLY);
     if (fd == -1) continue;
     char buf[256];
