@@ -1,29 +1,30 @@
 # strong-agent
 
-Profile and control Node.js processes and clusters using StrongOps.
+Profile, control, and monitor Node.js processes and clusters.
 
 **NOTE: This project is not released under an open source license. We welcome
 bug reports as we continue development, but we are not accepting pull requests
 at this time.**
 
-## Using strong-agent
-
-See [the full documentation](http://docs.strongloop.com/strong-agent).
+See the documentation:
+- [Profiling](http://docs.strongloop.com/display/SLC/Profiling).
+- [Monitoring](http://docs.strongloop.com/display/SLC/Monitoring)
 
 ## Summary
 
 [Register](https://strongloop.com/register/) with StrongLoop.  It's free for evaluation.
+Contact **sales@strongloop** to get valid license key.
 
 Then:
 
-    npm install -g strong-cli
-    slc update
+    npm install -g strongloop
     cd .../where/your/app/is
-    slc strongops # ... provide email/password
-    slc run your_server.js
+    slc strongops --license XYZ...
+    
+Where XYZ... represents your StrongLoop license key string.  
+Then run your app:
 
-Go to the [dashboard](https://strongloop.com/ops/dashboard) to see your
-application.
+    slc run your_server.js
 
 ## Configuration
 
@@ -46,8 +47,7 @@ Can be defined in:
 - `agent_license`: in strongloop.json
 
 Using custom metrics (the `.use()` and dynamic object tracking start-stop APIs)
-requires a license, please contact
-[sales@strongloop.com](mailto:sales@strongloop.com).
+requires a license: Contact [sales@strongloop.com](mailto:sales@strongloop.com).
 
 ### Application Name
 
