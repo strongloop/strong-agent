@@ -53,10 +53,6 @@ function pummel(host, port, next) {
 process.on('exit', function() {
   assert.equal(metrics.length % 2, 0);
   var keys = metrics.filter(function(_, i) { return i % 2 === 0 });
-  function has(key) { return keys.indexOf(key) !== -1; }
-  function count(key) {
-    return keys.filter(function(k) { return k == key }).length;
-  }
   function values(key) {
     var elts = [];
     for (var i = 0; i < metrics.length; i += 2) {
@@ -64,20 +60,34 @@ process.on('exit', function() {
     }
     return elts;
   }
-  assert(has('heap.used'));
-  assert(has('heap.total'));
-  assert(has('http.connection.count'));
-  assert(has('gc.heap.used'));
-  assert(has('http.average'));
-  assert(has('http.maximum'));
-  assert(has('http.minimum'));
-  assert(has('loop.count'));
-  assert(has('loop.minimum'));
-  assert(has('loop.maximum'));
-  assert(has('loop.average'));
-  assert.notEqual(values('http.connection.count').length, 0);
-  assert.equal(count('messages.in.count'), 1);
-  assert.equal(count('messages.out.count'), 1);
+  var expected = [ 'gc.heap.used',
+                   'heap.total',
+                   'heap.used',
+                   'http.average',
+                   'http.connection.count',
+                   'http.maximum',
+                   'http.minimum',
+                   'loop.average',
+                   'loop.count',
+                   'loop.maximum',
+                   'loop.minimum',
+                   'messages.in.count',
+                   'messages.out.count' ];
+  expected.forEach(function(key) {
+    var samples = values(key);
+    assert.notEqual(samples.length, 0);
+    // Verify that all values are >= 0 and not NaN.  http.connection.count is
+    // exempt because it represents the change in connections since the last
+    // sample and thus can be < 0 if more client connections were closed than
+    // opened.
+    if (key === 'http.connection.count') {
+      assert(samples.every(function(v) { return v === +v; }));
+    } else {
+      assert(samples.every(function(v) { return v === +v && v >= 0; }));
+    }
+  });
+  assert.equal(values('messages.in.count').length, 1);
+  assert.equal(values('messages.out.count').length, 1);
   assert.equal(metrics[1 + 2 * keys.indexOf('messages.in.count')], 7);
   assert.equal(metrics[1 + 2 * keys.indexOf('messages.out.count')], 13);
   assert(messages.length > 0);

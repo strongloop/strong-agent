@@ -214,6 +214,7 @@ All values are for the current process only.
 
 | module            | metric                                                |
 |-------------------|-------------------------------------------------------|
+| [http][]          | request time in ms                                    |
 | [loopback-datasource-juggler][] | query time in ms (reported as `dao.<metric>`) |
 | [leveldown][]     | query time in ms                                      |
 | [memcache][]      | query time in ms (reported as `memcached.<metric>`)   |
@@ -451,6 +452,7 @@ Note from the above:
 
 
 [axon]: https://github.com/visionmedia/axon
+[http]: http://nodejs.org/api/http.html#http_http_request_options_callback
 [leveldown]: https://github.com/rvagg/node-leveldown
 [loopback-datasource-juggler]: https://github.com/strongloop/loopback-datasource-juggler
 [memcache]: https://github.com/elbart/node-memcache
