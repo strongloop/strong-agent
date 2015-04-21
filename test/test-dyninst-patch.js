@@ -162,10 +162,14 @@ var Debug = addon.runInDebugContext('Debug');
     '3.31.74.1', // iojs-v1.0.1, iojs-v1.0.2
     '4.1.0.7', // iojs-v1.0.3
     '4.1.0.12', // iojs-v1.0.4
+    '4.1.0.*', // All the 4.1.0 series seems broken
   ];
-  if (unsupportedV8.indexOf(process.versions.v8) !== -1) {
-    return;
+  for (var broken= 0; broken < unsupportedV8.length; broken++) {
+    var re = RegExp(unsupportedV8[broken]);
+    if (re.test(process.versions.v8))
+        return;
   }
+  assert(false);
   dyninst.unpatch(g, changes);
   // Existing closure keeps pointing to patched code, even after unpatching.
   assert.notEqual(Debug.findScript(g).source, source);
@@ -370,6 +374,8 @@ var Debug = addon.runInDebugContext('Debug');
   // race-y but I don't think that can be helped.
   var script =
       Debug.scripts().sort(function(a, b) { return a.id - b.id }).slice(n)[0];
+  if (!script)
+    return; // See comment above, this is what happens on race.
   assert.equal(script.source, '');
   assert.equal(dyninst.position(script, 0, 0), 0);
   assert.equal(dyninst.position(script, 1, 0), -1);
