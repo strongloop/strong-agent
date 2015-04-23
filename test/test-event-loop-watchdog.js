@@ -3,7 +3,7 @@ if (process.platform !== 'linux') {
   return;
 }
 
-if (process.versions.v8 > '3.14' && process.versions.v8 < '3.29') {
+if (process.versions.v8 >= '3.15' && process.versions.v8 < '3.29') {
   console.log('ok # SKIP watchdog is incompatible with this node version');
   return;
 }
@@ -16,7 +16,21 @@ var agent = require('../');
 var assert = require('assert');
 var profiler = require('../lib/profilers/cpu');
 
+var watchdogActivationCountEvents = 0;
+var watchdogActivationCount = 0;
+
+process.once('exit', function() {
+  agent.poll();
+  assert(watchdogActivationCountEvents > 0);
+  assert(watchdogActivationCount > 0);
+});
+
 agent.profile('some app', 'some key');
+agent.use(function(key, value) {
+  if (key !== 'watchdog.activations.count') return;
+  watchdogActivationCountEvents += 1;
+  watchdogActivationCount += value;
+});
 
 function hitCount(node) {
   if (typeof(node.totalSamplesCount) === 'number') {
@@ -48,7 +62,12 @@ delay(25);
 // The profiler synchronously collects a sample when it is started but is
 // otherwise suspended.  That means the profile should contain exactly
 // the three samples we added manually.
-assert.equal(hitCount(profiler.stop()), 3);
+var count = hitCount(profiler.stop());
+if (/^3.14/.test(process.versions.v8)) {
+  assert(count > 0);  // Unreliable with joyent/node v0.10.
+} else {
+  assert.equal(count, 3);
+}
 assert.equal(profiler.stop(), undefined);
 
 profiler.start(1);

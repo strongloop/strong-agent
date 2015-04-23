@@ -36,6 +36,25 @@ namespace watchdog {
 
 namespace C = ::compat;
 
+class Counter {
+ public:
+  explicit Counter(uint32_t value = 0) : value_(value) {}
+
+  uint32_t Exchange(uint32_t value) {
+    return __sync_lock_test_and_set(&value_, value);
+  }
+
+  uint32_t Increment() {
+    return __sync_add_and_fetch(&value_, 1);
+  }
+
+ private:
+  // Disallow copy and assign.
+  void operator=(const Counter&);
+  Counter(const Counter&);
+  uint32_t value_;
+};
+
 // Caveat emptor: glibc uses the first two real-time signals for thread
 // cancellation and applies some macro cleverness to adjust SIGRTMIN.
 // That cleverness fails when you pick up SIGRTMIN from <asm-generic/signal.h>
@@ -43,6 +62,7 @@ namespace C = ::compat;
 static const int kResumeSignal = SIGRTMAX - 1;
 static const int kSuspendSignal = SIGRTMAX - 2;
 
+static Counter watchdog_activation_count;
 static __thread pid_t profiler_tid;
 static itimerspec no_timeout;  // Non-const because non-default constructible.
 static itimerspec timeout;
@@ -86,7 +106,9 @@ inline long Syscall(long nr, long a, long b, long c,  // NOLINT(runtime/int)
                     long d, long e, long f) {         // NOLINT(runtime/int)
   const bool enabled = (nr == SYS_epoll_wait && profiler_tid > 0);
   if (enabled) {
-    // About to sleep, disarm timer.
+    // About to sleep, suspend profiler thread and disarm timer.
+    CHECK_EQ(0, ::syscall(SYS_tgkill, ::getpid(), profiler_tid,
+                          kSuspendSignal));
     CHECK_EQ(0, ::timer_settime(timer_id, 0, &no_timeout, NULL));
   }
   long ret;  // NOLINT(runtime/int)
@@ -191,6 +213,7 @@ inline void OnSignal(int signo) {
   do {
     signo = ::sigwaitinfo(&set, NULL);
   } while (signo == kSuspendSignal || (signo == -1 && errno == EINTR));
+  watchdog_activation_count.Increment();
   CHECK_EQ(signo, kResumeSignal);
   errno = saved_errno;
 }
@@ -206,6 +229,7 @@ const char* StartCpuProfiling(v8::Isolate* isolate, uint64_t timeout_in_ms) {
   ::sigemptyset(&set);
   ::sigaddset(&set, SIGPROF);
   CHECK_EQ(0, ::pthread_sigmask(SIG_BLOCK, &set, NULL));
+  watchdog_activation_count.Exchange(0);
   C::CpuProfiler::StartCpuProfiling(isolate);
   // Block again in case V8 adds a pthread_sigmask(SIG_UNBLOCK).
   CHECK_EQ(0, ::pthread_sigmask(SIG_BLOCK, &set, NULL));
@@ -238,7 +262,12 @@ const v8::CpuProfile* StopCpuProfiling(v8::Isolate* isolate) {
   return C::CpuProfiler::StopCpuProfiling(isolate);
 }
 
-void Initialize(v8::Isolate*, v8::Local<v8::Object>) {
+C::ReturnType WatchdogActivationCount(const C::ArgumentType& args) {
+  C::ReturnableHandleScope handle_scope(args);
+  return handle_scope.Return(watchdog_activation_count.Exchange(0));
+}
+
+void Initialize(v8::Isolate* isolate, v8::Local<v8::Object> binding) {
   sigset_t mask;
   ::sigemptyset(&mask);
   ::sigaddset(&mask, kResumeSignal);
@@ -254,6 +283,12 @@ void Initialize(v8::Isolate*, v8::Local<v8::Object>) {
   // unsuitable for that because they fire at the wrong time.  That leaves us
   // with little recourse but to hook the syscall() wrapper.
   PatchSyscall();
+
+  v8::Local<v8::FunctionTemplate> watchdog_activation_count_template =
+      C::FunctionTemplate::New(isolate, WatchdogActivationCount);
+  binding->Set(
+      C::String::NewFromUtf8(isolate, "watchdogActivationCount"),
+      watchdog_activation_count_template->GetFunction());
 }
 
 }  // namespace watchdog
