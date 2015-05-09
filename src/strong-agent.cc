@@ -83,6 +83,40 @@ Local<Object> GetBindingObject(Isolate* isolate) {
   return binding_object.ToLocal(isolate);
 }
 
+#if SL_OS_LINUX
+C::ReturnType LowResTime(const C::ArgumentType& args) {
+  // Define the clock ids ourselves so we don't have to pull in system
+  // headers.  CLOCK_MONOTONIC_COARSE in particular is not guaranteed
+  // to be defined.
+  enum {
+    SL_CLOCK_INVALID = -1,
+    SL_CLOCK_MONOTONIC = 1,
+    SL_CLOCK_MONOTONIC_COARSE = 5
+  };
+  static clockid_t clock_id = SL_CLOCK_INVALID;
+  if (clock_id == SL_CLOCK_INVALID) {
+    // Check that CLOCK_MONOTONIC_COARSE is available and has a resolution
+    // of at least 1 millisecond.  This clock is tied to CONFIG_HZ and can
+    // have a granularity as low as one update every few hundred milliseconds.
+    timespec ts = {0, 0};
+    if (clock_getres(SL_CLOCK_MONOTONIC_COARSE, &ts) < 0 ||
+        ts.tv_sec > 0 || ts.tv_nsec > 1000 * 1000) {
+      clock_id = SL_CLOCK_MONOTONIC;  // Unavailable or unsuitable.
+    } else {
+      clock_id = SL_CLOCK_MONOTONIC_COARSE;
+    }
+  }
+  timespec ts = {0, 0};
+  clock_gettime(clock_id, &ts);
+  C::ReturnableHandleScope handle_scope(args);
+  v8::Isolate* isolate = args.GetIsolate();
+  v8::Local<v8::Array> result = C::Array::New(isolate, 2);
+  result->Set(0, C::Number::New(isolate, ts.tv_sec));
+  result->Set(1, C::Integer::NewFromUnsigned(isolate, ts.tv_nsec));
+  return handle_scope.Return(result);
+}
+#endif  // SL_OS_LINUX
+
 void Initialize(Local<Object> binding) {
   Isolate* isolate = Isolate::GetCurrent();
   WakeUp::Initialize();
@@ -100,6 +134,10 @@ void Initialize(Local<Object> binding) {
                C::Integer::New(isolate, name));
   SL_INDEXED_PROPERTIES_MAP(V)
 #undef V
+#if SL_OS_LINUX
+  binding->Set(C::String::NewFromUtf8(isolate, "lrtime"),
+               C::FunctionTemplate::New(isolate, LowResTime)->GetFunction());
+#endif
 }
 
 // See https://github.com/joyent/node/pull/7240.  Need to make the module
