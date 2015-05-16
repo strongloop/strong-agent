@@ -16,10 +16,10 @@ agent.on('topCalls', updates.push.bind(updates));
 function Connection() {}
 Connection.prototype.query = function(_, cb) { setImmediate(cb); };
 
-function Db() {}
-Db.prototype._executeQueryCommand = function(_, cb) { setImmediate(cb); };
+function Collection() {}
+Collection.prototype.find = function(_, cb) { setImmediate(cb); };
 
-var mongodb = {Db: Db};
+var mongodb = {Collection: Collection};
 require.cache['mongodb'] = {exports: mongodb};
 require('../lib/probes/mongodb')(mongodb);
 
@@ -38,7 +38,7 @@ var server = require('http').createServer();
 server.on('request', function(req, res) {
   req.once('data', function() {
     (new Connection).query('SELECT 1', once());
-    (new Db)._executeQueryCommand({collectionName: 'x'}, once());
+    (new Collection).find({collectionName: 'x'}, once());
   });
 });
 
@@ -70,7 +70,7 @@ process.once('exit', function() {
   assert.equal(nodes[1].name, 'MySQL');
   assert.equal(nodes[1].q, 'SELECT 1');
   assert.equal(nodes[2].name, 'MongoDB');
-  assert.equal(nodes[2].q, 'x.find({})');
+  assert.equal(nodes[2].q, 'find({"collectionName":"x"})');
   var links = list[5].links;
   assert.equal(links[0].value, nodes[1].value);
   assert.equal(links[0].value, updates[0].mysqlCalls.list[0][2]);

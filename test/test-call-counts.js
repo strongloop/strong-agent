@@ -46,15 +46,15 @@ require('../').use(function(name, value) {
 function Connection() {}
 Connection.prototype.query = function(_, cb) { cb(); }
 
-function Db() {}
-Db.prototype._executeQueryCommand = function(_, cb) { cb(); };
+function Collection() {}
+Collection.prototype.find = function(_, cb) { cb(); };
 
 function RedisClient() {}
 RedisClient.prototype.send_command = function(_, args, cb) {
   if (cb) cb(); else args[0]();
 };
 
-var mongodb = { Db: Db };
+var mongodb = { Collection: Collection };
 require.cache['mongodb'] = { exports: mongodb };
 require('../lib/probes/mongodb')(mongodb);
 
@@ -72,7 +72,7 @@ for (var i = 0; i < N; i += 1) {
   var mongoCount = 0;
   var redisCount = 0;
   (new Connection).query('', function() { mysqlCount += 1; });
-  (new Db)._executeQueryCommand('', function() { mongoCount += 1; });
+  (new Collection).find('', function() { mongoCount += 1; });
   if (i & 1) {
     (new RedisClient).send_command('', [function() { redisCount += 1; }]);
   } else {
