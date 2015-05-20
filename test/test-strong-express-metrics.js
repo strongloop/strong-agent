@@ -18,7 +18,9 @@ agent.on('express:usage-record', function(record) {
   setImmediate(function() {
     assert.deepEqual(
       Object.keys(record).sort(),
-      ['client', 'data', 'process', 'request', 'response', 'timestamp']);
+      ['client', 'data', 'process', 'request', 'response', 'timestamp',
+        'version',
+      ]);
   });
 });
 

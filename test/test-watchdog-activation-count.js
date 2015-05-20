@@ -19,6 +19,8 @@ var profiler = require('../lib/profilers/cpu');
 var watchdogActivationCountEvents = 0;
 var watchdogActivationCount = 0;
 
+assert(agent.internal.supports.watchdog);
+
 process.once('exit', function() {
   assert(watchdogActivationCountEvents >= 1);
   assert(watchdogActivationCount >= 10);
