@@ -215,12 +215,13 @@ All values are for the current process only.
 | module            | metric                                                |
 |-------------------|-------------------------------------------------------|
 | [http][]          | request time in ms                                    |
-| [loopback-datasource-juggler][] | query time in ms (reported as `dao.<metric>`) |
 | [leveldown][]     | query time in ms                                      |
+| [loopback-datasource-juggler][] | query time in ms (reported as `dao.<metric>`) |
 | [memcache][]      | query time in ms (reported as `memcached.<metric>`)   |
 | [memcached][]     | query time in ms                                      |
 | [mongodb][]       | query time in ms                                      |
 | [mysql][]         | query time in ms                                      |
+| [oracle][]        | query time in ms                                      |
 | [postgres][]      | query time in ms                                      |
 | [redis][]         | query time in ms                                      |
 | [riak-js][]       | query time in ms (reported as `riak.<metric>`)        |
@@ -229,7 +230,7 @@ All values are for the current process only.
   Metrics are reported once per time interval.  Modules that have more than one
   command or query method have query times for their individual methods summed.
 
-  For example, the [strong-oracle][] module has `.execute()`, `.commit()` and
+  For example, the oracle modules have `.execute()`, `.commit()` and
   `.rollback()` methods.  The reponse times for those methods are summed and
   reported as one metric, where:
 
@@ -464,5 +465,6 @@ Note from the above:
 [redis]: https://github.com/mranney/node_redis
 [strong-mq]: https://github.com/strongloop/strong-mq
 [strong-oracle]: https://github.com/strongloop/strong-oracle
+[oracle]: https://github.com/joeferner/node-oracle
 [strong-supervisor]: https://github.com/strongloop/strong-supervisor
 [Chrome Developer Tools]: https://developer.chrome.com/devtools/docs/cpu-profiling
