@@ -12,8 +12,12 @@ var filename = path.join(__dirname, '../package.json');
 require(filename);
 require.cache[filename].exports.name = '';
 
+// Prevent lib/config from loading valid licenses from the home directory.
+process.env.HOME = '/no/home/directory';
+
 var tests = [
   {
+    name: 'a',
     env: {
       STRONGLOOP_LICENSE: helpers.invalidLicense(),
       STRONGLOOP_APPNAME: 'valid app',
@@ -25,17 +29,18 @@ var tests = [
     ]
   },
   {
+    name: 'b',
     env: {
       STRONGLOOP_LICENSE: helpers.shortTestLicense(),
       STRONGLOOP_APPNAME: 'valid app',
       STRONGLOOP_KEY: undefined
     },
     expect: [
-      'API key not found, StrongOps dashboard reporting disabled',
       'started profiling agent',
     ],
   },
   {
+    name: 'c',
     env: {
       STRONGLOOP_LICENSE: helpers.shortTestLicense(),
       STRONGLOOP_APPNAME: undefined,
@@ -47,18 +52,18 @@ var tests = [
     ],
   },
   {
+    name: 'd',
     env: {
       STRONGLOOP_LICENSE: helpers.invalidLicense(),
       STRONGLOOP_APPNAME: undefined,
       STRONGLOOP_KEY: undefined
     },
     expect: [
-      'not profiling, agent metrics requires a valid license',
-      'not profiling, StrongOps configuration not found',
     ],
     notExpect: ['started profiling agent'],
   },
   {
+    name: 'e',
     env: {
       STRONGLOOP_LICENSE: helpers.shortTestLicense(),
       STRONGLOOP_APPNAME: 'valid app',
@@ -71,6 +76,7 @@ var tests = [
 async.eachSeries(tests, runTest, done);
 
 function runTest(test, cb) {
+  console.log('### test: ', test.name);
   process.env.STRONGLOOP_LICENSE = test.env.STRONGLOOP_LICENSE;
   ['STRONGLOOP_APPNAME', 'STRONGLOOP_KEY'].forEach(function(key) {
     if (test.env[key])
@@ -87,7 +93,7 @@ function runTest(test, cb) {
     logger: {
       log: log,
       info: log,
-      warn: helpers.noop,
+      warn: log,
       error: helpers.noop,
     }
   });

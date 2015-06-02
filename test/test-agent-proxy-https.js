@@ -67,7 +67,6 @@ var ca = [
 
 // Proxy certificate is signed by a self-signed CA.
 var proxyOptions = {
-  ciphers: '-ALL:RC4-SHA',
   honorCipherOrder: true,
   cert: cert,
   key: key,
@@ -92,7 +91,6 @@ var server = http.createServer(function(req, res) {
 });
 
 var proxy = https.createServer(proxyOptions, function(req_, res_) {
-  assert.equal(req_.socket.getCipher().name, 'RC4-SHA');
   var u = url.parse(req_.url);
   var proto = u.protocol === 'https:' ? https : http;
   var req = proto.request({

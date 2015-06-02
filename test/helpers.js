@@ -1,3 +1,4 @@
+var debug = require('../lib/debug')('test');
 var fmt = require('util').format;
 var license = require('../lib/license');
 
@@ -15,12 +16,13 @@ function expectantLogger(positives, negatives, done) {
 
   return function(logmsg) {
     logmsg = fmt.apply(null, arguments);
-    console.log(logmsg);
+    debug('expectant: <%s>', logmsg);
     if (negatives.some(function(e) { return e.test(logmsg) })) {
       return done(Error('negative test matched: ' + logmsg));
     }
     positives =
         positives.filter(function(expected) { return !expected.test(logmsg); });
+    debug('expectant: %s', positives);
     if (positives.length === 0) {
       done();
     }

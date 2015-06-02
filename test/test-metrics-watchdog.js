@@ -1,5 +1,6 @@
 process.env.SL_ENV = '';
 process.env.STRONGLOOP_LICENSE = '';
+process.env.HOME = '/no/such/home/dir';
 var agent = require('../');
 var assert = require('assert');
 

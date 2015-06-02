@@ -28,6 +28,7 @@ http.createServer(assert.fail).listen(0, '127.0.0.1', function() {
               },
               function() {
     this.write('GET / HTTP/1.1\r\n' +
+               'Connection: Upgrade\r\n' +
                'Upgrade: Yes, please.\r\n' +
                '\r\n');
   });

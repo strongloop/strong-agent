@@ -19,21 +19,25 @@ var profiler = require('../lib/profilers/cpu');
 var watchdogActivationCountEvents = 0;
 var watchdogActivationCount = 0;
 
+var expectedBlocks = 10;
+
 assert(agent.internal.supports.watchdog);
 
 process.once('exit', function() {
+  console.log('on exit: events reported %j cycles stalled %j',
+              watchdogActivationCountEvents, watchdogActivationCount);
   assert(watchdogActivationCountEvents >= 1);
-  assert(watchdogActivationCount >= 10);
+  assert(watchdogActivationCount >= expectedBlocks);
 });
 
-agent.profile('some app', 'some key');
+agent.start();
 agent.internal.once('watchdogActivationCount', function(count) {
   watchdogActivationCountEvents += 1;
   watchdogActivationCount += count;
 });
 
 profiler.start(1);
-block(10);
+block(expectedBlocks);
 
 function block(count) {
   if (count <= 0) return done();

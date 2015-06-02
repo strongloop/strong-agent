@@ -104,7 +104,8 @@ inline pid_t FindProfilerTid() {
 
 inline long Syscall(long nr, long a, long b, long c,  // NOLINT(runtime/int)
                     long d, long e, long f) {         // NOLINT(runtime/int)
-  const bool enabled = (nr == SYS_epoll_wait && profiler_tid > 0);
+  const bool enabled = (nr == SYS_epoll_wait || nr == SYS_epoll_pwait) &&
+                       profiler_tid > 0;
   if (enabled) {
     // About to sleep, suspend profiler thread and disarm timer.
     CHECK_EQ(0, ::syscall(SYS_tgkill, ::getpid(), profiler_tid,

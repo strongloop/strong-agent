@@ -163,13 +163,14 @@ var Debug = addon.runInDebugContext('Debug');
     '4.1.0.7', // iojs-v1.0.3
     '4.1.0.12', // iojs-v1.0.4
     '4.1.0.*', // All the 4.1.0 series seems broken
+    '4.2.*',   // ...and the 4.2
+    '3.28.*',  // node 0.12.4/3.28.71.19, so assume all the series
   ];
   for (var broken= 0; broken < unsupportedV8.length; broken++) {
     var re = RegExp(unsupportedV8[broken]);
     if (re.test(process.versions.v8))
         return;
   }
-  assert(false);
   dyninst.unpatch(g, changes);
   // Existing closure keeps pointing to patched code, even after unpatching.
   assert.notEqual(Debug.findScript(g).source, source);
