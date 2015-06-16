@@ -11,6 +11,7 @@
         '-fvisibility=hidden',
         '-fno-exceptions',
         '-fno-rtti',
+        '-fno-strict-aliasing',
         '-Wall',
         '-Wextra',
       ],
