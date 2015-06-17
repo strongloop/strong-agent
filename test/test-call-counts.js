@@ -4,6 +4,7 @@ process.env.STRONGAGENT_INTERVAL_MULTIPLIER = 1000;
 process.env.STRONGLOOP_LICENSE = require('./helpers').longTestLicense();
 
 var assert = require('assert');
+var path = require('path');
 
 var N = 1e3;
 var counts = {
@@ -58,10 +59,11 @@ var mongodb = { Collection: Collection };
 require.cache['mongodb'] = { exports: mongodb };
 require('../lib/probes/mongodb')(mongodb);
 
-var mysql = {};
-var child = { exports: Connection, id: 'mysql/lib/Connection.js' };
-require.cache['mysql'] = { children: { child: child }, exports: mysql };
-require('../lib/probes/mysql')(mysql);
+// The mysql probe loads lib/Connection.js ahead of time.
+var filename = path.join('/mysql', 'index.js');
+function fakeRequire(filename) { return Connection; }
+fakeRequire.cache = { mysql: { exports: {}, filename: filename } };
+require('../lib/probes/mysql')(fakeRequire.cache.mysql.exports, fakeRequire);
 
 var redis = { RedisClient: RedisClient };
 require.cache['redis'] = { exports: redis };

@@ -9,6 +9,7 @@ agent.profile('deadbeef', 'deadbeef', {quiet: true});
 
 var EventEmitter = require('events').EventEmitter;
 var assert = require('assert');
+var path = require('path');
 
 var updates = [];
 agent.on('topCalls', updates.push.bind(updates));
@@ -23,10 +24,11 @@ var mongodb = {Collection: Collection};
 require.cache['mongodb'] = {exports: mongodb};
 require('../lib/probes/mongodb')(mongodb);
 
-var mysql = {};
-var child = {exports: Connection, id: 'mysql/lib/Connection.js'};
-require.cache['mysql'] = {children: {child: child}, exports: mysql};
-require('../lib/probes/mysql')(mysql);
+// The mysql probe loads lib/Connection.js ahead of time.
+var filename = path.join('/mysql', 'index.js');
+function fakeRequire(filename) { return Connection; }
+fakeRequire.cache = { mysql: { exports: {}, filename: filename } };
+require('../lib/probes/mysql')(fakeRequire.cache.mysql.exports, fakeRequire);
 
 function once() {
   var numcalls = 0;

@@ -1,12 +1,14 @@
+'use strict';
+
 var addon = require('../lib/addon');
 require.cache[require.resolve('../lib/addon')].exports = null;
 
 var agent = require('../');
-agent.configure({
-  interval: 250,
-});
-agent.start();
+var assert = require('assert');
 
-setTimeout(function() {
-  console.log('ok - did not crash when addon missing');
-}, 500);
+agent.start();
+agent.on('poll::start', function() { numevents += 1; });
+setImmediate(agent.poll.bind(agent));
+
+var numevents = 0;
+process.on('exit', function() { assert.equal(numevents, 1); });
