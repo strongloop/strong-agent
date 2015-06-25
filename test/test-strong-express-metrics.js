@@ -3,7 +3,11 @@ var agent = require('../').profile('some app', 'some key');;
 var assert = require('assert');
 var http = require('http');
 var express = require('express');
-var metrics = require('strong-express-metrics');
+
+var path = require('path');
+var metricsPath = require.resolve('strong-express-metrics/package.json');
+// loopback-boot loads middleware by using a full path to the module
+var metrics = require(path.dirname(metricsPath));
 
 var collected = 0;
 process.on('exit', function() {
