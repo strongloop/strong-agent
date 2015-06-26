@@ -63,7 +63,7 @@ tap.test('strongTraceLink appends function to args when no callbacks exist', fun
   agent.configure(optionsWithStubTracer);
   var dbId = "DatabaseId";
   var query = "query strong";
-  var args = [];
+  var args = (function() { return arguments; })()
   agent.strongTraceLink(dbId, query, args);
   t.ok(args.length===1, 'args is appended');
   t.equal(typeof args[0], 'function', 'function is appended');
