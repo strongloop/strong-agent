@@ -155,7 +155,6 @@ using v8::Isolate;
 using v8::Local;
 using v8::Object;
 using v8::Value;
-using v8::kExternalIntArray;
 
 #define V(name) k##name,
 enum Kind { ALL_METRICS_LIST(V) kMaxKind };
@@ -209,13 +208,32 @@ inline void OnWakeUp(WakeUp*) {  // NOLINT(readability/function)
     Local<Value> counters_object_v = binding_object->Get(kCountersObject);
     if (counters_object_v->IsObject() == false) break;
     Local<Object> counters_object = counters_object_v.As<Object>();
+    int32_t* const data = &samples[0];
+    const size_t size = samples.capacity();
+#if !NODE_VERSION_AT_LEAST(3, 0, 0)
     void* const actual =
         counters_object->GetIndexedPropertiesExternalArrayData();
-    void* const expected = static_cast<void*>(&samples[0]);
-    if (actual != expected) {
+    if (actual != static_cast<void*>(data)) {
       counters_object->SetIndexedPropertiesToExternalArrayData(
-          expected, kExternalIntArray, samples.capacity());
+          data, v8::kExternalIntArray, size);
     }
+#else
+    const size_t byte_length = size * sizeof(*data);
+    bool recreate_typed_array = (counters_object->IsInt32Array() == false);
+    if (recreate_typed_array == false) {
+      Local<v8::ArrayBuffer> array_buffer =
+          counters_object.As<v8::Int32Array>()->Buffer();
+      recreate_typed_array =
+          (byte_length != array_buffer->ByteLength() ||
+           data != array_buffer->GetContents().Data());
+    }
+    if (recreate_typed_array) {
+      Local<v8::ArrayBuffer> array_buffer =
+          v8::ArrayBuffer::New(isolate, data, byte_length);
+      counters_object = v8::Int32Array::New(array_buffer, 0, size);
+      binding_object->Set(kCountersObject, counters_object);
+    }
+#endif
     Local<Value> callback_v = binding_object->Get(kCountersCallback);
     if (callback_v->IsFunction() == false) break;
     Local<Function> callback = callback_v.As<Function>();

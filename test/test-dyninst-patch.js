@@ -153,8 +153,9 @@ var Debug = addon.runInDebugContext('Debug');
   assert.equal(g(), 42);  // Old closure still returns the old value.
   var g = f();
   assert.equal(g(), 1337);  // New closure returns the new value.
-  // some versions of v8 exhibit a bug that causes g to turn into some
-  // sort of `[native code]`, which can't be patched/unpatched
+  // Some versions of V8 exhibit a bug that causes g to get marked
+  // as a native code object that can't be patched or unpatched.
+  // See https://code.google.com/p/v8/issues/detail?id=3758.
   var unsupportedV8 = [
     '3.26.33', // joyent/node#v0.11.14
     '3.28.73', // joyent/node#v0.12@2014-12-31
@@ -164,6 +165,7 @@ var Debug = addon.runInDebugContext('Debug');
     '4.1.0.12', // iojs-v1.0.4
     '4.1.0.*', // All the 4.1.0 series seems broken
     '4.2.*',   // ...and the 4.2
+    '4.4.*',   // ...and the 4.4
     '3.28.*',  // node 0.12.4/3.28.71.19, so assume all the series
   ];
   for (var broken= 0; broken < unsupportedV8.length; broken++) {

@@ -17,7 +17,6 @@ namespace C = ::compat;
 using v8::Isolate;
 using v8::Local;
 using v8::Object;
-using v8::kExternalUnsignedIntArray;
 
 uv_check_t check_handle;
 uint32_t statistics[4];
@@ -45,9 +44,16 @@ void Initialize(Isolate* isolate, Local<Object> binding) {
   uv_check_init(uv_default_loop(), &check_handle);
   uv_check_start(&check_handle, reinterpret_cast<uv_check_cb>(OnCheck));
   uv_unref(reinterpret_cast<uv_handle_t*>(&check_handle));
+#if !NODE_VERSION_AT_LEAST(3, 0, 0)
   Local<Object> event_loop_statistics = C::Object::New(isolate);
   event_loop_statistics->SetIndexedPropertiesToExternalArrayData(
-      statistics, kExternalUnsignedIntArray, ArraySize(statistics));
+      statistics, v8::kExternalUnsignedIntArray, ArraySize(statistics));
+#else
+  Local<v8::ArrayBuffer> array_buffer =
+      v8::ArrayBuffer::New(isolate, statistics, sizeof(statistics));
+  Local<v8::Uint32Array> event_loop_statistics =
+      v8::Uint32Array::New(array_buffer, 0, ArraySize(statistics));
+#endif
   binding->Set(C::String::NewFromUtf8(isolate, "eventLoopStatistics"),
                event_loop_statistics);
 }

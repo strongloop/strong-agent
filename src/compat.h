@@ -64,9 +64,7 @@ struct FunctionTemplate : public AllStatic {
 };
 
 struct HeapProfiler : public AllStatic {
-  inline static const v8::HeapSnapshot* TakeHeapSnapshot(
-      v8::Isolate* isolate,
-      v8::Local<v8::String> title = v8::Local<v8::String>());
+  inline static const v8::HeapSnapshot* TakeHeapSnapshot(v8::Isolate* isolate);
   inline static void DeleteAllHeapSnapshots(v8::Isolate* isolate);
 };
 

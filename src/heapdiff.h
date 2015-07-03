@@ -50,6 +50,7 @@ class HeapGraphNodeWrap {
   const HeapGraphNode* node() const;
   SnapshotObjectId id() const;
   bool operator<(const HeapGraphNodeWrap& that) const;
+  size_t GetSelfSize() const;
 
  private:
   const HeapGraphNode* node_;
@@ -127,6 +128,14 @@ SnapshotObjectId HeapGraphNodeWrap::id() const { return id_; }
 
 bool HeapGraphNodeWrap::operator<(const HeapGraphNodeWrap& that) const {
   return id() < that.id();
+}
+
+size_t HeapGraphNodeWrap::GetSelfSize() const {
+#if !NODE_VERSION_AT_LEAST(3, 0, 0)
+  return node()->GetSelfSize();
+#else
+  return node()->GetShallowSize();
+#endif
 }
 
 Key::Key(Handle<String> handle)
@@ -216,13 +225,11 @@ int Score::count() const { return count_; }
 int Score::size() const { return size_; }
 
 void Score::Plus(const HeapGraphNodeWrap& wrap) {
-  const HeapGraphNode* node = wrap.node();
-  count_ += 1, size_ += node->GetSelfSize();
+  count_ += 1, size_ += wrap.GetSelfSize();
 }
 
 void Score::Minus(const HeapGraphNodeWrap& wrap) {
-  const HeapGraphNode* node = wrap.node();
-  count_ -= 1, size_ -= node->GetSelfSize();
+  count_ -= 1, size_ -= wrap.GetSelfSize();
 }
 
 uint32_t JenkinsHash(const uint8_t* data, unsigned size) {
