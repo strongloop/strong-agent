@@ -30,6 +30,8 @@
     "express": "~3.3.5",
     "loopback": "~1.8.0",
     "mysql": "^2.7.0",
+    "strong-oracle": "latest",
+    "oracledb": "latest",
     "strong-express-metrics": "^1.0.1",
     "tap": "^0.4.13"
   },
