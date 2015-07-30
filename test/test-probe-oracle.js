@@ -1,19 +1,11 @@
 'use strict';
 
-if (!('ORACLE_USER' in process.env) || !('ORACLE_PASSWORD' in process.env)) {
-  console.log('1..0 # SKIP ORACLE_USER or ORACLE_PASSWORD ' +
-    'not set in process.env');
-  return;
-}
+var maybeSkip = process.env.ORACLE_USER && process.env.ORACLE_PASSWORD &&
+                process.env.ORACLE_HOST && process.env.ORACLE_PORT
+              ? false
+              : {skip: 'Incomplete Oracle environment.'};
 
-if (!('ORACLE_HOST' in process.env) || !('ORACLE_PORT' in process.env) ||
-    !('ORACLE_DB' in process.env)) {
-  console.log('1..0 # SKIP ORACLE_HOST or ORACLE_PORT or ORACLE_DB ' +
-    'not set in process.env');
-  return;
-}
-
-process.env.STRONGLOOP_LICENSE = require('./helpers').longTestLicense();
+process.env.STRONGLOOP_LICENSE = require('./helpers').shortTestLicense();
 
 var agent = require('../');
 var assert = require('assert');
@@ -47,7 +39,7 @@ var drivers = [
 
 var CORRECT_RESULT = 42;
 
-tap.test('Oracle probes', function(tt) {
+tap.test('Oracle probes', maybeSkip, function(tt) {
   drivers.forEach(function(d) {
     var maybeSkip = {};
     if (d.linkName === 'Oracle' && process.platform === 'win32') {
@@ -65,7 +57,7 @@ tap.test('Oracle probes', function(tt) {
         require('oracledb').getConnection(
           {user: oracle_connection_data.username,
           password: oracle_connection_data.password,
-          connectString: oracle_connection_data.host + ':' + 
+          connectString: oracle_connection_data.host + ':' +
               oracle_connection_data.port + '/' +
               oracle_connection_data.database
           }, function(err, conn) {
@@ -111,12 +103,12 @@ tap.test('Oracle probes', function(tt) {
       var ixAvg = metrics.indexOf('tiers.oracle.average');
       var ixMin = metrics.indexOf('tiers.oracle.minimum');
       var ixMax = metrics.indexOf('tiers.oracle.maximum');
-      t.ok(ixAvg > -1 && metrics.length > ixAvg, 'Avg metric exists.');
-      t.ok(ixMin > -1 && metrics.length > ixMin, 'Min metric exists.');
-      t.ok(ixMax > -1 && metrics.length > ixMax, 'Max metric exists.');
-      t.ok(metrics[ixAvg + 1] > 0, 'Avg metric is valid.');
-      t.ok(metrics[ixMin + 1] > 0, 'Min metric is valid.');
-      t.ok(metrics[ixMax + 1] > 0, 'Mix metric is valid.');
+      t.ok(ixAvg > -1 && metrics.length > ixAvg, 'Oracle avg metric exists.');
+      t.ok(ixMin > -1 && metrics.length > ixMin, 'Oracle min metric exists.');
+      t.ok(ixMax > -1 && metrics.length > ixMax, 'Oracle max metric exists.');
+      t.ok(metrics[ixAvg + 1] > 0, 'Oracle avg metric is valid.');
+      t.ok(metrics[ixMin + 1] > 0, 'Oracle min metric is valid.');
+      t.ok(metrics[ixMax + 1] > 0, 'Oracle mix metric is valid.');
       t.end();
     });
 

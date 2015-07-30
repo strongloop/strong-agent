@@ -29,10 +29,15 @@
     "async": "~0.9.0",
     "express": "~3.3.5",
     "loopback": "~1.8.0",
+    "memcache": "latest",
+    "memcached": "latest",
+    "mongodb": "latest",
     "mysql": "^2.7.0",
-    "strong-oracle": "latest",
     "oracledb": "latest",
+    "pg": "latest",
+    "redis": "latest",
     "strong-express-metrics": "^1.0.1",
+    "strong-oracle": "latest",
     "tap": "^0.4.13"
   },
   "scripts": {
