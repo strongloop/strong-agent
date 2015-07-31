@@ -6,7 +6,6 @@
 #ifndef AGENT_SRC_UTIL_INL_H_
 #define AGENT_SRC_UTIL_INL_H_
 
-#include "strong-agent.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,13 +43,43 @@ T* Copy(T* to, const T* from, size_t size) {
   return static_cast<T*>(ptr);
 }
 
+inline size_t CopyZ(const char* const from, const size_t from_size,
+                    char* const to, const size_t to_size) {
+  if (to_size == 0) return 0;
+  const size_t nchars = from_size >= to_size ? (to_size - 1) : from_size;
+  Copy(to, from, nchars);
+  to[nchars] = '\0';
+  return nchars;
+}
+
 template <typename T>
 int Compare(const T* a, const T* b, size_t size) {
   return ::memcmp(a, b, size * sizeof(*a));  // NOLINT(runtime/memcmp)
 }
 
 template <typename T>
+T RoundUp(const T value, const T alignment) {
+  const T remainder = value % alignment;
+  return remainder == 0 ? value : value - remainder + alignment;
+}
+
+template <typename T>
 void Use(const T&) {}
+
+template <typename T, unsigned kShift, unsigned kSize, typename U>
+U BitField<T, kShift, kSize, U>::Encode(T value) {
+  return static_cast<U>(value) << kShift;
+}
+
+template <typename T, unsigned kShift, unsigned kSize, typename U>
+U BitField<T, kShift, kSize, U>::Update(U previous, T value) {
+  return (previous & ~kMask) | Encode(value);
+}
+
+template <typename T, unsigned kShift, unsigned kSize, typename U>
+T BitField<T, kShift, kSize, U>::Decode(U value) {
+  return static_cast<T>((value & kMask) >> kShift);
+}
 
 template <typename T>
 Lazy<T>::Lazy()

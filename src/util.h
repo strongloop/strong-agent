@@ -6,7 +6,6 @@
 #ifndef AGENT_SRC_UTIL_H_
 #define AGENT_SRC_UTIL_H_
 
-#include "strong-agent.h"
 #include <stddef.h>
 
 namespace strongloop {
@@ -15,6 +14,11 @@ namespace agent {
 #define STRINGIFY_HELPER(s) #s
 
 #define STRINGIFY(s) STRINGIFY_HELPER(s)
+
+#define SL_STATIC_ASSERT__(expression, line) \
+  typedef int StaticAssertAtLine##line[-1 * !(expression)]
+#define SL_STATIC_ASSERT_(expression, line) SL_STATIC_ASSERT__(expression, line)
+#define SL_STATIC_ASSERT(expression) SL_STATIC_ASSERT_(expression, __LINE__)
 
 #define ASSERT(expression)              \
   strongloop::agent::Assert(expression, \
@@ -38,6 +42,10 @@ namespace agent {
 #define CHECK_LT(a, b) CHECK((a) < (b))
 #define CHECK_NE(a, b) CHECK((a) != (b))
 
+#define DISALLOW_COPY_AND_ASSIGN(type) \
+  type(const type&);                   \
+  void operator=(const type&)
+
 template <typename T>
 void Assert(const T& result, const char* expression);
 
@@ -53,9 +61,36 @@ int Compare(const T* a, const T* b, size_t size);
 template <typename T>
 T* Copy(T* to, const T* from, size_t size);
 
+inline size_t CopyZ(const char* from, size_t from_size, char* to,
+                    size_t to_size);
+
+template <typename T>
+T RoundUp(const T value, const T alignment);
+
 // For squelching warnings about unused parameters/variables.
 template <typename T>
 void Use(const T&);
+
+template <typename T, unsigned kShift, unsigned kSize, typename U>
+class BitField {
+ public:
+  typedef T Type;
+
+  static const U kMask = ((1ULL << kSize) - 1) << kShift;
+
+  inline static U Encode(T value);
+  inline static U Update(U previous, T value);
+  inline static T Decode(U value);
+
+ private:
+  BitField();  // Disallow construction.
+};
+
+template <typename T, unsigned kShift, unsigned kSize>
+class BitField32 : public BitField<T, kShift, kSize, uint32_t> {};
+
+template <typename T, unsigned kShift, unsigned kSize>
+class BitField64 : public BitField<T, kShift, kSize, uint64_t> {};
 
 template <typename T>
 class Lazy {

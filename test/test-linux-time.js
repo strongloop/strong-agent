@@ -1,7 +1,7 @@
 'use strict';
 
 if (process.platform !== 'linux') {
-  console.log('ok # SKIP Linux-only feature');
+  console.log('1..0 # SKIP Linux-only feature');
   return;
 }
 

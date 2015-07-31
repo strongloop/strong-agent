@@ -12,12 +12,13 @@ CLANG_FORMAT ?= clang-format
 # Exclude queue.h, it's borrowed from libuv and doesn't adhere to the coding
 # style.
 SOURCES = \
+	basic-cpu-profiler.h \
 	compat-inl.h \
 	compat.h \
 	counters.h \
+	cpu-profiler.h \
 	dyninst.h \
 	extras.h \
-	features.h \
 	gcinfo.h \
 	heapdiff.h \
 	platform-posix.h \
@@ -28,7 +29,6 @@ SOURCES = \
 	util-inl.h \
 	util.h \
 	uvmon.h \
-	watchdog.h \
 
 SOURCES := $(SOURCES:%=$(PREFIX)%)
 
@@ -39,12 +39,16 @@ SOURCES := $(SOURCES:%=$(PREFIX)%)
 # but we want to catch bugs where project headers have implicit dependencies
 # on system headers included in source files.
 #
+# Disable readability/check, it wants you to use CHECK_EQ/CHECK_LT/etc. but I
+# feel plain CHECK is often more readable.
+#
 # Disable readability/function, it conflicts with -Wunused-parameter.
 #
 # Disable whitespace/indent, it sometimes conflicts with clang-format.
 FILTER = \
 	-build/include, \
 	-build/include_order, \
+	-readability/check, \
 	-readability/function, \
 	-whitespace/indent, \
 

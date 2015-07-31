@@ -113,6 +113,17 @@ void Isolate::SetCreateHistogramFunction(v8::Isolate* isolate,
 #endif
 }
 
+void Isolate::SetJitCodeEventHandler(v8::Isolate* isolate,
+                                     v8::JitCodeEventOptions options,
+                                     v8::JitCodeEventHandler handler) {
+#if !NODE_VERSION_AT_LEAST(1, 0, 0)
+  I::Use(isolate);
+  v8::V8::SetJitCodeEventHandler(options, handler);
+#else
+  isolate->SetJitCodeEventHandler(options, handler);
+#endif
+}
+
 v8::Local<v8::Number> Number::New(v8::Isolate* isolate, double value) {
   I::Use(isolate);
   return v8::Number::New(COMPAT_ISOLATE_ value);

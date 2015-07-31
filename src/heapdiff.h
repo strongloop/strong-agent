@@ -284,7 +284,7 @@ void AddHeapGraphNodeToSet(const HeapGraphNode* node, HeapGraphNodeSet* set) {
 #if !NODE_VERSION_AT_LEAST(0, 11, 0)
     if (type == HeapGraphEdge::kInternal) continue;  // V8 3.14
 #else
-    if (type == HeapGraphEdge::kHidden) continue; // V8 3.26
+    if (type == HeapGraphEdge::kHidden) continue;  // V8 3.26
 #endif
     AddHeapGraphNodeToSet(edge->GetToNode(), set);
   }

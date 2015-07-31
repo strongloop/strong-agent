@@ -46,10 +46,10 @@ struct Array : public AllStatic {
 };
 
 struct CpuProfiler : public AllStatic {
-  static void StartCpuProfiling(
+  inline static void StartCpuProfiling(
       v8::Isolate* isolate,
       v8::Local<v8::String> title = v8::Local<v8::String>());
-  static const v8::CpuProfile* StopCpuProfiling(
+  inline static const v8::CpuProfile* StopCpuProfiling(
       v8::Isolate* isolate,
       v8::Local<v8::String> title = v8::Local<v8::String>());
 };
@@ -81,6 +81,9 @@ struct Isolate : public AllStatic {
       v8::Isolate* isolate, v8::AddHistogramSampleCallback callback);
   inline static void SetCreateHistogramFunction(
       v8::Isolate* isolate, v8::CreateHistogramCallback callback);
+  inline static void SetJitCodeEventHandler(v8::Isolate* isolate,
+                                            v8::JitCodeEventOptions options,
+                                            v8::JitCodeEventHandler handler);
   inline static v8::Local<v8::Value> ThrowException(
       v8::Isolate* isolate, v8::Local<v8::Value> exception);
 };

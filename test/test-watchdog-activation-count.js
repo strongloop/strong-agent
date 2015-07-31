@@ -1,10 +1,10 @@
-if (process.platform !== 'linux') {
-  console.log('ok # SKIP watchdog is Linux-only for now');
+if (process.platform !== 'darwin' && process.platform !== 'linux') {
+  console.log('1..0 # SKIP watchdog is Linux- and OS X-only for now');
   return;
 }
 
 if (process.versions.v8 >= '3.15' && process.versions.v8 < '3.29') {
-  console.log('ok # SKIP watchdog is incompatible with this node version');
+  console.log('1..0 # SKIP watchdog is incompatible with this node version');
   return;
 }
 

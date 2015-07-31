@@ -3,12 +3,12 @@ var agent = require('../');
 var assert = require('assert');
 
 if (addon == null) {
-  console.log('Skipping test, no add-on found.');
+  console.log('1..0 # SKIP no add-on found');
   return;
 }
 
 if (addon.stopCpuProfilingAndSerialize == null) {
-  console.log('Skipping test, CPU profiler metrics not supported.');
+  console.log('1..0 # SKIP CPU profiler metrics not supported');
   return;
 }
 

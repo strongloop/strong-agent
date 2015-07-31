@@ -12,7 +12,16 @@
 #include "profiler.h"
 #include "queue.h"
 #include "uvmon.h"
-#include "watchdog.h"
+
+#if SL_HAVE_NEW_CPU_PROFILER
+#include "cpu-profiler.h"
+#else
+#include "basic-cpu-profiler.h"
+#endif
+
+#if SL_COMPILER_CLANG || SL_COMPILER_GCC
+#include "base/atomicops_internals_x86_gcc.cc"
+#endif
 
 namespace strongloop {
 namespace agent {
@@ -99,8 +108,8 @@ C::ReturnType LowResTime(const C::ArgumentType& args) {
     // of at least 1 millisecond.  This clock is tied to CONFIG_HZ and can
     // have a granularity as low as one update every few hundred milliseconds.
     timespec ts = {0, 0};
-    if (clock_getres(SL_CLOCK_MONOTONIC_COARSE, &ts) < 0 ||
-        ts.tv_sec > 0 || ts.tv_nsec > 1000 * 1000) {
+    if (clock_getres(SL_CLOCK_MONOTONIC_COARSE, &ts) < 0 || ts.tv_sec > 0 ||
+        ts.tv_nsec > 1000 * 1000) {
       clock_id = SL_CLOCK_MONOTONIC;  // Unavailable or unsuitable.
     } else {
       clock_id = SL_CLOCK_MONOTONIC_COARSE;
@@ -121,6 +130,7 @@ void Initialize(Local<Object> binding) {
   Isolate* isolate = Isolate::GetCurrent();
   WakeUp::Initialize();
   binding_object.Reset(isolate, binding);
+  cpuprofiler::Initialize(isolate, binding);
   counters::Initialize(isolate, binding);
   dyninst::Initialize(isolate, binding);
   extras::Initialize(isolate, binding);
@@ -128,7 +138,6 @@ void Initialize(Local<Object> binding) {
   heapdiff::Initialize(isolate, binding);
   profiler::Initialize(isolate, binding);
   uvmon::Initialize(isolate, binding);
-  watchdog::Initialize(isolate, binding);
 #define V(name)                                        \
   binding->Set(C::String::NewFromUtf8(isolate, #name), \
                C::Integer::New(isolate, name));
@@ -143,8 +152,7 @@ void Initialize(Local<Object> binding) {
 // See https://github.com/joyent/node/pull/7240.  Need to make the module
 // definition externally visible when compiling with -fvisibility=hidden.
 // Doesn't apply to v0.11, it uses a constructor to register the module.
-#if !NODE_VERSION_AT_LEAST(0, 11, 0) && \
-    (defined(SL_COMPILER_CLANG) || defined(SL_COMPILER_GCC))
+#if !NODE_VERSION_AT_LEAST(0, 11, 0) && (SL_COMPILER_CLANG || SL_COMPILER_GCC)
 extern "C" __attribute__((visibility("default"))) node::node_module_struct
     strong_agent_module;
 #endif

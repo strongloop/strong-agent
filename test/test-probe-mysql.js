@@ -1,7 +1,7 @@
 'use strict';
 
 if (!('MYSQL_USER' in process.env) || !('MYSQL_PASSWORD' in process.env)) {
-  console.log('ok # SKIP MYSQL_USER or MYSQL_PASSWORD not set in environment');
+  console.log('1..0 # SKIP MYSQL_USER or MYSQL_PASSWORD not set in env');
   return;
 }
 

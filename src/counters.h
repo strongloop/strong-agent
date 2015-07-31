@@ -223,9 +223,8 @@ inline void OnWakeUp(WakeUp*) {  // NOLINT(readability/function)
     if (recreate_typed_array == false) {
       Local<v8::ArrayBuffer> array_buffer =
           counters_object.As<v8::Int32Array>()->Buffer();
-      recreate_typed_array =
-          (byte_length != array_buffer->ByteLength() ||
-           data != array_buffer->GetContents().Data());
+      recreate_typed_array = (byte_length != array_buffer->ByteLength() ||
+                              data != array_buffer->GetContents().Data());
     }
     if (recreate_typed_array) {
       Local<v8::ArrayBuffer> array_buffer =
