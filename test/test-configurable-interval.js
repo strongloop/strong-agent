@@ -1,8 +1,5 @@
 var assert = require('assert');
 var helpers = require('./helpers');
-// longest default interval is production, so if the .configure()
-// doesn't work, the interval used should fail the below tests
-process.env.SL_ENV = 'prod';
 var agent = require('../');
 
 assert(!agent.started, 'agent is not running');

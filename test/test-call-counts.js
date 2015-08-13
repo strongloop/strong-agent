@@ -1,7 +1,5 @@
-process.env.SL_ENV = 'dev';
-process.env.STRONGAGENT_INTERVAL_MULTIPLIER = 1000;
-// .use() requires a license
 process.env.STRONGLOOP_LICENSE = require('./helpers').longTestLicense();
+require('../lib/config').baseInterval = 15;
 
 var assert = require('assert');
 var path = require('path');

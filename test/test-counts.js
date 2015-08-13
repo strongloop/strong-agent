@@ -1,5 +1,4 @@
-process.env.SL_ENV = 'dev';
-process.env.STRONGAGENT_INTERVAL_MULTIPLIER = 1e3;
+require('../lib/config').baseInterval = 15;
 
 var agent = require('../');
 var assert = require('assert');

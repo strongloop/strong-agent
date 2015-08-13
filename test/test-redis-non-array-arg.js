@@ -1,4 +1,3 @@
-process.env.SL_ENV = 'dev';
 require('../').use(function() {});
 
 var expectedError = Error('expected error');

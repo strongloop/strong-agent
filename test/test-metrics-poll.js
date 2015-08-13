@@ -1,6 +1,5 @@
 process.env.STRONGLOOP_LICENSE = require('./helpers').shortTestLicense();
-process.env.STRONGAGENT_INTERVAL_MULTIPLIER = 40;  // 25 ms metric interval.
-process.env.SL_ENV = 'test';
+require('../lib/config').baseInterval = 25;
 
 var agent = require('../');
 var assert = require('assert');

@@ -1,6 +1,6 @@
 'use strict';
 
-process.env.SL_ENV = 'test';
+require('../lib/config').baseInterval = 100;
 require('../').profile('deadbeef', 'deadbeef', {quiet: true});
 
 var assert = require('assert');

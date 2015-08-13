@@ -1,8 +1,5 @@
-// Use 100 ms intervals for metrics collection.
-process.env.STRONGAGENT_INTERVAL_MULTIPLIER = 10;
-process.env.SL_ENV = 'test';
-var helpers = require('./helpers');
-process.env.STRONGLOOP_LICENSE = helpers.shortTestLicense();
+process.env.STRONGLOOP_LICENSE = require('./helpers').shortTestLicense();
+require('../lib/config').baseInterval = 100;
 
 var agent = require('../');
 agent.profile('deadbeef', 'deadbeef', {quiet: true});
@@ -63,17 +60,17 @@ process.once('exit', function() {
   assert.equal(updates.length, 1);
   // Verify that mongodb/mysql queries are associated with the HTTP request.
   var list = updates[0].httpCalls.list[0];
-  var tiers = list[4];
+  var tiers = list[3];
   assert(tiers.mongodb > 0);
   assert(tiers.mysql > 0);
   assert(tiers.closed);
-  var nodes = list[5].nodes;
+  var nodes = list[4].nodes;
   assert.equal(nodes[0].name, '/xyzzy');
   assert.equal(nodes[1].name, 'MySQL');
   assert.equal(nodes[1].q, 'SELECT 1');
   assert.equal(nodes[2].name, 'MongoDB');
   assert.equal(nodes[2].q, 'find({"collectionName":"x"})');
-  var links = list[5].links;
+  var links = list[4].links;
   assert.equal(links[0].value, nodes[1].value);
   assert.equal(links[0].value, updates[0].mysqlCalls.list[0][2]);
   assert.equal(links[1].value, nodes[2].value);

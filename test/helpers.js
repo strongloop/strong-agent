@@ -1,3 +1,5 @@
+'use strict';
+
 var debug = require('../lib/debug')('test');
 var fmt = require('util').format;
 var license = require('../lib/license');
@@ -8,6 +10,7 @@ module.exports = {
   shortTestLicense: shortTestLicense,
   longTestLicense: longTestLicense,
   invalidLicense: function() { return 'invalid license key'; },
+  installPackage: installPackage,
 };
 
 function expectantLogger(positives, negatives, done) {
@@ -45,4 +48,27 @@ function longTestLicense(features) {
                    activationDate: new Date(Date.now() - 1000),
                    expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
                  }).key;
+}
+
+function installPackage(name, cont) {
+  var spawn = require('child_process').spawn;
+  var options = {
+    cwd: __dirname + '/..',
+    env: process.env,
+    stdio: 'inherit',
+  };
+  var cmd = 'npm';
+  if (process.platform === 'win32') {
+    var path = require('path');
+    cmd = path.join(path.dirname(process.execPath), 'npm.cmd');
+  }
+  var proc = spawn(cmd, ['install', name], options);
+  proc.once('exit', function(exitCode, exitSignal) {
+    if (exitCode === 0 && exitSignal === null) {
+      cont(null);
+    } else {
+      cont(new Error('"npm install ' + name + '" failed with exit code ' +
+                     exitCode + ', signal ' + exitSignal));
+    }
+  });
 }

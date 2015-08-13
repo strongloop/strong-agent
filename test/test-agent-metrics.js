@@ -1,8 +1,5 @@
-// Use 100 ms intervals for metrics collection.
-process.env.STRONGAGENT_INTERVAL_MULTIPLIER = 10;
-process.env.SL_ENV = 'test';
-var helpers = require('./helpers');
-process.env.STRONGLOOP_LICENSE = helpers.shortTestLicense();
+process.env.STRONGLOOP_LICENSE = require('./helpers').shortTestLicense();
+require('../lib/config').baseInterval = 100;
 
 var metrics = [];
 var messages = [];

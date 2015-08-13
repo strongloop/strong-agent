@@ -1,15 +1,14 @@
 'use strict';
 
-process.env.SL_ENV = 'dev';
+require('../lib/config').baseInterval = 25;
 
 var assert = require('assert');
 var async = require('async');
 var agent = require('../');
-var debug = require('../lib/debug')('test');
 var net = require('net');
 var util = require('util');
 
-agent.profile('deadbeef', 'deadbeef', {endpoint: 'http://localhost:1'});
+agent.profile('deadbeef', 'deadbeef');
 
 agent.stop();
 
@@ -19,19 +18,16 @@ function stop() { keepAlive.close(); }
 
 var hook;
 
-agent.transport.send = function(message) {
-  debug('fake transport is being sent: %j', message);
-
+agent.internal.send = function(event) {
   // redirect profile commands to our hook
-  if (message.cmd.indexOf('profile') >= 0) {
-    hook && hook.apply(null, [message.cmd].concat(message.args));
+  if (event.indexOf('profile') >= 0) {
+    hook && hook.apply(null, [].slice.apply(arguments));
   }
 };
 
 function expect(event, callback) {
   hook = callback;
-  debug('fake transport pretends to receive:', event);
-  agent.transport.emit('message', {cmd: event, args: []});
+  agent.internal.emit(event);
 }
 
 var tests = [

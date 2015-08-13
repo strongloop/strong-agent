@@ -1,6 +1,5 @@
 'use strict';
 
-process.env.SL_ENV = 'dev';
 require('../lib/config').baseInterval = 50;
 require('../').profile('deadbeef', 'deadbeef', {quiet: true});
 

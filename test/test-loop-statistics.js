@@ -1,4 +1,3 @@
-process.env.SL_ENV = 'dev';
 require('../lib/config').baseInterval = 25;
 
 var agent = require('../');

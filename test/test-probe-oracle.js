@@ -10,6 +10,7 @@ process.env.STRONGLOOP_LICENSE = require('./helpers').shortTestLicense();
 var agent = require('../');
 var assert = require('assert');
 var tap = require('tap');
+var installPackage = require('./helpers').installPackage;
 
 var metrics = [];
 agent.use(metrics.push.bind(metrics));
@@ -48,22 +49,36 @@ tap.test('Oracle probes', maybeSkip, function(tt) {
 
     tt.test('Connecting to ' + d.linkName, maybeSkip, function(t) {
       if (d.linkName === 'Oracle') {
-        require('strong-oracle')({}).connect(
-          oracle_connection_data, function(err, conn) {
-            d.conn = err ? null : conn;
-            t.end(); // connection
-          });
+        installPackage('strong-oracle@latest', function(err) {
+          if (err) {
+            t.skip(err.message);
+            t.end();
+            return;
+          }
+          require('strong-oracle')({}).connect(
+            oracle_connection_data, function(err, conn) {
+              d.conn = err ? null : conn;
+              t.end(); // connection
+            });
+        });
       } else if (d.linkName === 'Oracledb') {
-        require('oracledb').getConnection(
-          {user: oracle_connection_data.username,
-          password: oracle_connection_data.password,
-          connectString: oracle_connection_data.host + ':' +
-              oracle_connection_data.port + '/' +
-              oracle_connection_data.database
-          }, function(err, conn) {
-            d.conn = err ? null : conn;
-            t.end(); // connection
-          });
+        installPackage('oracledb@latest', function(err) {
+          if (err) {
+            t.skip(err.message);
+            t.end();
+            return;
+          }
+          require('oracledb').getConnection(
+            {user: oracle_connection_data.username,
+            password: oracle_connection_data.password,
+            connectString: oracle_connection_data.host + ':' +
+                oracle_connection_data.port + '/' +
+                oracle_connection_data.database
+            }, function(err, conn) {
+              d.conn = err ? null : conn;
+              t.end(); // connection
+            });
+        });
       }
     });
 

@@ -1,6 +1,6 @@
 {
   "name": "strong-agent",
-  "version": "1.6.4",
+  "version": "2.0.0",
   "description": "StrongOps Application Performance Monitoring Agent",
   "author": "StrongLoop <callback@strongloop.com>",
   "homepage": "http://strongloop.com",
@@ -30,14 +30,11 @@
     "express": "~3.3.5",
     "loopback": "~1.8.0",
     "memcache": "latest",
-    "memcached": "latest",
     "mongodb": "latest",
     "mysql": "^2.7.0",
-    "oracledb": "latest",
     "pg": "latest",
     "redis": "latest",
     "strong-express-metrics": "^1.0.1",
-    "strong-oracle": "latest",
     "tap": "^0.4.13"
   },
   "scripts": {

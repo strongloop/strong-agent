@@ -12,10 +12,6 @@ function assertExists(name) {
 }
 assertExists('appName');
 assertExists('logger');
-assertExists('endpoint');
-assertExists('host');
-assertExists('port');
-assertExists('proxy');
 assertExists('key');
 assertExists('hostname');
 assertExists('license');

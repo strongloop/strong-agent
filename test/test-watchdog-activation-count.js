@@ -8,7 +8,6 @@ if (process.versions.v8 >= '3.15' && process.versions.v8 < '3.29') {
   return;
 }
 
-process.env.SL_ENV = 'dev';
 process.env.STRONGLOOP_LICENSE = require('./helpers').longTestLicense();
 
 var addon = require('../lib/addon');
