@@ -29,10 +29,8 @@ for (var k in tests) {
 
 function makeTest(tier, metric) {
   tap.test(tier, function(t) {
-    var update = {
-      tiers: {},
-    };
-    update.tiers[tier] = {
+    var data = {};
+    data[tier] = {
       min: 0,
       max: 2,
       avg: 1
@@ -40,6 +38,6 @@ function makeTest(tier, metric) {
 
     t.plan(1);
     uses.once('use', function(name, value) { t.equal(name, metric); });
-    agent.internal.emit('send', 'update', update);
+    agent.internal.emit('tiers', data);
   });
 }

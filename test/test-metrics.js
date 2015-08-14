@@ -13,32 +13,38 @@ assert.equal(typeof(gc), 'function', 'Run this test with --expose_gc');
 var callbacks = 0;
 process.on('exit', function() { assert(callbacks >= 5); });
 
-agent.internal.on('metric', function(metric) {
-  callbacks += 1;
-  if (metric.name === 'CPU util stime') {
-    assert(metric.value >= 0);
-    assert(metric.value <= 100);
-  }
-  if (metric.name === 'CPU util utime') {
-    assert(metric.value >= 0);
-    assert(metric.value <= 100);
-  }
-  if (metric.name === 'Heap Data') {
-    assert(Array.isArray(metric.value));
-    assert.equal(metric.value.length, 3);
-  }
-  if (metric.name === 'GC Full. V8 heap used') {
-    assert(metric.value > 0);
-  }
-  if (metric.name === 'Connections') {
-    assert(Array.isArray(metric.value));
-    assert.equal(metric.value.length, 2);
-  }
-  if (metric.name === 'queue') {
-    assert(Array.isArray(metric.value));
-    assert.equal(metric.value.length, 2);
+agent.internal.on('metrics', function(data) {
+  for (var name in data) {
+    metric(name, data[name]);
   }
 });
+
+function metric(name, value) {
+  callbacks += 1;
+  if (name === 'CPU util stime') {
+    assert(value >= 0);
+    assert(value <= 100);
+  }
+  if (name === 'CPU util utime') {
+    assert(value >= 0);
+    assert(value <= 100);
+  }
+  if (name === 'Heap Data') {
+    assert(Array.isArray(value));
+    assert.equal(value.length, 3);
+  }
+  if (name === 'GC Full. V8 heap used') {
+    assert(value > 0);
+  }
+  if (name === 'Connections') {
+    assert(Array.isArray(value));
+    assert.equal(value.length, 2);
+  }
+  if (name === 'queue') {
+    assert(Array.isArray(value));
+    assert.equal(value.length, 2);
+  }
+}
 
 setInterval(gc, 100).unref();
 setTimeout(function() { /* Keep process alive... */ }, 1000);

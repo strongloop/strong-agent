@@ -18,12 +18,15 @@ function stop() { keepAlive.close(); }
 
 var hook;
 
-agent.internal.send = function(event) {
-  // redirect profile commands to our hook
-  if (event.indexOf('profile') >= 0) {
-    hook && hook.apply(null, [].slice.apply(arguments));
-  }
-};
+agent.internal.emit = (function(f) {
+  return function(event) {
+    // redirect profile commands to our hook
+    if (event.indexOf('profile') >= 0) {
+      hook && hook.apply(null, [].slice.apply(arguments));
+    }
+    return f.apply(this, arguments);
+  };
+})(agent.internal.emit);
 
 function expect(event, callback) {
   hook = callback;
