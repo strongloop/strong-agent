@@ -123,7 +123,7 @@ tap.test('Oracle probes', maybeSkip, function(tt) {
       t.ok(ixMax > -1 && metrics.length > ixMax, 'Oracle max metric exists.');
       t.ok(metrics[ixAvg + 1] > 0, 'Oracle avg metric is valid.');
       t.ok(metrics[ixMin + 1] > 0, 'Oracle min metric is valid.');
-      t.ok(metrics[ixMax + 1] > 0, 'Oracle mix metric is valid.');
+      t.ok(metrics[ixMax + 1] > 0, 'Oracle max metric is valid.');
       t.end();
     });
 
