@@ -35,6 +35,11 @@ var drivers = [
     linkName: 'Oracle',
     conn: null,
     result: null
+  },
+  {
+    linkName: 'StrongOracle',
+    conn: null,
+    result: null
   }
 ];
 
@@ -43,12 +48,12 @@ var CORRECT_RESULT = 42;
 tap.test('Oracle probes', maybeSkip, function(tt) {
   drivers.forEach(function(d) {
     var maybeSkip = {};
-    if (d.linkName === 'Oracle' && process.platform === 'win32') {
+    if (d.linkName === 'StrongOracle' && process.platform === 'win32') {
       maybeSkip.skip = 'skipping strong-oracle on Windows';
     }
 
     tt.test('Connecting to ' + d.linkName, maybeSkip, function(t) {
-      if (d.linkName === 'Oracle') {
+      if (d.linkName === 'StrongOracle') {
         installPackage('strong-oracle@latest', function(err) {
           if (err) {
             t.skip(err.message);
@@ -57,6 +62,24 @@ tap.test('Oracle probes', maybeSkip, function(tt) {
           }
           require('strong-oracle')({}).connect(
             oracle_connection_data, function(err, conn) {
+              d.conn = err ? null : conn;
+              t.end(); // connection
+            });
+        });
+      } else if (d.linkName === 'Oracle') {
+        installPackage('oracle@latest', function(err) {
+          if (err) {
+            t.skip(err.message);
+            t.end();
+            return;
+          }
+          require('oracle').connect(
+            {user: oracle_connection_data.username,
+            password: oracle_connection_data.password,
+            hostname: oracle_connection_data.host,
+            port: oracle_connection_data.port,
+            database: oracle_connection_data.database
+            }, function(err, conn) {
               d.conn = err ? null : conn;
               t.end(); // connection
             });
@@ -95,6 +118,7 @@ tap.test('Oracle probes', maybeSkip, function(tt) {
           t.equal(d.result, null, 'Query with ' + d.linkName +
               ' driver executed only once.');
           if (!err) {
+            if (d.linkName === 'StrongOracle') d.result = result[0].PARAM;
             if (d.linkName === 'Oracle') d.result = result[0].PARAM;
             if (d.linkName === 'Oracledb') d.result = result.rows[0][0];
             t.equal(d.result, CORRECT_RESULT, d.linkName +
@@ -107,6 +131,7 @@ tap.test('Oracle probes', maybeSkip, function(tt) {
     });
 
     tt.test('Metrics check with ' + d.linkName, maybeSkip, function(t) {
+      if (d.conn && d.linkName === 'StrongOracle') d.conn.close();
       if (d.conn && d.linkName === 'Oracle') d.conn.close();
       if (!d.result) {
         t.comment('Metrics check skipped because query failed with '
