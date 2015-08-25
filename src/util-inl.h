@@ -6,6 +6,7 @@
 #ifndef AGENT_SRC_UTIL_INL_H_
 #define AGENT_SRC_UTIL_INL_H_
 
+#include "strong-agent.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,15 +42,6 @@ template <typename T>
 T* Copy(T* to, const T* from, size_t size) {
   void* ptr = ::memcpy(to, from, size * sizeof(*to));  // NOLINT(runtime/memcpy)
   return static_cast<T*>(ptr);
-}
-
-inline size_t CopyZ(const char* const from, const size_t from_size,
-                    char* const to, const size_t to_size) {
-  if (to_size == 0) return 0;
-  const size_t nchars = from_size >= to_size ? (to_size - 1) : from_size;
-  Copy(to, from, nchars);
-  to[nchars] = '\0';
-  return nchars;
 }
 
 template <typename T>

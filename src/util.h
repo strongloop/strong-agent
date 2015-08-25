@@ -6,6 +6,7 @@
 #ifndef AGENT_SRC_UTIL_H_
 #define AGENT_SRC_UTIL_H_
 
+#include "strong-agent.h"
 #include <stddef.h>
 
 namespace strongloop {
@@ -60,9 +61,6 @@ int Compare(const T* a, const T* b, size_t size);
 
 template <typename T>
 T* Copy(T* to, const T* from, size_t size);
-
-inline size_t CopyZ(const char* from, size_t from_size, char* to,
-                    size_t to_size);
 
 template <typename T>
 T RoundUp(const T value, const T alignment);

@@ -1,6 +1,3 @@
 /build/
 node_modules
 coverage.html
-
-# `make cctest` artifact.
-/test/deps/

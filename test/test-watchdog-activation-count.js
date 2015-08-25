@@ -1,5 +1,5 @@
-if (process.platform !== 'darwin' && process.platform !== 'linux') {
-  console.log('1..0 # SKIP watchdog is Linux- and OS X-only for now');
+if (process.platform !== 'linux') {
+  console.log('1..0 # SKIP watchdog is Linux-only for now');
   return;
 }
 

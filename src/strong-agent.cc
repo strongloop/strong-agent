@@ -12,16 +12,7 @@
 #include "profiler.h"
 #include "queue.h"
 #include "uvmon.h"
-
-#if SL_HAVE_NEW_CPU_PROFILER
-#include "cpu-profiler.h"
-#else
-#include "basic-cpu-profiler.h"
-#endif
-
-#if SL_COMPILER_CLANG || SL_COMPILER_GCC
-#include "base/atomicops_internals_x86_gcc.cc"
-#endif
+#include "watchdog.h"
 
 namespace strongloop {
 namespace agent {
@@ -130,7 +121,6 @@ void Initialize(Local<Object> binding) {
   Isolate* isolate = Isolate::GetCurrent();
   WakeUp::Initialize();
   binding_object.Reset(isolate, binding);
-  cpuprofiler::Initialize(isolate, binding);
   counters::Initialize(isolate, binding);
   dyninst::Initialize(isolate, binding);
   extras::Initialize(isolate, binding);
@@ -138,6 +128,7 @@ void Initialize(Local<Object> binding) {
   heapdiff::Initialize(isolate, binding);
   profiler::Initialize(isolate, binding);
   uvmon::Initialize(isolate, binding);
+  watchdog::Initialize(isolate, binding);
 #define V(name)                                        \
   binding->Set(C::String::NewFromUtf8(isolate, #name), \
                C::Integer::New(isolate, name));

@@ -7,7 +7,6 @@
 bin/
 coverage.html
 docs.json
-deps/gtest/
 src/Makefile
 src/check-imports.sh
 src/cpplint.py

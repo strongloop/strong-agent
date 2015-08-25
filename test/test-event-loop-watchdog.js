@@ -1,5 +1,5 @@
-if (process.platform !== 'darwin' && process.platform !== 'linux') {
-  console.log('1..0 # SKIP watchdog is Linux- and OS X-only for now');
+if (process.platform !== 'linux') {
+  console.log('1..0 # SKIP watchdog is Linux-only for now');
   return;
 }
 
@@ -47,18 +47,39 @@ function delay(ms) {
   while (Date.now() < start + ms);
 }
 
+profiler.start();
+profiler.start();  // Idempotent but adds another sample.
+profiler.start(1);  // Idempotent but adds another sample.
+assert(hitCount(profiler.stop()) >= 3);  // May also contain normal samples.
+assert.equal(profiler.stop(), undefined);
+
 profiler.start(1 << 30);
+profiler.start();  // Idempotent but adds another sample.
+profiler.start(1);  // Idempotent but adds another sample.
 delay(25);
-assert.equal(hitCount(profiler.stop()), 0);
+
+// The profiler synchronously collects a sample when it is started but is
+// otherwise suspended.  That means the profile should contain exactly
+// the three samples we added manually.
+var count = hitCount(profiler.stop());
+if (/^3.14/.test(process.versions.v8)) {
+  assert(count > 0);  // Unreliable with joyent/node v0.10.
+} else {
+  assert.equal(count, 3);
+}
+assert.equal(profiler.stop(), undefined);
 
 profiler.start(1);
+profiler.start();  // Idempotent.
+profiler.start(1337);  // Idempotent.
 delay(25);
+
 assert(hitCount(profiler.stop()) > 1);
 assert.equal(profiler.stop(), undefined);
 
 agent.metrics.startCpuProfiling(1000);
 delay(25);
-assert.equal(hitCount(JSON.parse(agent.metrics.stopCpuProfiling()).head), 0);
+assert.equal(hitCount(JSON.parse(agent.metrics.stopCpuProfiling()).head), 1);
 
 agent.metrics.startCpuProfiling(1);
 delay(25);

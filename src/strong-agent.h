@@ -165,12 +165,6 @@
 #include "compat.h"
 #include "compat-inl.h"
 
-#if (SL_CPU_X86 || SL_CPU_X86_64) && (SL_OS_LINUX || SL_OS_MACOS)
-#define SL_HAVE_NEW_CPU_PROFILER 1
-#else
-#define SL_HAVE_NEW_CPU_PROFILER 0
-#endif
-
 namespace strongloop {
 namespace agent {
 
@@ -204,70 +198,11 @@ class WakeUp {
   static ::QUEUE pending_queue;
 };
 
-namespace cpuprofiler {
-
-class CpuProfileNode;
-
-class CpuProfile {
- public:
-  const CpuProfileNode* GetTopDownRoot() const;
-  const CpuProfileNode* GetSample(uint32_t index) const;
-  uint32_t GetSamplesCount() const;
-  void Delete();
-
-  double GetStartTime() const { return 0; }
-  double GetEndTime() const { return 0; }
-
- private:
-  CpuProfile();
-  DISALLOW_COPY_AND_ASSIGN(CpuProfile);
-};
-
-class CpuProfileNode {
- public:
-  static const uint32_t kNoColumnNumberInfo = 0;
-  static const uint32_t kNoLineNumberInfo = 0;
-
-  const CpuProfileNode* GetChild(uint32_t index) const;
-  uint32_t GetCallUid() const;
-  uint32_t GetChildrenCount() const;
-  uint32_t GetHitCount() const;
-  uint32_t GetLineNumber() const;
-  uint32_t GetNodeId() const;
-  size_t GetFunctionName(char* buffer, size_t size) const;
-  size_t GetScriptResourceName(char* buffer, size_t size) const;
-
-  const char* GetBailoutReason() const { return "no reason"; }
-  uint32_t GetColumnNumber() const { return kNoColumnNumberInfo; }
-  uint32_t GetScriptId() const { return 42; }
-
- private:
-  CpuProfileNode();
-  DISALLOW_COPY_AND_ASSIGN(CpuProfileNode);
-};
-
-}  // namespace cpuprofiler
-
-#if SL_HAVE_NEW_CPU_PROFILER
-typedef cpuprofiler::CpuProfile CpuProfile;
-typedef cpuprofiler::CpuProfileNode CpuProfileNode;
-#else
-typedef v8::CpuProfile CpuProfile;
-typedef v8::CpuProfileNode CpuProfileNode;
-#endif
-
 inline v8::Local<v8::Object> GetBindingObject(v8::Isolate* isolate);
 
 namespace counters {
 void Initialize(v8::Isolate*, v8::Local<v8::Object>);
 }  // namespace counters
-
-namespace cpuprofiler {
-void Initialize(v8::Isolate*, v8::Local<v8::Object>);
-const char* StartCpuProfiling(v8::Isolate* isolate, uint64_t timeout_in_ms,
-                              uint64_t interval_in_ms);
-const agent::CpuProfile* StopCpuProfiling(v8::Isolate* isolate);
-}  // namespace cpuprofiler
 
 namespace dyninst {
 void Initialize(v8::Isolate*, v8::Local<v8::Object>);
@@ -292,6 +227,12 @@ void Initialize(v8::Isolate*, v8::Local<v8::Object>);
 namespace uvmon {
 void Initialize(v8::Isolate*, v8::Local<v8::Object>);
 }  // namespace uvmon
+
+namespace watchdog {
+void Initialize(v8::Isolate*, v8::Local<v8::Object>);
+const char* StartCpuProfiling(v8::Isolate* isolate, uint64_t timeout);
+const v8::CpuProfile* StopCpuProfiling(v8::Isolate* isolate);
+}  // namespace watchdog
 
 namespace platform {
 void CpuTime(double* total_system, double* total_user);
