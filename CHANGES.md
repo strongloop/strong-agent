@@ -1,3 +1,115 @@
+2015-08-25, Version 2.0.0
+=========================
+
+ * Revert "agent: add new cpu profiler" (Ben Noordhuis)
+
+ * Test against strong-oracle, oracle, and oracledb. (Tetsuo Seto)
+
+ * Add loopback datasource juggler metrics + tracing. (Tetsuo Seto)
+
+ * Dismantle sender framework infrastructure. (Ben Noordhuis)
+
+ * Remove tiers/loopback-tiers dichotomy. (Ben Noordhuis)
+
+ * Remove HTTP(S) collector transport. (Ben Noordhuis)
+
+ * Move agent/ to top-level directory. (Ben Noordhuis)
+
+ * Remove obsolete files. (Ben Noordhuis)
+
+ * agent: install probed modules as needed (Ben Noordhuis)
+
+ * agent: appease clang-format (Ben Noordhuis)
+
+ * agent: print proper tap output on skip (Ben Noordhuis)
+
+ * agent: add new cpu profiler (Ben Noordhuis)
+
+ * agent: merge features.h into strong-agent.h (Ben Noordhuis)
+
+ * agent: fix small whitespace/comments lint error (Ben Noordhuis)
+
+ * agent: add SetJitCodeEventHandler() shim (Ben Noordhuis)
+
+ * agent: add RoundUp() template function (Ben Noordhuis)
+
+ * agent: add DISALLOW_COPY_AND_ASSIGN macro (Ben Noordhuis)
+
+ * agent: add STATIC_ASSERT macro (Ben Noordhuis)
+
+ * agent: add BitField classes (Ben Noordhuis)
+
+ * agent: always define SL_FOO macros for ease of use (Ben Noordhuis)
+
+
+2015-07-31, Version agent/1.6.4
+===============================
+
+ * agent: add tests for db connector probes (Tetsuo Seto)
+
+ * test: skip strong-oracle tests on Windows (Ryan Graham)
+
+ * agent: use oracledb@latest for oracledb probe tests (Ryan Graham)
+
+ * agent: use strong-oracle for oracle/strong-oracle probe tests (Ryan Graham)
+
+ * camel case the funciton name to oracleBase (Setogit)
+
+ * improve readability of test-probe-oracle.js (Setogit)
+
+ * add test for oracle probes (Setogit)
+
+ * remove expensive debug; use unique linkName (Setogit)
+
+ * Agent probe: support oracledb by Oracle (Setogit)
+
+ * agent: add debug messages when instrumenting (Ryan Graham)
+
+ * agent: handle missing metadata in oracle probe (Ryan Graham)
+
+ * agent: make compatible with io.js v3.0.0 (Ben Noordhuis)
+
+
+2015-06-25, Version agent/1.6.3
+===============================
+
+ * agent: v1.6.3 (Sam Roberts)
+
+ * agent: don't use .push on an Arguments (Sam Roberts)
+
+ * agent: bump strong-license dependency (Ryan Graham)
+
+
+2015-06-24, Version agent/1.6.2
+===============================
+
+ * agent: v1.6.2 (Sam Roberts)
+
+ * Fix probe detection to support full paths (Miroslav Bajtoš)
+
+ * agent: improve tier name mangling comment (Ryan Graham)
+
+ * agent: fix incorrect scoping of oracle probe (Ryan Graham)
+
+ * agent: remove 500 ms timeout from test (Ben Noordhuis)
+
+ * agent: increase test timeout (Ben Noordhuis)
+
+ * agent: fix long line in lib/agent.js (Ben Noordhuis)
+
+
+2015-06-22, Version agent/1.6.1
+===============================
+
+ * agent: v1.6.1 (Sam Roberts)
+
+ * agent: add mysql probe regression test (Ben Noordhuis)
+
+ * agent: fix mysql probe with mysql@2.7.0 (Ben Noordhuis)
+
+ * agent: disable strict aliasing optimizations (Sam Roberts)
+
+
 2015-06-03, Version 1.6.0
 =========================
 
@@ -496,13 +608,13 @@
  * web: log 'slc strongops' login success (Ryan Graham)
 
 
-2014-07-29, Version production-2014-07-31-0921
-==============================================
-
-
-
 2014-07-29, Version staging-2014-07-30-0915
 ===========================================
+
+
+
+2014-07-29, Version production-2014-07-31-0921
+==============================================
 
  * api: Use session.email for email lookup (Ryan Graham)
 
@@ -942,13 +1054,13 @@
  * docs: move comments on metrics flow into docs/ (Sam Roberts)
 
 
-2014-05-07, Version agent/0.4.3
-===============================
-
-
-
 2014-05-07, Version register/0.3.3
 ==================================
+
+
+
+2014-05-07, Version agent/0.4.3
+===============================
 
  * register: v0.3.3 (Sam Roberts)
 
@@ -1006,12 +1118,12 @@
  * web: fix invalid stop request from Heap prof. UI (seanbrookes)
 
 
-2014-04-25, Version staging-2014-04-25-1658
+2014-04-25, Version staging-2014-04-25-1645
 ===========================================
 
 
 
-2014-04-25, Version staging-2014-04-25-1645
+2014-04-25, Version staging-2014-04-25-1658
 ===========================================
 
  * web: fix lingering breakdown by % slow path chart (seanbrookes)
@@ -1298,13 +1410,13 @@
  * agent: update README with current links and usage (Sam Roberts)
 
 
-2014-04-02, Version staging-2013-04-02-2
-========================================
-
-
-
 2014-04-02, Version staging-2013-04-02
 ======================================
+
+
+
+2014-04-02, Version staging-2013-04-02-2
+========================================
 
  * src: Make loading .env not fail build (Ryan Graham)
 
@@ -5469,27 +5581,7 @@
  * Alerts rewrite (Stephen Belanger)
 
 
-2013-02-12, Version alerts/0.1.7
-================================
-
-
-
-2013-02-12, Version alerts/0.1.6
-================================
-
-
-
-2013-02-12, Version alerts/0.1.5
-================================
-
-
-
-2013-02-12, Version alerts/0.1.0
-================================
-
-
-
-2013-02-12, Version alerts/0.1.4
+2013-02-12, Version alerts/0.1.3
 ================================
 
 
@@ -5509,7 +5601,27 @@
 
 
 
-2013-02-12, Version alerts/0.1.3
+2013-02-12, Version alerts/0.1.0
+================================
+
+
+
+2013-02-12, Version alerts/0.1.4
+================================
+
+
+
+2013-02-12, Version alerts/0.1.7
+================================
+
+
+
+2013-02-12, Version alerts/0.1.5
+================================
+
+
+
+2013-02-12, Version alerts/0.1.6
 ================================
 
  * Add NodeFly Dependencies (Jacob Groundwater)
@@ -8146,12 +8258,12 @@
 
 
 
-2013-04-16, Version common/0.1.2
+2013-04-16, Version common/0.1.3
 ================================
 
 
 
-2013-04-16, Version common/0.1.3
+2013-04-16, Version common/0.1.2
 ================================
 
  * create mysql pool (themitchy)
@@ -8830,21 +8942,6 @@
  * add 2 api calls for cluster support: getClusterAppId and getClusterData (Eugene Kaydalov)
 
 
-2013-04-09, Version api/0.1.7
-=============================
-
-
-
-2013-04-09, Version api/0.1.0
-=============================
-
-
-
-2013-04-09, Version api/0.1.5
-=============================
-
-
-
 2013-04-09, Version api/0.1.4
 =============================
 
@@ -8860,12 +8957,27 @@
 
 
 
+2013-04-09, Version api/0.1.6
+=============================
+
+
+
+2013-04-09, Version api/0.1.7
+=============================
+
+
+
 2013-04-09, Version api/0.1.1
 =============================
 
 
 
-2013-04-09, Version api/0.1.6
+2013-04-09, Version api/0.1.0
+=============================
+
+
+
+2013-04-09, Version api/0.1.5
 =============================
 
  * Fixed conflicts (Stephen Belanger)
@@ -9564,12 +9676,12 @@
  * Can now trigger profiler events on agents from API server (Stephen Belanger)
 
 
-2013-06-13, Version agent/0.1.44
+2013-06-13, Version agent/0.1.43
 ================================
 
 
 
-2013-06-13, Version agent/0.1.43
+2013-06-13, Version agent/0.1.44
 ================================
 
  * use uhura@stable (themitchy)
