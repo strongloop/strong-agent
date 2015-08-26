@@ -222,6 +222,7 @@ All values are for the current process only.
 | [mongodb][]       | query time in ms                                      |
 | [mysql][]         | query time in ms                                      |
 | [oracle][]        | query time in ms                                      |
+| [oracledb][]      | query time in ms (reported as `oracle.<metric>`)      |
 | [postgres][]      | query time in ms                                      |
 | [redis][]         | query time in ms                                      |
 | [riak-js][]       | query time in ms (reported as `riak.<metric>`)        |
@@ -466,5 +467,6 @@ Note from the above:
 [strong-mq]: https://github.com/strongloop/strong-mq
 [strong-oracle]: https://github.com/strongloop/strong-oracle
 [oracle]: https://github.com/joeferner/node-oracle
+[oracledb]: https://github.com/oracle/node-oracledb
 [strong-supervisor]: https://github.com/strongloop/strong-supervisor
 [Chrome Developer Tools]: https://developer.chrome.com/devtools/docs/cpu-profiling
