@@ -166,6 +166,7 @@ var Debug = addon.runInDebugContext('Debug');
     '4.1.0.*', // All the 4.1.0 series seems broken
     '4.2.*',   // ...and the 4.2
     '4.4.*',   // ...and the 4.4
+    '4.5.*',   // ...and the 4.5
     '3.28.*',  // node 0.12.4/3.28.71.19, so assume all the series
   ];
   for (var broken= 0; broken < unsupportedV8.length; broken++) {
@@ -370,13 +371,13 @@ var Debug = addon.runInDebugContext('Debug');
 
 (function() {
   'use strict';
-  var n = Debug.scripts().length;
+  var n = dyninst.scripts().length;
   eval('');
   // Caveat emptor: there is nothing that holds a reference to the script so
   // it's eligible for garbage collection.  That means this test is somewhat
   // race-y but I don't think that can be helped.
   var script =
-      Debug.scripts().sort(function(a, b) { return a.id - b.id }).slice(n)[0];
+      dyninst.scripts().sort(function(a, b) { return a.id - b.id }).slice(n)[0];
   if (!script)
     return; // See comment above, this is what happens on race.
   assert.equal(script.source, '');
@@ -422,7 +423,7 @@ var Debug = addon.runInDebugContext('Debug');
         assert.equal(before.filter(even).indexOf(id), -1);
         assert.notEqual(after.filter(even).indexOf(id), -1);
         function even(_, i) { return i % 2 == 0 }
-        var scripts = Debug.scripts();  // Keep reference to script objects.
+        var scripts = dyninst.scripts();  // Keep reference to script objects.
         var scriptids = scripts.map(function(script) { return script.id });
         var cmd = {cmd: 'sources', scriptids: scriptids, version: 0};
         driver.submit(cmd, function(err, result) {
