@@ -1,3 +1,5 @@
+'use strict';
+
 var tap = require('tap');
 var util = require('util');
 var customStats = require('../lib/custom-stats');

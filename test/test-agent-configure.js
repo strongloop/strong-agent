@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert');
 process.env.STRONGLOOP_APPNAME = 'test-app-34';
 var agent = require('../');

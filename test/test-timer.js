@@ -1,3 +1,5 @@
+'use strict';
+
 var Timer = require('../lib/timer');
 var assert = require('assert');
 

@@ -2,6 +2,8 @@
 // variable or function names > 1024 characters, the V8 heap profiler will
 // only track the first 1024.
 
+'use strict';
+
 var assert = require('assert');
 var addon = require('../lib/addon');
 

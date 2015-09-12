@@ -1,3 +1,5 @@
+'use strict';
+
 var agent = require('../').profile('some app', 'some key');;
 
 var assert = require('assert');

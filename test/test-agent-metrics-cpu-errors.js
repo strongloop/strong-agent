@@ -1,3 +1,5 @@
+'use strict';
+
 var metrics = require('../').metrics;
 var tap = require('tap');
 

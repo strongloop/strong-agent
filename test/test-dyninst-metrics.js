@@ -1,3 +1,5 @@
+'use strict';
+
 var tap = require('tap');
 var target = require('./dyninst-target');
 var di = require('../lib/dyninst-metrics');
@@ -29,7 +31,7 @@ tap.test('fail to find non-existent script', function(t) {
 
 tap.test('patch a line', function(t) {
   t.equal(target.hello(), 'hello');
-  di.patchLine('dyninst-target', 2, 'return "patched!";');
+  di.patchLine('dyninst-target', 4, 'return "patched!";');
   t.equal(target.hello(), 'patched!');
   t.end();
 });
@@ -38,8 +40,8 @@ tap.test('apply patches', {skip: false}, function(t) {
   t.equal(target.bye(), 'bye');
   di.patch({
     'dyninst-target': [
-      {type: 'code', line: 2, code: 'return "xxx";'},
-      {type: 'code', line: 6, code: 'return "yyy";'},
+      {type: 'code', line: 4, code: 'return "xxx";'},
+      {type: 'code', line: 8, code: 'return "yyy";'},
     ]
   });
   t.equal(target.hello(), 'xxx');
@@ -50,8 +52,8 @@ tap.test('apply patches', {skip: false}, function(t) {
 tap.test('apply erroring patches', {skip: false}, function(t) {
   di.patch({
     'dyninst-target': [
-      {type: 'timer-start', line: 2, metric: 'xxx', 'context': 'nosuch'},
-      {type: 'timer-stop', line: 6, metric: 'yyy', 'context': 'nosuch'},
+      {type: 'timer-start', line: 4, metric: 'xxx', 'context': 'nosuch'},
+      {type: 'timer-stop', line: 8, metric: 'yyy', 'context': 'nosuch'},
     ]
   });
   t.doesNotThrow(target.hello.bind(target));

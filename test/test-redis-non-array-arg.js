@@ -1,3 +1,5 @@
+'use strict';
+
 require('../').use(function() {});
 
 var expectedError = Error('expected error');

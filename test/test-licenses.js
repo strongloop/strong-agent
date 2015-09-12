@@ -1,3 +1,5 @@
+'use strict';
+
 var tap = require('tap');
 var helpers = require('./helpers');
 process.env.STRONGLOOP_LICENSE = '';

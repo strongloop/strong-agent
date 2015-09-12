@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert');
 var defaults = require('../lib/config');
 var config = defaults.configure(null, null, {}, {});

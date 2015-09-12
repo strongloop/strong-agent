@@ -42,7 +42,8 @@ tap.test('transactionLink wraps when licensed', function(t) {
   t.end();
 });
 
-tap.test('strongTraceLink wraps function in args when callback exists', function(t) {
+tap.test('strongTraceLink wraps function in args when callback exists',
+         function(t) {
   var myLinkName = 'my_link_name';
   agent.configure(optionsWithStubTracer);
   var isCalled = false;
@@ -53,12 +54,14 @@ tap.test('strongTraceLink wraps function in args when callback exists', function
   agent.strongTraceLink(dbId, query, args);
   var result = args[0]();
   t.ok(isCalled, 'my callback is called');
-  t.notEqual(args[0], myCallback, 'strongTraceLink replaced my callback with proxy');
+  t.notEqual(args[0], myCallback,
+             'strongTraceLink replaced my callback with proxy');
   t.equal(result, dbId + " " + query, 'proxy returned proxy result');
   t.end();
 });
 
-tap.test('strongTraceLink appends function to args when no callbacks exist', function(t) {
+tap.test('strongTraceLink appends function to args when no callbacks exist',
+         function(t) {
   var myLinkName = 'my_link_name';
   agent.configure(optionsWithStubTracer);
   var dbId = "DatabaseId";

@@ -1,3 +1,5 @@
+'use strict';
+
 var cpu = require('../lib/profilers/cpu');
 cpu.start();
 

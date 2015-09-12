@@ -1,3 +1,5 @@
+'use strict';
+
 process.env.STRONGLOOP_LICENSE = require('./helpers').longTestLicense();
 require('../lib/config').baseInterval = 15;
 

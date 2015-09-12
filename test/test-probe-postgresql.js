@@ -67,9 +67,12 @@ tap.test('PostgreSQL probe', maybeSkip, function(t) {
               var ixAvg = metrics.indexOf('tiers.postgres.average');
               var ixMin = metrics.indexOf('tiers.postgres.minimum');
               var ixMax = metrics.indexOf('tiers.postgres.maximum');
-              t.ok(ixAvg > -1 && metrics.length > ixAvg, 'PostgreSQL avg metric exists.');
-              t.ok(ixMin > -1 && metrics.length > ixMin, 'PostgreSQL min metric exists.');
-              t.ok(ixMax > -1 && metrics.length > ixMax, 'PostgreSQL max metric exists.');
+              t.ok(ixAvg > -1 && metrics.length > ixAvg,
+                   'PostgreSQL avg metric exists.');
+              t.ok(ixMin > -1 && metrics.length > ixMin,
+                   'PostgreSQL min metric exists.');
+              t.ok(ixMax > -1 && metrics.length > ixMax,
+                   'PostgreSQL max metric exists.');
               t.ok(metrics[ixAvg + 1] > 0, 'PostgreSQL avg metric is valid.');
               t.ok(metrics[ixMin + 1] > 0, 'PostgreSQL min metric is valid.');
               t.ok(metrics[ixMax + 1] > 0, 'PostgreSQL max metric is valid.');

@@ -1,3 +1,5 @@
+'use strict';
+
 // save as `dyninst-metrics-example.js`
 var http = require('http');
 

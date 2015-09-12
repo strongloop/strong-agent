@@ -1,3 +1,5 @@
+'use strict';
+
 var agent = require('../');
 agent.profile('deadbeef', 'deadbeef', {quiet: true});
 

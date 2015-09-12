@@ -1,3 +1,5 @@
+'use strict';
+
 require('../lib/config').baseInterval = 15;
 
 var agent = require('../');

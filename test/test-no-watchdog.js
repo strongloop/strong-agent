@@ -1,3 +1,5 @@
+'use strict';
+
 var addon = require('../lib/addon');
 var agent = require('../');
 var assert = require('assert');

@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert');
 var addon = require('../lib/addon');
 assert(addon, 'Native add-on not found.');

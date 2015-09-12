@@ -57,9 +57,12 @@ tap.test('MongoDB probe', maybeSkip, function(t) {
             var ixAvg = metrics.indexOf('tiers.mongodb.average');
             var ixMin = metrics.indexOf('tiers.mongodb.minimum');
             var ixMax = metrics.indexOf('tiers.mongodb.maximum');
-            t.ok(ixAvg > -1 && metrics.length > ixAvg, 'MongoDB avg metric exists.');
-            t.ok(ixMin > -1 && metrics.length > ixMin, 'MongoDB min metric exists.');
-            t.ok(ixMax > -1 && metrics.length > ixMax, 'MongoDB max metric exists.');
+            t.ok(ixAvg > -1 && metrics.length > ixAvg,
+                 'MongoDB avg metric exists.');
+            t.ok(ixMin > -1 && metrics.length > ixMin,
+                 'MongoDB min metric exists.');
+            t.ok(ixMax > -1 && metrics.length > ixMax,
+                 'MongoDB max metric exists.');
             t.ok(metrics[ixAvg + 1] > 0, 'MongoDB avg metric is valid.');
             t.ok(metrics[ixMin + 1] > 0, 'MongoDB min metric is valid.');
             t.ok(metrics[ixMax + 1] > 0, 'MongoDB max metric is valid.');

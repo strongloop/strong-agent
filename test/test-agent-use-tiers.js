@@ -1,3 +1,5 @@
+'use strict';
+
 process.env.STRONGLOOP_LICENSE = require('./helpers').shortTestLicense();
 
 var EventEmitter = require('events').EventEmitter;

@@ -1,3 +1,5 @@
+'use strict';
+
 process.env.STRONGLOOP_LICENSE = require('./helpers').longTestLicense();
 
 var EventEmitter = require('events').EventEmitter;
@@ -14,10 +16,10 @@ agent.use(function(name, value) { output.push([name, value]); });
 
 agent.dyninst.metrics.patch({
   'dyninst-target': [
-    {type: 'increment', line: 18, metric: 'runner'},
-    {type: 'decrement', line: 19, metric: 'runner'},
-    {type: 'timer-start', line: 18, metric: 'runner', context: 'this'},
-    {type: 'timer-stop', line: 19, metric: 'runner', context: 'self'},
+    {type: 'increment', line: 20, metric: 'runner'},
+    {type: 'decrement', line: 21, metric: 'runner'},
+    {type: 'timer-start', line: 20, metric: 'runner', context: 'this'},
+    {type: 'timer-stop', line: 21, metric: 'runner', context: 'self'},
   ]
 });
 

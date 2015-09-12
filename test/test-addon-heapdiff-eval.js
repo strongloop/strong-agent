@@ -3,6 +3,8 @@
 // represented in a different way.  In particular, it's crucial that
 // v8::HeapGraphNode::kHidden nodes are followed.
 
+'use strict';
+
 var assert = require('assert');
 var addon = require('../lib/addon');
 assert(addon, 'Native add-on not found.');

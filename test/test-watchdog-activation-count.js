@@ -1,3 +1,5 @@
+'use strict';
+
 if (process.platform !== 'linux') {
   console.log('1..0 # SKIP watchdog is Linux-only for now');
   return;

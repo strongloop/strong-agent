@@ -1,3 +1,5 @@
+'use strict';
+
 // test array form of profile()'s appName argument
 var assert = require('assert');
 var defaults = require('../lib/config');

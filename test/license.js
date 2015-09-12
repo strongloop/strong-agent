@@ -1,3 +1,5 @@
+'use strict';
+
 if (process.argv[2]) {
   console.log('Decoded license contents: ',
               require('../lib/license')(process.argv[2]));

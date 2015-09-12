@@ -1,3 +1,5 @@
+'use strict';
+
 process.env.STRONGLOOP_LICENSE = '';
 process.env.HOME = '/no/such/home/dir';
 var agent = require('../');
