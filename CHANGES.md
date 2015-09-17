@@ -1,3 +1,21 @@
+2015-09-16, Version 2.0.1
+=========================
+
+ * Fix long lines. (Ben Noordhuis)
+
+ * Use 'use strict' everywhere. (Ben Noordhuis)
+
+ * Fix actual/expected order in tap.equal() calls. (Ben Noordhuis)
+
+ * Fix illegal access error in Debug.scripts() call. (Ben Noordhuis)
+
+ * Fix context loading in addon.runInDebugContext(). (Ben Noordhuis)
+
+ * Fix method proxying for bound functions in V8 4.5. (Ben Noordhuis)
+
+ * Add oracledb to the supported modules list. (Tetsuo Seto)
+
+
 2015-08-25, Version 2.0.0
 =========================
 
