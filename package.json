@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "async": "~0.9.0",
+    "bluebird": "^2.10.0",
     "express": "~3.3.5",
     "loopback": "^2.21.0",
     "loopback-connector-postgresql": "^2.3.0",
