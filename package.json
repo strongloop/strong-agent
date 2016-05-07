@@ -11,10 +11,7 @@
   "bugs": {
     "url": "https://github.com/strongloop/strong-agent/issues"
   },
-  "license": {
-    "name": "StrongLoop",
-    "url": "http://strongloop.com/license/"
-  },
+  "license": "SEE LICENSE IN LICENSE.md",
   "contributors": [],
   "main": "lib/main",
   "directories": {
