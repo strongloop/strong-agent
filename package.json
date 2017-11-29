@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "debug": "^2.0.0",
-    "semver": "~2.2.1",
+    "semver": "^5.4.1",
     "strong-license": "^1.2.0"
   },
   "devDependencies": {
